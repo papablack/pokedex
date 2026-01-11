@@ -1,0 +1,28 @@
+import { RWSViewComponent, RWSView, observable } from '@rws-framework/client';
+
+@RWSView('pokedex-header')
+export class PokedexHeader extends RWSViewComponent {
+    @observable connected: boolean = false;
+
+    constructor() {
+        super();
+    }
+
+    async connectedCallback() {
+        super.connectedCallback();
+    }
+
+    handleSettingsClick() {
+        this.$emit('toggle-settings');
+    }
+
+    get connectionStatus() {
+        return this.connected ? 'connected' : 'disconnected';
+    }
+
+    get statusBadgeClass() {
+        return this.connected ? 'connected' : 'disconnected';
+    }
+}
+
+PokedexHeader.defineComponent();

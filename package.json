@@ -1,0 +1,17 @@
+{
+  "name": "rws_pokedex_main",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "code"
+  ],
+  "scripts": {
+    "build": "rws build front",
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {}
+}

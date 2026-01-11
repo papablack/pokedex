@@ -1,0 +1,31 @@
+<div class="pokedex-container">
+    <div class="pokedex-body">
+        <!-- Top Section - Header with lens, lights, connection status -->
+        <pokedex-header 
+            :connected="${x => x.isConnected}"
+            @toggle-settings="${x => x.handleToggleSettings()}">
+        </pokedex-header>
+        
+        <!-- Main Screen -->
+        <pokedex-screen 
+            :output="${x => x.output}"
+            :isGenerating="${x => x.isGenerating}">
+        </pokedex-screen>
+        
+        <!-- Input Section -->
+        <pokedex-input 
+            :query="${x => x.query}"
+            :isGenerating="${x => x.isGenerating}"
+            @search="${x => x.handleSearch($event)}">
+        </pokedex-input>
+        
+        <!-- Settings Modal -->
+        <pokedex-settings 
+            :show="${x => x.showSettings}"
+            :settings="${x => x.settings}"
+            @settings-save="${x => x.handleSettingsSave($event)}"
+            @settings-clear="${x => x.handleSettingsClear()}"
+            @settings-close="${x => x.handleSettingsClose()}">
+        </pokedex-settings>
+    </div>
+</div>

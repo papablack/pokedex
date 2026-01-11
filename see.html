@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="pl" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Pokedex</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --pokedex-red: #dc3545;
+            --pokedex-dark-red: #a71d2a;
+            --pokedex-light: #f8f9fa;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        .pokedex-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: var(--pokedex-red);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 4px solid var(--pokedex-dark-red);
+        }
+
+        .pokedex-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .pokedex-lens {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(145deg, #5bc0de, #31b0d5);
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: inset 0 -5px 15px rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: inset 0 -5px 15px rgba(0,0,0,0.2), 0 0 10px #5bc0de; }
+            50% { box-shadow: inset 0 -5px 15px rgba(0,0,0,0.2), 0 0 25px #5bc0de; }
+        }
+
+        .indicator-lights {
+            display: flex;
+            gap: 8px;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.3);
+        }
+
+        .indicator.red { background: #ff6b6b; }
+        .indicator.yellow { background: #ffd93d; }
+        .indicator.green { background: #6bcb77; }
+
+        .screen-container {
+            background: #2d3436;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .main-screen {
+            background: #a8e6cf;
+            border-radius: 8px;
+            min-height: 300px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-y: auto;
+            max-height: 400px;
+            border: 3px solid #636e72;
+        }
+
+        .main-screen::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .main-screen::-webkit-scrollbar-track {
+            background: #81ecec;
+            border-radius: 4px;
+        }
+
+        .main-screen::-webkit-scrollbar-thumb {
+            background: #00b894;
+            border-radius: 4px;
+        }
+
+        .input-section {
+            background: #2d3436;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .pokemon-input {
+            background: #dfe6e9;
+            border: 3px solid #636e72;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 16px;
+            width: 100%;
+            font-family: 'Courier New', monospace;
+        }
+
+        .pokemon-input:focus {
+            outline: none;
+            border-color: #00b894;
+            background: #fff;
+        }
+
+        .btn-search {
+            background: linear-gradient(145deg, #00b894, #00a187);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .btn-search:hover {
+            background: linear-gradient(145deg, #00a187, #009176);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,184,148,0.4);
+        }
+
+        .btn-search:disabled {
+            background: #636e72;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-settings {
+            background: #636e72;
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .btn-settings:hover {
+            background: #2d3436;
+            transform: rotate(90deg);
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: #2d3436;
+            animation: blink 0.7s infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .loading-pokeball {
+            width: 50px;
+            height: 50px;
+            margin: 20px auto;
+            display: none;
+        }
+
+        .loading-pokeball.active {
+            display: block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .modal-content {
+            border-radius: 15px;
+            border: 3px solid var(--pokedex-dark-red);
+        }
+
+        .modal-header {
+            background: var(--pokedex-red);
+            color: white;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2d3436;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-indicator.connected { background: #6bcb77; }
+        .status-indicator.disconnected { background: #ff6b6b; }
+
+        .pokemon-name {
+            color: #d63031;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #0984e3;
+            font-weight: bold;
+        }
+
+        .type-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin: 2px;
+        }
+
+        .quick-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .btn-quick {
+            background: #74b9ff;
+            border: 2px solid #0984e3;
+            color: #2d3436;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .btn-quick:hover {
+            background: #0984e3;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <main class="container py-4">
+        <div class="pokedex-container">
+            <!-- Header -->
+            <div class="pokedex-header">
+                <div class="pokedex-lens"></div>
+                <div class="indicator-lights">
+                    <div class="indicator red"></div>
+                    <div class="indicator yellow"></div>
+                    <div class="indicator green"></div>
+                </div>
+                <div class="ms-auto d-flex align-items-center gap-2">
+                    <span class="badge bg-dark" id="statusBadge">
+                        <span class="status-indicator disconnected" id="statusDot"></span>
+                        Niepołączony
+                    </span>
+                    <button class="btn-settings" onclick="openSettings()" title="Ustawienia">
+                        <i class="bi bi-gear-fill"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Screen -->
+            <div class="screen-container">
+                <div class="main-screen" id="outputScreen">
+                    <div class="text-center text-muted">
+                        <p><strong>🔴 AI POKEDEX v1.0 🔴</strong></p>
+                        <p>Witaj Trenerze!</p>
+                        <p>Wpisz nazwę Pokémona lub zadaj pytanie, a ja dostarczę Ci wszystkie informacje!</p>
+                        <hr>
+                        <p><small>⚙️ Najpierw skonfiguruj klucz API w ustawieniach</small></p>
+                    </div>
+                </div>
+                <svg class="loading-pokeball" id="loadingPokeball" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#fff" stroke="#333" stroke-width="5"/>
+                    <path d="M5 50 H95" stroke="#333" stroke-width="5"/>
+                    <circle cx="50" cy="50" r="15" fill="#fff" stroke="#333" stroke-width="5"/>
+                    <path d="M5 50 A45 45 0 0 0 95 50" fill="#dc3545"/>
+                </svg>
+            </div>
+
+            <!-- Input Section -->
+            <div class="input-section">
+                <div class="d-flex gap-2">
+                    <input 
+                        type="text" 
+                        class="pokemon-input" 
+                        id="pokemonInput" 
+                        placeholder="Wpisz nazwę Pokémona..."
+                        onkeypress="handleKeyPress(event)"
+                    >
+                    <button class="btn-search" id="searchBtn" onclick="searchPokemon()">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+                <div class="quick-buttons">
+                    <button class="btn-quick" onclick="quickSearch('Pikachu')">Pikachu</button>
+                    <button class="btn-quick" onclick="quickSearch('Charizard')">Charizard</button>
+                    <button class="btn-quick" onclick="quickSearch('Mewtwo')">Mewtwo</button>
+                    <button class="btn-quick" onclick="quickSearch('Eevee')">Eevee</button>
+                    <button class="btn-quick" onclick="quickSearch('Gengar')">Gengar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Settings Modal -->
+    <div class="modal fade" id="settingsModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-gear-fill me-2"></i>Ustawienia Pokedex
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="settingsForm">
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-key-fill me-1"></i>Klucz API OpenRouter
+                            </label>
+                            <div class="input-group">
+                                <input 
+                                    type="password" 
+                                    class="form-control" 
+                                    id="apiKeyInput" 
+                                    placeholder="sk-or-v1-..."
+                                >
+                                <button class="btn btn-outline-secondary" type="button" onclick="toggleApiKeyVisibility()">
+                                    <i class="bi bi-eye" id="eyeIcon"></i>
+                                </button>
+                            </div>
+                            <div class="form-text">
+                                Pobierz klucz z <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-cpu me-1"></i>Model AI
+                            </label>
+                            <select class="form-select" id="modelSelect">
+                                <option value="openai/gpt-4o-mini">GPT-4o Mini (szybki, tani)</option>
+                                <option value="openai/gpt-4o">GPT-4o (zaawansowany)</option>
+                                <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet</option>
+                                <option value="anthropic/claude-3-haiku">Claude 3 Haiku (szybki)</option>
+                                <option value="google/gemini-pro-1.5">Gemini Pro 1.5</option>
+                                <option value="meta-llama/llama-3.1-70b-instruct">Llama 3.1 70B</option>
+                                <option value="mistralai/mistral-large">Mistral Large</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-translate me-1"></i>Język odpowiedzi
+                            </label>
+                            <select class="form-select" id="languageSelect">
+                                <option value="pl">Polski</option>
+                                <option value="en">English</option>
+                                <option value="de">Deutsch</option>
+                                <option value="ja">日本語</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-thermometer-half me-1"></i>Temperatura: <span id="tempValue">0.7</span>
+                            </label>
+                            <input 
+                                type="range" 
+                                class="form-range" 
+                                id="temperatureInput" 
+                                min="0" 
+                                max="1" 
+                                step="0.1" 
+                                value="0.7"
+                                oninput="document.getElementById('tempValue').textContent = this.value"
+                            >
+                            <div class="form-text">Niższa = bardziej precyzyjne, Wyższa = bardziej kreatywne</div>
+                        </div>
+
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="streamingToggle" checked>
+                            <label class="form-check-label" for="streamingToggle">
+                                Streaming (efekt pisania)
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" onclick="clearSettings()">
+                        <i class="bi bi-trash me-1"></i>Wyczyść
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                    <button type="button" class="btn btn-success" onclick="saveSettings()">
+                        <i class="bi bi-check-lg me-1"></i>Zapisz
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // =====================
+        // KONFIGURACJA I STANU
+        // =====================
+        const STORAGE_KEY = 'pokedex_settings';
+        const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+
+        let settings = {
+            apiKey: '',
+            model: 'openai/gpt-4o-mini',
+            language: 'pl',
+            temperature: 0.7,
+            streaming: true
+        };
+
+        let settingsModal;
+        let isGenerating = false;
+
+        // =====================
+        // INICJALIZACJA
+        // =====================
+        document.addEventListener('DOMContentLoaded', () => {
+            settingsModal = new bootstrap.Modal(document.getElementById('settingsModal'));
+            loadSettings();
+            updateConnectionStatus();
+        });
+
+        // =====================
+        // ZARZĄDZANIE USTAWIENIAMI
+        // =====================
+        function loadSettings() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    settings = { ...settings, ...JSON.parse(saved) };
+                    applySettingsToForm();
+                } catch (e) {
+                    console.error('Błąd wczytywania ustawień:', e);
+                }
+            }
+        }
+
+        function applySettingsToForm() {
+            document.getElementById('apiKeyInput').value = settings.apiKey;
+            document.getElementById('modelSelect').value = settings.model;
+            document.getElementById('languageSelect').value = settings.language;
+            document.getElementById('temperatureInput').value = settings.temperature;
+            document.getElementById('tempValue').textContent = settings.temperature;
+            document.getElementById('streamingToggle').checked = settings.streaming;
+        }
+
+        function saveSettings() {
+            settings.apiKey = document.getElementById('apiKeyInput').value.trim();
+            settings.model = document.getElementById('modelSelect').value;
+            settings.language = document.getElementById('languageSelect').value;
+            settings.temperature = parseFloat(document.getElementById('temperatureInput').value);
+            settings.streaming = document.getElementById('streamingToggle').checked;
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+            updateConnectionStatus();
+            settingsModal.hide();
+            
+            showNotification('Ustawienia zapisane!', 'success');
+        }
+
+        function clearSettings() {
+            if (confirm('Czy na pewno chcesz wyczyścić wszystkie ustawienia?')) {
+                localStorage.removeItem(STORAGE_KEY);
+                settings = {
+                    apiKey: '',
+                    model: 'openai/gpt-4o-mini',
+                    language: 'pl',
+                    temperature: 0.7,
+                    streaming: true
+                };
+                applySettingsToForm();
+                updateConnectionStatus();
+                showNotification('Ustawienia wyczyszczone', 'warning');
+            }
+        }
+
+        function openSettings() {
+            applySettingsToForm();
+            settingsModal.show();
+        }
+
+        function toggleApiKeyVisibility() {
+            const input = document.getElementById('apiKeyInput');
+            const icon = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'bi bi-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'bi bi-eye';
+            }
+        }
+
+        function updateConnectionStatus() {
+            const badge = document.getElementById('statusBadge');
+            const dot = document.getElementById('statusDot');
+            
+            if (settings.apiKey) {
+                badge.innerHTML = `<span class="status-indicator connected"></span>Połączony`;
+                badge.className = 'badge bg-success';
+            } else {
+                badge.innerHTML = `<span class="status-indicator disconnected"></span>Niepołączony`;
+                badge.className = 'badge bg-dark';
+            }
+        }
+
+        // =====================
+        // WYSZUKIWANIE POKEMONÓW
+        // =====================
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                searchPokemon();
+            }
+        }
+
+        function quickSearch(pokemonName) {
+            document.getElementById('pokemonInput').value = pokemonName;
+            searchPokemon();
+        }
+
+        async function searchPokemon() {
+            const query = document.getElementById('pokemonInput').value.trim();
+            
+            if (!query) {
+                showNotification('Wpisz nazwę Pokémona!', 'warning');
+                return;
+            }
+
+            if (!settings.apiKey) {
+                showNotification('Najpierw skonfiguruj klucz API w ustawieniach!', 'danger');
+                openSettings();
+                return;
+            }
+
+            if (isGenerating) return;
+
+            const screen = document.getElementById('outputScreen');
+            const searchBtn = document.getElementById('searchBtn');
+            const loading = document.getElementById('loadingPokeball');
+
+            isGenerating = true;
+            searchBtn.disabled = true;
+            loading.classList.add('active');
+            screen.innerHTML = '';
+
+            const systemPrompt = createSystemPrompt();
+            const userMessage = `Podaj informacje o: ${query}`;
+
+            try {
+                if (settings.streaming) {
+                    await streamResponse(systemPrompt, userMessage, screen);
+                } else {
+                    await fetchResponse(systemPrompt, userMessage, screen);
+                }
+            } catch (error) {
+                console.error('Błąd:', error);
+                screen.innerHTML = `<div class="text-danger">
+                    <strong>❌ Błąd:</strong> ${error.message}
+                    <br><br>
+                    <small>Sprawdź klucz API i połączenie internetowe.</small>
+                </div>`;
+            } finally {
+                isGenerating = false;
+                searchBtn.disabled = false;
+                loading.classList.remove('active');
+            }
+        }
+
+        function createSystemPrompt() {
+            const langMap = {
+                'pl': 'polski',
+                'en': 'angielski',
+                'de': 'niemiecki',
+                'ja': 'japoński'
+            };
+
+            return `Jesteś zaawansowanym Pokedexem AI - encyklopedią Pokémonów. 
+Odpowiadaj WYŁĄCZNIE w języku ${langMap[settings.language]}.
+
+Gdy użytkownik pyta o Pokémona, podaj:
+📛 NAZWA (w tym japońska jeśli znasz)
+🔢 NUMER w Pokedexie  
+🏷️ TYP/TYPY
+📏 WZROST i WAGA
+⚡ PODSTAWOWE STATYSTYKI (HP, Atak, Obrona, Sp.Atak, Sp.Obrona, Szybkość)
+🎯 ZDOLNOŚCI (normalne i ukryte)
+🌍 REGION pochodzenia
+📖 KRÓTKI OPIS z gier/anime
+💡 CIEKAWOSTKI
+⚔️ EWOLUCJE (jeśli są)
+✅ MOCNE STRONY (przeciw jakim typom)
+❌ SŁABE STRONY (przeciw jakim typom)
+
+Formatuj odpowiedź czytelnie używając emoji. Bądź entuzjastyczny jak prawdziwy Pokedex!
+Jeśli użytkownik pyta o coś innego niż Pokémony, odpowiedz krótko że jesteś Pokedexem i możesz pomóc tylko z informacjami o Pokémonach.`;
+        }
+
+        // =====================
+        // STREAMING API
+        // =====================
+        async function streamResponse(systemPrompt, userMessage, outputElement) {
+            const response = await fetch(OPENROUTER_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${settings.apiKey}`,
+                    'HTTP-Referer': window.location.origin,
+                    'X-Title': 'AI Pokedex'
+                },
+                body: JSON.stringify({
+                    model: settings.model,
+                    messages: [
+                        { role: 'system', content: systemPrompt },
+                        { role: 'user', content: userMessage }
+                    ],
+                    temperature: settings.temperature,
+                    stream: true
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({}));
+                throw new Error(error.error?.message || `HTTP ${response.status}`);
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let fullText = '';
+            let cursorSpan = document.createElement('span');
+            cursorSpan.className = 'typing-cursor';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n');
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        const data = line.slice(6);
+                        if (data === '[DONE]') continue;
+
+                        try {
+                            const json = JSON.parse(data);
+                            const content = json.choices?.[0]?.delta?.content;
+                            if (content) {
+                                fullText += content;
+                                outputElement.innerHTML = formatPokemonText(fullText);
+                                outputElement.appendChild(cursorSpan);
+                                outputElement.scrollTop = outputElement.scrollHeight;
+                            }
+                        } catch (e) {
+                            // Ignoruj błędy parsowania chunków
+                        }
+                    }
+                }
+            }
+
+            // Usuń kursor po zakończeniu
+            cursorSpan.remove();
+            outputElement.innerHTML = formatPokemonText(fullText);
+        }
+
+        async function fetchResponse(systemPrompt, userMessage, outputElement) {
+            const response = await fetch(OPENROUTER_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${settings.apiKey}`,
+                    'HTTP-Referer': window.location.origin,
+                    'X-Title': 'AI Pokedex'
+                },
+                body: JSON.stringify({
+                    model: settings.model,
+                    messages: [
+                        { role: 'system', content: systemPrompt },
+                        { role: 'user', content: userMessage }
+                    ],
+                    temperature: settings.temperature,
+                    stream: false
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({}));
+                throw new Error(error.error?.message || `HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            const content = data.choices?.[0]?.message?.content || 'Brak odpowiedzi';
+            outputElement.innerHTML = formatPokemonText(content);
+        }
+
+        // =====================
+        // FORMATOWANIE TEKSTU
+        // =====================
+        function formatPokemonText(text) {
+            // Konwertuj markdown na HTML
+            return text
+                // Nagłówki
+                .replace(/^### (.+)$/gm, '<strong style="color:#d63031;font-size:16px;">$1</strong>')
+                .replace(/^## (.+)$/gm, '<strong style="color:#d63031;font-size:18px;">$1</strong>')
+                .replace(/^# (.+)$/gm, '<strong style="color:#d63031;font-size:20px;">$1</strong>')
+                // Pogrubienie
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                // Kursywa
+                .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                // Nowe linie
+                .replace(/\n/g, '<br>')
+                // Linie poziome
+                .replace(/---/g, '<hr style="border-color:#2d3436;margin:10px 0;">')
+                // Kolorowe typy Pokémonów
+                .replace(/(Ogień|Fire)/gi, '<span style="background:#ff7675;padding:1px 5px;border-radius:3px;">$1</span>')
+                .replace(/(Woda|Water)/gi, '<span style="background:#74b9ff;padding:1px 5px;border-radius:3px;">$1</span>')
+                .replace(/(Trawa|Grass)/gi, '<span style="background:#55efc4;padding:1px 5px;border-radius:3px;">$1</span>')
+                .replace(/(Elektryczny|Electric)/gi, '<span style="background:#ffeaa7;padding:1px 5px;border-radius:3px;">$1</span>')
+                .replace(/(Psychiczny|Psychic)/gi, '<span style="background:#fd79a8;padding:1px 5px;border-radius:3px;">$1</span>')
+                .replace(/(Latający|Flying)/gi, '<span style="background:#a29bfe;padding:1px 5px;border-radius:3px;">$1</span>')
+                .replace(/(Ziemia|Ground)/gi, '<span style="background:#dfe6e9;padding:1px 5px;border-radius:3px;">$1</span>')
+                .replace(/(Skała|Rock)/gi, '<span style="background:#b2bec3;padding:1px 5px;border-radius:3px;">$1</span>')
+                .replace(/(Duch|Ghost)/gi, '<span style="background:#6c5ce7;color:white;padding:1px 5px;border-radius:3px;">$1</span>')
+                .replace(/(Smok|Dragon)/gi, '<span style="background:#0984e3;color:white;padding:1px 5px;border-radius:3px;">$1</span>')
+                .replace(/(Ciemność|Dark)/gi, '<span style="background:#2d3436;color:white;padding:1px 5px;border-radius:3px;">$1</span>')
+                .replace(/(Stal|Steel)/gi, '<span style="background:#636e72;color:white;padding:1px 5px;border-radius:3px;">$1</span>')
+                .replace(/(Wróżka|Fairy)/gi, '<span style="background:#fab1a0;padding:1px 5px;border-radius:3px;">$1</span>')
+                .replace(/(Lód|Ice)/gi, '<span style="background:#81ecec;padding:1px 5px;border-radius:3px;">$1</span>')
+                .replace(/(Walka|Fighting)/gi, '<span style="background:#e17055;color:white;padding:1px 5px;border-radius:3px;">$1</span>')
+                .replace(/(Trucizna|Poison)/gi, '<span style="background:#a55eea;color:white;padding:1px 5px;border-radius:3px;">$1</span>')
+                .replace(/(Robak|Bug)/gi, '<span style="background:#badc58;padding:1px 5px;border-radius:3px;">$1</span>')
+                .replace(/(Normalny|Normal)/gi, '<span style="background:#dfe6e9;padding:1px 5px;border-radius:3px;">$1</span>');
+        }
+
+        // =====================
+        // POWIADOMIENIA
+        // =====================
+        function showNotification(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `alert alert-${type} position-fixed top-0 end-0 m-3`;
+            toast.style.zIndex = '9999';
+            toast.style.animation = 'fadeIn 0.3s';
+            toast.innerHTML = message;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Dodaj style animacji
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+            @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

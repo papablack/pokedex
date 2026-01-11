@@ -1,0 +1,23 @@
+<div class="pokedex-header">
+    <!-- Lens Container -->
+    <div class="lens-container">
+        <div class="lens blue"></div>
+        <div class="lens red"></div>
+        <div class="lens yellow"></div>
+        <div class="lens green"></div>
+    </div>
+    
+    <!-- Status and Controls -->
+    <div class="status-controls">
+        <div class="connection-status">
+            <div class="status-badge" :class="x => x.statusBadgeClass">
+                <div class="status-indicator" :class="x => x.statusBadgeClass"></div>
+                ${x => x.connected ? 'pokedex.connected'.t() : 'pokedex.disconnected'.t()}
+            </div>
+        </div>
+        
+        <button class="btn-settings" @click="${x => x.handleSettingsClick()}" :title="'pokedex.settings'.t()">
+            <i class="bi bi-gear-fill"></i>
+        </button>
+    </div>
+</div>

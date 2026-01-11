@@ -1,0 +1,11 @@
+{
+  "components": [
+    "pokedex-header",
+    "pokedex-input",
+    "pokedex-main",
+    "pokedex-screen",
+    "pokedex-settings",
+    "default-layout",
+    "page-home"
+  ]
+}

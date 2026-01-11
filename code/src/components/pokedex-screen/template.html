@@ -1,0 +1,16 @@
+<div class="screen-container">
+    <div class="main-screen">
+        <div class="screen-content" innerHTML="${x => x.output || x.defaultContent}">
+        </div>
+        
+        <!-- Loading Animation -->
+        <div class="loading-animation" style="display: ${x => x.isGenerating ? 'block' : 'none'}">
+            <div class="pokeball-loader">
+                <div class="pokeball-top"></div>
+                <div class="pokeball-bottom"></div>
+                <div class="pokeball-center"></div>
+            </div>
+            <div class="loading-text">${'pokedex.analyzing'.t()}...</div>
+        </div>
+    </div>
+</div>
