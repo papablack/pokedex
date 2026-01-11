@@ -1,9 +1,8 @@
-import { RWSViewComponent, RWSView, observable, attr } from '@rws-framework/client';
+import { RWSViewComponent, RWSView, observable } from '@rws-framework/client';
 import { IPokedexSettings } from '../../types/pokedex.types';
 
 @RWSView('pokedex-settings')
 export class PokedexSettings extends RWSViewComponent {
-    @attr({ mode: 'boolean' }) show: boolean = false;
     @observable settings: IPokedexSettings = {
         apiKey: '',
         model: 'openai/gpt-4o-mini',
@@ -44,20 +43,12 @@ export class PokedexSettings extends RWSViewComponent {
 
     saveSettings() {
         this.$emit('settings-save', this.tempSettings);
-        this.closeSettings();
     }
 
     clearSettings() {
         if (confirm('pokedex.confirmClearSettings'.t())) {
             this.$emit('settings-clear');
-            this.closeSettings();
         }
-    }
-
-    closeSettings() {
-        this.show = false;
-        this.$emit('settings-close');
-        this.resetTempSettings();
     }
 
     get tempValue(): string {

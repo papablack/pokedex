@@ -20,12 +20,14 @@
         </pokedex-input>
         
         <!-- Settings Modal -->
-        <pokedex-settings 
-            :show="${x => x.showSettings}"
-            :settings="${x => x.settings}"
-            @settings-save="${x => x.handleSettingsSave($event)}"
-            @settings-clear="${x => x.handleSettingsClear()}"
-            @settings-close="${x => x.handleSettingsClose()}">
-        </pokedex-settings>
+        ${when(x => x.showSettings, html`
+            <rws-modal name="settings" header="pokedex.settingsTitle" max-width="600px" @modal-close="${x => x.handleSettingsClose()}">
+                <pokedex-settings 
+                    :settings="${x => x.settings}"
+                    @settings-save="${x => x.handleSettingsSave($event)}"
+                    @settings-clear="${x => x.handleSettingsClear()}">
+                </pokedex-settings>
+            </rws-modal>
+        `)}
     </div>
 </div>

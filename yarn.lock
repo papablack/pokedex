@@ -37,6 +37,13 @@
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz#1d572bfbbe14b7704e0ba0f39b74815b84870d70"
   integrity sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==
 
+"@favware/graphql-pokemon@^8.7.3":
+  version "8.7.3"
+  resolved "https://registry.yarnpkg.com/@favware/graphql-pokemon/-/graphql-pokemon-8.7.3.tgz#9a14eabc2df8ffe4b4cf4e1dcf38069e3c99dcdc"
+  integrity sha512-8vWuqgxloDJ7t6nbce+/iKBNDEWR4UlgprJyRX5aUqisq45Yyu3D1NZSp1FTqt+l+4kqojJA8BhKaYtI6HW3cQ==
+  dependencies:
+    graphql "16.11.0"
+
 "@jest/pattern@30.0.1":
   version "30.0.1"
   resolved "https://registry.yarnpkg.com/@jest/pattern/-/pattern-30.0.1.tgz#d5304147f49a052900b4b853dedb111d080e199f"
@@ -1928,6 +1935,11 @@ graceful-fs@^4.1.2, graceful-fs@^4.2.11, graceful-fs@^4.2.4:
   version "4.2.11"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.11.tgz#4183e4e8bf08bb6e05bbb2f7d2e0c8f712ca40e3"
   integrity sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==
+
+graphql@16.11.0:
+  version "16.11.0"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-16.11.0.tgz#96d17f66370678027fdf59b2d4c20b4efaa8a633"
+  integrity sha512-mS1lbMsxgQj6hge1XZ6p7GPhbrtFwUFYi3wRzXAC/FmYnyXMTvvI3td3rjmQ2u8ewXueaSvRPWaEcgVVOT9Jnw==
 
 gzip-size@^6.0.0:
   version "6.0.0"

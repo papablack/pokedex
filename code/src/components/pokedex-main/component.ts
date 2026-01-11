@@ -177,10 +177,12 @@ export class PokedexMain extends RWSViewComponent {
 
     handleSettingsSave(event: CustomEvent) {
         this.saveSettings(event.detail);
+        this.showSettings = false;
     }
 
     handleSettingsClear() {
         this.clearSettings();
+        this.showSettings = false;
     }
 
     handleSettingsClose() {

@@ -7,6 +7,7 @@
   ],
   "scripts": {
     "build": "rws build front",
+    "watch": "rws build front --watch",
     "start": "node server.js",
     "dev": "node server.js"
   },
