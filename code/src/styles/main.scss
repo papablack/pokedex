@@ -8,14 +8,19 @@
     --pokedex-red: #dc3545;
     --pokedex-dark-red: #a71d2a;
     --pokedex-light: #f8f9fa;
+    --font-main: 'Roboto', system-ui, -apple-system, sans-serif;
+    --font-tech: 'Orbitron', monospace;
+    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
 }
 
 body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
-    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-family: var(--font-main);
     margin: 0;
     padding: 0;
+    font-weight: 400;
+    line-height: 1.6;
 }
 
 // Global fade animations for notifications

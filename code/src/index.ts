@@ -16,13 +16,10 @@ import './application/globals/directives'
 
 async function initializeApp() {
     const theClient: RWSClientInstance = RWSContainer().get(RWSClient);
-    const configService: ConfigServiceInstance = RWSContainer().get(ConfigService);
-  
+    const configService: ConfigServiceInstance = RWSContainer().get(ConfigService);  
 
     const partedMode = false;
-    const lastSync = document.body.getAttribute('data-last-sync') || '0';    
-   
-
+    const lastSync = document.body.getAttribute('data-last-sync') || '0';       
     
     theClient.addPlugin<BrowserRouterOpts>(RWSBrowserRouter);
 

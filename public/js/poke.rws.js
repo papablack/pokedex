@@ -1,6 +1,2711 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "../.dev/client/foundation/rws-foundation.js"
+/*!***************************************************!*\
+  !*** ../.dev/client/foundation/rws-foundation.js ***!
+  \***************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Container: () => (/* reexport safe */ _microsoft_fast_foundation_dist_esm_di_di__WEBPACK_IMPORTED_MODULE_0__.Container),
+/* harmony export */   DI: () => (/* reexport safe */ _microsoft_fast_foundation_dist_esm_di_di__WEBPACK_IMPORTED_MODULE_0__.DI),
+/* harmony export */   FoundationElement: () => (/* reexport safe */ _microsoft_fast_foundation_dist_esm_foundation_element_foundation_element__WEBPACK_IMPORTED_MODULE_1__.FoundationElement),
+/* harmony export */   FoundationElementRegistry: () => (/* reexport safe */ _microsoft_fast_foundation_dist_esm_foundation_element_foundation_element__WEBPACK_IMPORTED_MODULE_1__.FoundationElementRegistry),
+/* harmony export */   Registration: () => (/* reexport safe */ _microsoft_fast_foundation_dist_esm_di_di__WEBPACK_IMPORTED_MODULE_0__.Registration)
+/* harmony export */ });
+/* harmony import */ var _microsoft_fast_foundation_dist_esm_di_di__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @microsoft/fast-foundation/dist/esm/di/di */ "../node_modules/@microsoft/fast-foundation/dist/esm/di/di.js");
+/* harmony import */ var _microsoft_fast_foundation_dist_esm_foundation_element_foundation_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @microsoft/fast-foundation/dist/esm/foundation-element/foundation-element */ "../node_modules/@microsoft/fast-foundation/dist/esm/foundation-element/foundation-element.js");
+// Extract only needed from fast-foundation
+
+
+
+
+
+/***/ },
+
+/***/ "../.dev/client/src/client.ts"
+/*!************************************!*\
+  !*** ../.dev/client/src/client.ts ***!
+  \************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var _a, _b, _c, _d, _e, _f;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RWSClientInstance = void 0;
+const ConfigService_1 = __importStar(__webpack_require__(/*! ./services/ConfigService */ "../.dev/client/src/services/ConfigService.ts"));
+const UtilsService_1 = __importStar(__webpack_require__(/*! ./services/UtilsService */ "../.dev/client/src/services/UtilsService.ts"));
+const DOMService_1 = __importStar(__webpack_require__(/*! ./services/DOMService */ "../.dev/client/src/services/DOMService.ts"));
+const ApiService_1 = __importStar(__webpack_require__(/*! ./services/ApiService */ "../.dev/client/src/services/ApiService.ts"));
+const NotifyService_1 = __importStar(__webpack_require__(/*! ./services/NotifyService */ "../.dev/client/src/services/NotifyService.ts"));
+const ServiceWorkerService_1 = __importStar(__webpack_require__(/*! ./services/ServiceWorkerService */ "../.dev/client/src/services/ServiceWorkerService.ts"));
+const RWSWindow_1 = __webpack_require__(/*! ./types/RWSWindow */ "../.dev/client/src/types/RWSWindow.ts");
+const _container_1 = __webpack_require__(/*! ./components/_container */ "../.dev/client/src/components/_container.ts");
+const _container_2 = __importDefault(__webpack_require__(/*! ./components/_container */ "../.dev/client/src/components/_container.ts"));
+const components_1 = __importStar(__webpack_require__(/*! ./client/components */ "../.dev/client/src/client/components.ts"));
+const services_1 = __importDefault(__webpack_require__(/*! ./client/services */ "../.dev/client/src/client/services.ts"));
+const config_1 = __importDefault(__webpack_require__(/*! ./client/config */ "../.dev/client/src/client/config.ts"));
+const hotReload_1 = __importStar(__webpack_require__(/*! ./client/hotReload */ "../.dev/client/src/client/hotReload.ts"));
+const _plugin_1 = __webpack_require__(/*! ./plugins/_plugin */ "../.dev/client/src/plugins/_plugin.ts");
+let RWSClient = class RWSClient {
+    constructor(appConfig, domService, utilsService, apiService, swService, notifyService) {
+        this.appConfig = appConfig;
+        this.domService = domService;
+        this.utilsService = utilsService;
+        this.apiService = apiService;
+        this.swService = swService;
+        this.notifyService = notifyService;
+        this.user = null;
+        this.config = {};
+        this.plugins = {};
+        this.isSetup = false;
+        this.devStorage = {};
+        this.customServices = {};
+        this.defaultServices = {};
+        this.hrSetup = { enabled: false, port: hotReload_1._DEFAULT_HR_PORT };
+        this.componentHelper = components_1.default.bind(this)();
+        this.servicesHelper = services_1.default.bind(this)();
+        this.configHelper = config_1.default.bind(this)();
+        this.hotReloadHelper = hotReload_1.default.bind(this)();
+        this.initCallback = async () => { };
+        this._container = (0, _container_2.default)();
+        this.user = this.getUser();
+        this.loadServices();
+        this.config.plugins = [];
+        this.pushDataToServiceWorker('SET_WS_URL', { url: this.appConfig.get('wsUrl') }, 'ws_url');
+        if (this.user) {
+            this.pushUserToServiceWorker({ ...this.user, instructor: false });
+        }
+    }
+    addPlugin(pluginEntry, options) {
+        this.config.plugins.push({ pluginEntry, options });
+    }
+    async setup(config = {}) {
+        return this.configHelper.setup(config);
+    }
+    async start(config = {}) {
+        return this.configHelper.start(config);
+    }
+    loadServices() {
+        return this.servicesHelper.loadServices();
+    }
+    get(key) {
+        return this.configHelper.get(key);
+    }
+    setNotifier(notifier) {
+        this.notifyService.setNotifier(notifier);
+        return this;
+    }
+    setDefaultLayout(DefaultLayout) {
+        this.config.defaultLayout = DefaultLayout;
+        return this;
+    }
+    setBackendRoutes(routes) {
+        this.config.backendRoutes = routes;
+        this.appConfig.set('backendRoutes', routes);
+        return this;
+    }
+    async onInit(callback) {
+        this.initCallback = callback;
+        for (const plugin of _plugin_1.RWSPlugin.getAllPlugins()) {
+            plugin.onComponentsDeclare();
+        }
+        return this;
+    }
+    pushDataToServiceWorker(type, data, asset_type = 'data_push') {
+        this.configHelper.pushDataToServiceWorker(type, data, asset_type);
+    }
+    pushUserToServiceWorker(userData) {
+        this.configHelper.pushUserToServiceWorker(userData);
+    }
+    getUser() {
+        return this.configHelper.getUser();
+    }
+    setUser(user) {
+        return this.configHelper.setUser(user);
+    }
+    getConfig() {
+        return this.appConfig;
+    }
+    on(eventName, listener) {
+        document.addEventListener(eventName, (event) => {
+            listener(event);
+        });
+    }
+    setDevStorage(key, stuff) {
+        this.devStorage[key] = stuff;
+        return this;
+    }
+    getDevStorage(key) {
+        return this.devStorage[key];
+    }
+    registerToDI() {
+    }
+    async loadPartedComponents() {
+        return this.componentHelper.loadPartedComponents();
+    }
+    async onDOMLoad() {
+        return this.domService.onDOMLoad();
+    }
+    assignClientToBrowser() {
+        this.getBrowserObject().RWS.client = this;
+    }
+    enableRouting() {
+        this.appConfig.mergeConfig({ routing_enabled: true });
+    }
+    disableRouting() {
+        this.appConfig.mergeConfig({ routing_enabled: false });
+    }
+    getBrowserObject() {
+        (0, RWSWindow_1.loadRWSRichWindow)();
+        return window;
+    }
+    static getDI() {
+        return _container_1.DI;
+    }
+    static defineAllComponents() {
+        components_1.ComponentHelperStatic.defineAllComponents();
+    }
+    defineComponents() {
+        components_1.ComponentHelperStatic.defineAllComponents();
+    }
+    logout() {
+        this.user = null;
+        localStorage.removeItem('the_rws_user');
+    }
+};
+exports.RWSClientInstance = RWSClient;
+exports.RWSClientInstance = RWSClient = __decorate([
+    __param(0, ConfigService_1.default),
+    __param(1, DOMService_1.default),
+    __param(2, UtilsService_1.default),
+    __param(3, ApiService_1.default),
+    __param(4, ServiceWorkerService_1.default),
+    __param(5, NotifyService_1.default),
+    __metadata("design:paramtypes", [typeof (_a = typeof ConfigService_1.ConfigServiceInstance !== "undefined" && ConfigService_1.ConfigServiceInstance) === "function" ? _a : Object, typeof (_b = typeof DOMService_1.DOMServiceInstance !== "undefined" && DOMService_1.DOMServiceInstance) === "function" ? _b : Object, typeof (_c = typeof UtilsService_1.UtilsServiceInstance !== "undefined" && UtilsService_1.UtilsServiceInstance) === "function" ? _c : Object, typeof (_d = typeof ApiService_1.ApiServiceInstance !== "undefined" && ApiService_1.ApiServiceInstance) === "function" ? _d : Object, typeof (_e = typeof ServiceWorkerService_1.ServiceWorkerServiceInstance !== "undefined" && ServiceWorkerService_1.ServiceWorkerServiceInstance) === "function" ? _e : Object, typeof (_f = typeof NotifyService_1.NotifyServiceInstance !== "undefined" && NotifyService_1.NotifyServiceInstance) === "function" ? _f : Object])
+], RWSClient);
+exports["default"] = _container_1.DI.createInterface(x => x.singleton(RWSClient));
+
+
+/***/ },
+
+/***/ "../.dev/client/src/client/components.ts"
+/*!***********************************************!*\
+  !*** ../.dev/client/src/client/components.ts ***!
+  \***********************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ComponentHelperStatic = void 0;
+const _component_1 = __importDefault(__webpack_require__(/*! ../components/_component */ "../.dev/client/src/components/_component.ts"));
+const _plugin_1 = __webpack_require__(/*! ../plugins/_plugin */ "../.dev/client/src/plugins/_plugin.ts");
+async function loadPartedComponents() {
+    this.assignClientToBrowser();
+    return new Promise(async (resolve, reject) => {
+        const componentParts = await this.apiService.get(this.appConfig.get('partedDirUrlPrefix') + '/rws_info.json');
+        const loadedComponents = [];
+        document.addEventListener(_component_1.default._EVENTS.component_define, (event) => {
+            const customEvent = event;
+            loadedComponents.push(customEvent.detail);
+        });
+        let compList = '';
+        componentParts.components.forEach((componentName, key) => {
+            const partUrl = `${this.appConfig.get('partedDirUrlPrefix')}/${this.appConfig.get('partedPrefix')}.${componentName}.js`;
+            compList += `  - \x1b[1m${componentParts.components[key]}:\x1b[0m component (${partUrl}) \n`;
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = partUrl;
+            script.type = 'text/javascript';
+            document.body.appendChild(script);
+        });
+        console.info(`\x1b[1m[RWS]\x1b[0m" \x1b[1mPARTED\x1b[0m" mode asynchronously added components: \n${compList}`);
+        resolve(componentParts);
+    });
+}
+function defineAllComponents() {
+    const richWindowComponents = window.RWS.components;
+    Object.keys(richWindowComponents).map(key => richWindowComponents[key].component).forEach((el) => {
+        el.define(el, el.definition);
+    });
+    for (const plugin of _plugin_1.RWSPlugin.getAllPlugins()) {
+        plugin.onComponentsDeclare();
+    }
+}
+function getBinds() {
+    return {
+        loadPartedComponents: loadPartedComponents.bind(this)
+    };
+}
+exports["default"] = getBinds;
+const ComponentHelperStatic = {
+    defineAllComponents: defineAllComponents
+};
+exports.ComponentHelperStatic = ComponentHelperStatic;
+
+
+/***/ },
+
+/***/ "../.dev/client/src/client/config.ts"
+/*!*******************************************!*\
+  !*** ../.dev/client/src/client/config.ts ***!
+  \*******************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const _plugin_1 = __webpack_require__(/*! ../plugins/_plugin */ "../.dev/client/src/plugins/_plugin.ts");
+const RWSWindow_1 = __webpack_require__(/*! ../types/RWSWindow */ "../.dev/client/src/types/RWSWindow.ts");
+const deepmerge_1 = __importDefault(__webpack_require__(/*! deepmerge */ "../node_modules/deepmerge/dist/cjs.js"));
+const hotReload_1 = __webpack_require__(/*! ./hotReload */ "../.dev/client/src/client/hotReload.ts");
+function getUser() {
+    const localSaved = localStorage.getItem('the_rws_user');
+    if (localSaved) {
+        this.setUser(JSON.parse(localSaved));
+    }
+    return this.user;
+}
+function setUser(user) {
+    if (!user || !(user === null || user === void 0 ? void 0 : user.jwt_token)) {
+        console.warn('[RWS Client Warning]', 'Passed user is not valid', user);
+        return this;
+    }
+    this.user = user;
+    this.apiService.setToken(this.user.jwt_token);
+    localStorage.setItem('the_rws_user', JSON.stringify(this.user));
+    for (const plugin of _plugin_1.RWSPlugin.getAllPlugins()) {
+        plugin.onSetUser(user);
+    }
+    return this;
+}
+function pushDataToServiceWorker(type, data, asset_type = 'data_push') {
+    let tries = 0;
+    const doIt = () => {
+        try {
+            this.swService.sendDataToServiceWorker(type, data, asset_type);
+        }
+        catch (e) {
+            if (tries < 3) {
+                setTimeout(() => { doIt(); }, 300);
+                tries++;
+            }
+        }
+    };
+    doIt();
+}
+function pushUserToServiceWorker(userData) {
+    this.setUser(userData);
+    this.pushDataToServiceWorker('SET_USER', userData, 'logged_user');
+}
+function get(key) {
+    if (Object.keys(this.customServices).includes(key)) {
+        return this.customServices[key];
+    }
+    if (Object.keys(this.defaultServices).includes(key)) {
+        return this.defaultServices[key];
+    }
+    return null;
+}
+function addPlugin(pluginEntry) {
+    const rwsWindow = (0, RWSWindow_1.loadRWSRichWindow)();
+    const pluginClass = pluginEntry.pluginEntry;
+    const pluginOptions = (Array.isArray(pluginEntry) ? pluginEntry[1] : { enabled: true });
+    if (!Object.keys(rwsWindow.RWS.plugins).find(item => { item === pluginClass.name; })) {
+        const pluginInstance = new pluginClass(pluginOptions);
+        this.plugins[pluginClass.name] = pluginInstance;
+        rwsWindow.RWS.plugins[pluginClass.name] = pluginInstance;
+    }
+}
+async function setup(config = {}) {
+    if (this.isSetup) {
+        return this.config;
+    }
+    if (this.config) {
+        this.config = (0, deepmerge_1.default)(this.config, config);
+    }
+    this.appConfig.mergeConfig(this.config);
+    if (this.appConfig.get('hotReload') === true) {
+        if (!this.appConfig.get('hotReloadPort')) {
+            this.appConfig.set('hotReloadPort', hotReload_1._DEFAULT_HR_PORT);
+        }
+    }
+    if (this.config.plugins) {
+        for (const pluginEntry of this.config.plugins) {
+            addPlugin.bind(this)(pluginEntry);
+        }
+    }
+    if (config === null || config === void 0 ? void 0 : config.user) {
+        this.setUser(config.user);
+    }
+    if (this.appConfig.get('parted')) {
+        const componentParts = await this.loadPartedComponents();
+        for (const plugin of _plugin_1.RWSPlugin.getAllPlugins()) {
+            plugin.onPartedComponentsLoad(componentParts);
+        }
+    }
+    this.isSetup = true;
+    return this.config;
+}
+async function start(config = {}) {
+    this.config = { ...this.config, ...config };
+    if (!this.isSetup) {
+        this.config = await this.setup(this.config);
+    }
+    if (Object.keys(config).length) {
+        this.appConfig.mergeConfig(this.config);
+    }
+    const setThisUser = (config === null || config === void 0 ? void 0 : config.user) || this.getUser();
+    if (setThisUser) {
+        this.config.user = setThisUser;
+        this.setUser(setThisUser);
+    }
+    if (this.config.user && !this.config.dontPushToSW) {
+        this.pushUserToServiceWorker(this.user);
+    }
+    await this.initCallback();
+    for (const plugin of _plugin_1.RWSPlugin.getAllPlugins()) {
+        await plugin.onClientStart();
+    }
+    // if(this.appConfig.get('hotReload')){
+    //     if (module.hot) {
+    //         module.hot.accept();
+    //     }
+    // }
+    return this;
+}
+function getBinds() {
+    return {
+        start: start.bind(this),
+        setup: setup.bind(this),
+        get: get.bind(this),
+        setUser: setUser.bind(this),
+        getUser: getUser.bind(this),
+        pushDataToServiceWorker: pushDataToServiceWorker.bind(this),
+        pushUserToServiceWorker: pushUserToServiceWorker.bind(this)
+    };
+}
+exports["default"] = getBinds;
+
+
+/***/ },
+
+/***/ "../.dev/client/src/client/hotReload.ts"
+/*!**********************************************!*\
+  !*** ../.dev/client/src/client/hotReload.ts ***!
+  \**********************************************/
+(__unused_webpack_module, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports._DEFAULT_HR_PORT = void 0;
+exports._DEFAULT_HR_PORT = 1030;
+async function hotReloadSetup(config = {}) {
+    return this;
+}
+function getBinds() {
+    return {
+        hotReloadSetup: hotReloadSetup.bind(this)
+    };
+}
+exports["default"] = getBinds;
+
+
+/***/ },
+
+/***/ "../.dev/client/src/client/services.ts"
+/*!*********************************************!*\
+  !*** ../.dev/client/src/client/services.ts ***!
+  \*********************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const RWSWindow_1 = __webpack_require__(/*! ../types/RWSWindow */ "../.dev/client/src/types/RWSWindow.ts");
+async function loadServices() {
+    const richWindow = (0, RWSWindow_1.loadRWSRichWindow)();
+    for (const serviceKey of Object.keys(richWindow.RWS._registered)) {
+        const currentService = this._container.get(richWindow.RWS._registered[serviceKey]);
+        if (currentService.isInClient() && !Object.keys(this.customServices).includes(serviceKey)) {
+            this.customServices[serviceKey] = currentService;
+        }
+        if (currentService.isDefault() && !Object.keys(this.defaultServices).includes(serviceKey)) {
+            this.defaultServices[serviceKey] = currentService;
+        }
+    }
+}
+function getBinds() {
+    return {
+        loadServices: loadServices.bind(this),
+    };
+}
+exports["default"] = getBinds;
+
+
+/***/ },
+
+/***/ "../.dev/client/src/components/_attrs/_default_observable_accessor.ts"
+/*!****************************************************************************!*\
+  !*** ../.dev/client/src/components/_attrs/_default_observable_accessor.ts ***!
+  \****************************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DefaultObservableAccessor = void 0;
+const _extended_accessor_1 = __webpack_require__(/*! ./_extended_accessor */ "../.dev/client/src/components/_attrs/_extended_accessor.ts");
+class DefaultObservableAccessor extends _extended_accessor_1.ExtendedObservableAccessor {
+    constructor(name, customGet = null, customSet = null, watcher = void 0, suffix = 'Changed') {
+        super(name, customGet, customSet, watcher, suffix);
+        this.name = name;
+        this.customGet = customGet;
+        this.customSet = customSet;
+        this.watcher = watcher;
+    }
+}
+exports.DefaultObservableAccessor = DefaultObservableAccessor;
+
+
+/***/ },
+
+/***/ "../.dev/client/src/components/_attrs/_extended_accessor.ts"
+/*!******************************************************************!*\
+  !*** ../.dev/client/src/components/_attrs/_extended_accessor.ts ***!
+  \******************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ExtendedObservableAccessor = void 0;
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+class ExtendedObservableAccessor {
+    constructor(name, customGet = null, customSet = null, watcher = void 0, suffix = 'Changed') {
+        this.name = name;
+        this.customGet = customGet;
+        this.customSet = customSet;
+        this.watcher = watcher;
+        this.field = `_${name}`;
+        this.callback = `${name}${suffix}`;
+    }
+    getValue(source) {
+        fast_element_1.Observable.track(source, this.name);
+        return this.customGet ? this.customGet(source, this.field) : source[this.field];
+    }
+    setValue(source, newValue) {
+        if (this.customSet) {
+            if (this.customSet(source, this.field, newValue) === false) {
+                return;
+            }
+            ;
+        }
+        const field = this.field;
+        const oldValue = source[field];
+        if (oldValue !== newValue) {
+            source[field] = newValue;
+            const callback = source[this.callback];
+            if (typeof callback === 'function') {
+                callback.call(source, oldValue, newValue);
+            }
+            fast_element_1.Observable.getNotifier(source).notify(this.name);
+        }
+    }
+}
+exports.ExtendedObservableAccessor = ExtendedObservableAccessor;
+
+
+/***/ },
+
+/***/ "../.dev/client/src/components/_attrs/_external_handler.ts"
+/*!*****************************************************************!*\
+  !*** ../.dev/client/src/components/_attrs/_external_handler.ts ***!
+  \*****************************************************************/
+(__unused_webpack_module, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.handleExternalChange = handleExternalChange;
+function handleExternalChange(_target, $prop) {
+    if (!!_target['externalChanged']) {
+        _target['externalChanged'].call(_target, $prop, null, _target[$prop]);
+    }
+}
+
+
+/***/ },
+
+/***/ "../.dev/client/src/components/_attrs/_external_observable_accessor.ts"
+/*!*****************************************************************************!*\
+  !*** ../.dev/client/src/components/_attrs/_external_observable_accessor.ts ***!
+  \*****************************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ExternalObservableAccessor = void 0;
+const _extended_accessor_1 = __webpack_require__(/*! ./_extended_accessor */ "../.dev/client/src/components/_attrs/_extended_accessor.ts");
+class ExternalObservableAccessor extends _extended_accessor_1.ExtendedObservableAccessor {
+    constructor(name, customGet = null, customSet = null, watcher = void 0) {
+        super(name, customGet, customSet, watcher, '');
+        this.name = name;
+        this.customGet = customGet;
+        this.customSet = customSet;
+        this.watcher = watcher;
+    }
+}
+exports.ExternalObservableAccessor = ExternalObservableAccessor;
+
+
+/***/ },
+
+/***/ "../.dev/client/src/components/_attrs/angular-attr.ts"
+/*!************************************************************!*\
+  !*** ../.dev/client/src/components/_attrs/angular-attr.ts ***!
+  \************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ngAttr = ngAttr;
+const external_attr_1 = __webpack_require__(/*! ./external-attr */ "../.dev/client/src/components/_attrs/external-attr.ts");
+function ngAttr(configOrTarget, prop) {
+    return (0, external_attr_1.externalAttr)(configOrTarget, prop, {
+        converter: (val) => {
+            if (val && val.indexOf('{{') > -1) {
+                return undefined;
+            }
+            return val;
+        }
+    });
+}
+
+
+/***/ },
+
+/***/ "../.dev/client/src/components/_attrs/external-attr.ts"
+/*!*************************************************************!*\
+  !*** ../.dev/client/src/components/_attrs/external-attr.ts ***!
+  \*************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.externalAttr = externalAttr;
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+const _component_1 = __importDefault(__webpack_require__(/*! ../_component */ "../.dev/client/src/components/_component.ts"));
+const _default_opts = {
+    converter: (val) => {
+        return val;
+    }
+};
+function externalAttr(configOrTarget, property, opts = _default_opts) {
+    let config;
+    function decorator($target, $prop) {
+        if (arguments.length > 1) {
+            // Non invocation:
+            // - @attr
+            // Invocation with or w/o opts:
+            // - @attr()
+            // - @attr({...opts})
+            config.property = $prop;
+        }
+        config.mode = 'fromView';
+        config.converter = { fromView: opts.converter, toView: null };
+        const attrs = fast_element_1.AttributeConfiguration.locate($target.constructor);
+        _component_1.default.setExternalAttr($target.constructor.name, $prop);
+        attrs.push(config);
+    }
+    if (arguments.length > 1) {
+        // Non invocation:
+        // - @attr
+        config = {};
+        decorator(configOrTarget, property);
+        return;
+    }
+    // Invocation with or w/o opts:
+    // - @attr()
+    // - @attr({...opts})
+    config = configOrTarget === void 0 ? {} : configOrTarget;
+    return decorator;
+}
+
+
+/***/ },
+
+/***/ "../.dev/client/src/components/_attrs/external-observable.ts"
+/*!*******************************************************************!*\
+  !*** ../.dev/client/src/components/_attrs/external-observable.ts ***!
+  \*******************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.externalObservable = externalObservable;
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+const _default_observable_accessor_1 = __webpack_require__(/*! ./_default_observable_accessor */ "../.dev/client/src/components/_attrs/_default_observable_accessor.ts");
+const _external_observable_accessor_1 = __webpack_require__(/*! ./_external_observable_accessor */ "../.dev/client/src/components/_attrs/_external_observable_accessor.ts");
+function isString(test) {
+    return typeof test === 'string';
+}
+function externalObservable(targetComponent, nameOrAccessor, opts = null) {
+    const target = targetComponent;
+    const propName = typeof nameOrAccessor === 'string' ? nameOrAccessor : nameOrAccessor.name;
+    if (isString(nameOrAccessor)) {
+        nameOrAccessor = new _default_observable_accessor_1.DefaultObservableAccessor(propName);
+    }
+    const defaultAccessor = nameOrAccessor;
+    const extendedAccessor = new _external_observable_accessor_1.ExternalObservableAccessor(propName);
+    const accessors = [
+        defaultAccessor,
+        extendedAccessor
+    ];
+    for (const accessor of accessors) {
+        fast_element_1.Observable.getAccessors(target).push(accessor);
+        Reflect.defineProperty(target, accessor.name, {
+            enumerable: true,
+            get() {
+                return accessor.getValue(this);
+            },
+            set(newValue) {
+                const oldVal = accessor.getValue(this);
+                accessor.setValue(this, newValue);
+                if (!!this['externalChanged']) {
+                    this['externalChanged'].call(accessor.name, oldVal, newValue);
+                }
+            },
+        });
+    }
+}
+
+
+/***/ },
+
+/***/ "../.dev/client/src/components/_attrs/json-attr.ts"
+/*!*********************************************************!*\
+  !*** ../.dev/client/src/components/_attrs/json-attr.ts ***!
+  \*********************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.jsonAttr = jsonAttr;
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+const _component_1 = __importDefault(__webpack_require__(/*! ../_component */ "../.dev/client/src/components/_component.ts"));
+const _default_opts = {
+    converter: (val) => {
+        try {
+            return JSON.parse(val);
+        }
+        catch (e) {
+            console.error(e);
+            return undefined;
+        }
+    }
+};
+function jsonAttr(configOrTarget, property, opts = _default_opts) {
+    let config;
+    function decorator($target, $prop) {
+        if (arguments.length > 1) {
+            config.property = $prop;
+        }
+        config.mode = 'fromView';
+        config.converter = { fromView: opts.converter, toView: null };
+        const attrs = fast_element_1.AttributeConfiguration.locate($target.constructor);
+        _component_1.default.setExternalAttr($target.constructor.name, $prop);
+        attrs.push(config);
+    }
+    if (arguments.length > 1) {
+        // Non invocation:
+        // - @attr
+        config = {};
+        decorator(configOrTarget, property);
+        return;
+    }
+    // Invocation with or w/o opts:
+    // - @attr()
+    // - @attr({...opts})
+    config = configOrTarget === void 0 ? {} : configOrTarget;
+    return decorator;
+}
+
+
+/***/ },
+
+/***/ "../.dev/client/src/components/_component.ts"
+/*!***************************************************!*\
+  !*** ../.dev/client/src/components/_component.ts ***!
+  \***************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var _a, _b, _c, _d, _e, _f, _g;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RWSViewComponent = void 0;
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+const rws_foundation_1 = __webpack_require__(/*! ../../foundation/rws-foundation */ "../.dev/client/foundation/rws-foundation.js");
+const ConfigService_1 = __importStar(__webpack_require__(/*! ../services/ConfigService */ "../.dev/client/src/services/ConfigService.ts"));
+const UtilsService_1 = __importStar(__webpack_require__(/*! ../services/UtilsService */ "../.dev/client/src/services/UtilsService.ts"));
+const DOMService_1 = __importStar(__webpack_require__(/*! ../services/DOMService */ "../.dev/client/src/services/DOMService.ts"));
+const ApiService_1 = __importStar(__webpack_require__(/*! ../services/ApiService */ "../.dev/client/src/services/ApiService.ts"));
+const NotifyService_1 = __importStar(__webpack_require__(/*! ../services/NotifyService */ "../.dev/client/src/services/NotifyService.ts"));
+const IndexedDBService_1 = __importStar(__webpack_require__(/*! ../services/IndexedDBService */ "../.dev/client/src/services/IndexedDBService.ts"));
+const _decorator_1 = __webpack_require__(/*! ./_decorator */ "../.dev/client/src/components/_decorator.ts");
+const _definitions_1 = __webpack_require__(/*! ./_definitions */ "../.dev/client/src/components/_definitions.ts");
+const _event_handling_1 = __webpack_require__(/*! ./_event_handling */ "../.dev/client/src/components/_event_handling.ts");
+const _css_injection_1 = __importDefault(__webpack_require__(/*! ./_css_injection */ "../.dev/client/src/components/_css_injection.ts"));
+const _DEFAULT_INJECT_CSS_CACHE_LIMIT_DAYS = 1;
+class RWSViewComponent extends rws_foundation_1.FoundationElement {
+    constructor() {
+        super();
+        this.__isLoading = true;
+        this.__exAttrLoaded = [];
+        this.routeParams = {};
+        this.trashIterator = 0;
+        this.fileAssets = {};
+        (0, _decorator_1.applyConstructor)(this);
+    }
+    connectedCallback() {
+        super.connectedCallback();
+        (0, _decorator_1.applyConstructor)(this);
+        if (!this.constructor.definition && this.constructor.autoLoadFastElement) {
+            throw new Error('RWS component is not named. Add `static definition = {name, template};`');
+        }
+        this.applyFileList();
+        // Only inject styles if they are explicitly set and not empty
+        // This prevents components from having opacity: 0 by default
+        if (RWSViewComponent.FORCE_INJECT_STYLES &&
+            RWSViewComponent.FORCE_INJECT_STYLES.length > 0 &&
+            RWSViewComponent.FORCE_INJECT_STYLES.some(style => style && style.trim() !== '')) {
+            this.injectStyles(RWSViewComponent.FORCE_INJECT_STYLES, RWSViewComponent.FORCE_INJECT_MODE);
+        }
+        RWSViewComponent.instances.push(this);
+    }
+    passRouteParams(routeParams = null) {
+        if (routeParams) {
+            this.routeParams = routeParams;
+        }
+    }
+    showAsset(assetName, options = {}) {
+        if (!this.fileAssets[assetName]) {
+            return (0, fast_element_1.html) `<span></span>`;
+            // removed by dead control flow
+
+        }
+        return this.fileAssets[assetName];
+    }
+    on(type, listener) {
+        return _event_handling_1.on.bind(this)(type, listener);
+    }
+    $emitDown(eventName, payload) {
+        return _event_handling_1.$emitDown.bind(this)(eventName, payload);
+    }
+    observe(callback, condition = null, observeRemoved = false) {
+        return _event_handling_1.observe.bind(this)(callback, condition, observeRemoved);
+    }
+    parse$(input, directReturn = false) {
+        return this.domService.parse$(input, directReturn);
+    }
+    $(selectors, directReturn = false) {
+        return this.domService.$(this.getShadowRoot(), selectors, directReturn);
+    }
+    async loadingString(item, addContent, shouldStop) {
+        let dots = 1;
+        const maxDots = 3; // Maximum number of dots
+        const interval = setInterval(async () => {
+            const dotsString = '. '.repeat(dots);
+            const doesItStop = await shouldStop(item, addContent);
+            if (doesItStop) {
+                addContent({ output: '' }, true);
+                clearInterval(interval);
+            }
+            else {
+                addContent({ output: `${dotsString}` }, true);
+                dots = (dots % (maxDots)) + 1;
+            }
+        }, 500);
+    }
+    async onDOMLoad() {
+        return new Promise((resolve) => {
+            if (this.getShadowRoot() !== null && this.getShadowRoot() !== undefined) {
+                resolve();
+            }
+            else {
+                // If shadowRoot is not yet available, use MutationObserver to wait for it
+                const observer = new MutationObserver(() => {
+                    if (this.getShadowRoot() !== null && this.getShadowRoot() !== undefined) {
+                        observer.disconnect();
+                        resolve();
+                    }
+                });
+                observer.observe(this, { childList: true, subtree: true });
+            }
+        });
+    }
+    getShadowRoot() {
+        const shRoot = this.shadowRoot;
+        if (!shRoot) {
+            throw new Error(`Component ${this.constructor.definition.name} lacks shadow root. If you wish to have component without shadow root extend your class with FASTElement`);
+        }
+        return shRoot;
+    }
+    forceReload() {
+        this.trashIterator += 1;
+    }
+    hotReplacedCallback() {
+        this.forceReload();
+    }
+    sendEventToOutside(eventName, data) {
+        (0, _event_handling_1.sendEventToOutside)(eventName, data);
+    }
+    static sendEventToOutside(eventName, data) {
+        (0, _event_handling_1.sendEventToOutside)(eventName, data);
+    }
+    static injectStyles(linkedStyles, mode) {
+        // Only set force inject styles if we actually have valid styles to inject
+        if (linkedStyles && linkedStyles.length > 0 && linkedStyles.some(style => style && style.trim() !== '')) {
+            if (mode) {
+                RWSViewComponent.FORCE_INJECT_MODE = mode;
+            }
+            RWSViewComponent.FORCE_INJECT_STYLES = linkedStyles.filter(style => style && style.trim() !== '');
+        }
+        else {
+            // Clear force inject styles if no valid styles are provided
+            RWSViewComponent.FORCE_INJECT_STYLES = [];
+        }
+    }
+    applyFileList() {
+        try {
+            this.constructor.fileList.forEach((file) => {
+                if (this.fileAssets[file]) {
+                    return;
+                }
+                this.apiService.pureGet(this.config.get('pubUrlFilePrefix') + file).then((response) => {
+                    this.fileAssets = { ...this.fileAssets, [file]: (0, fast_element_1.html) `${response}` };
+                });
+            });
+        }
+        catch (e) {
+            console.error('Error loading file content:', e.message);
+            console.error(e.stack);
+        }
+    }
+    static setExternalAttr(componentName, key) {
+        if (!Object.keys(RWSViewComponent._externalAttrs).includes(componentName)) {
+            RWSViewComponent._externalAttrs[componentName] = [];
+        }
+        RWSViewComponent._externalAttrs[componentName].push(key);
+    }
+    static hotReplacedCallback() {
+        this.getInstances().forEach(instance => instance.forceReload());
+    }
+    static isDefined() {
+        return (0, _definitions_1.isDefined)(this);
+    }
+    static defineComponent() {
+        return (0, _definitions_1.defineComponent)(this);
+    }
+    static getDefinition(tagName, htmlTemplate, styles = null) {
+        return (0, _definitions_1.getDefinition)(tagName, htmlTemplate, styles);
+    }
+    static getInstances() {
+        return RWSViewComponent.instances;
+    }
+    static getCachedStyles(styleLinks) {
+        return _css_injection_1.default.getCachedStyles(styleLinks);
+    }
+    static hasCachedStyles(styleLinks) {
+        return _css_injection_1.default.hasCachedStyles(styleLinks);
+    }
+    static getStylesOwnerComponent() {
+        return _css_injection_1.default.getStylesOwnerComponent();
+    }
+    static clearCachedStyles() {
+        _css_injection_1.default.clearCachedStyles();
+    }
+    async injectStyles(styleLinks, mode = 'adopted', maxDaysExp) {
+        // Only inject if we have valid styles to inject
+        if (!styleLinks || styleLinks.length === 0 || !styleLinks.some(style => style && style.trim() !== '')) {
+            return;
+        }
+        // Create a bridge object that exposes the necessary properties
+        const componentBridge = {
+            shadowRoot: this.shadowRoot,
+            indexedDBService: this.indexedDBService,
+            $emit: this.$emit.bind(this)
+        };
+        return _css_injection_1.default.injectStyles(componentBridge, styleLinks.filter(style => style && style.trim() !== ''), { mode, maxDaysExp });
+    }
+    getInjectedStyles(styleLinks) {
+        return _css_injection_1.default.getCachedStyles(styleLinks);
+    }
+    hasInjectedStyles(styleLinks) {
+        return _css_injection_1.default.hasCachedStyles(styleLinks);
+    }
+}
+exports.RWSViewComponent = RWSViewComponent;
+RWSViewComponent.instances = [];
+RWSViewComponent.fileList = [];
+RWSViewComponent.autoLoadFastElement = true;
+RWSViewComponent._defined = {};
+RWSViewComponent._toInject = {};
+RWSViewComponent._depKeys = { _all: [] };
+RWSViewComponent._externalAttrs = {};
+RWSViewComponent._verbose = false;
+RWSViewComponent.FORCE_INJECT_STYLES = [];
+RWSViewComponent.FORCE_INJECT_MODE = 'adopted';
+RWSViewComponent._EVENTS = {
+    component_define: 'rws:lifecycle:defineComponent',
+    component_parted_load: 'rws:lifecycle:loadPartedComponents',
+};
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", typeof (_a = typeof Record !== "undefined" && Record) === "function" ? _a : Object)
+], RWSViewComponent.prototype, "routeParams", void 0);
+__decorate([
+    (0, _decorator_1.RWSInject)(IndexedDBService_1.default, true),
+    __metadata("design:type", typeof (_b = typeof IndexedDBService_1.IndexedDBServiceInstance !== "undefined" && IndexedDBService_1.IndexedDBServiceInstance) === "function" ? _b : Object)
+], RWSViewComponent.prototype, "indexedDBService", void 0);
+__decorate([
+    (0, _decorator_1.RWSInject)(ConfigService_1.default, true),
+    __metadata("design:type", typeof (_c = typeof ConfigService_1.ConfigServiceInstance !== "undefined" && ConfigService_1.ConfigServiceInstance) === "function" ? _c : Object)
+], RWSViewComponent.prototype, "config", void 0);
+__decorate([
+    (0, _decorator_1.RWSInject)(DOMService_1.default, true),
+    __metadata("design:type", typeof (_d = typeof DOMService_1.DOMServiceInstance !== "undefined" && DOMService_1.DOMServiceInstance) === "function" ? _d : Object)
+], RWSViewComponent.prototype, "domService", void 0);
+__decorate([
+    (0, _decorator_1.RWSInject)(UtilsService_1.default, true),
+    __metadata("design:type", typeof (_e = typeof UtilsService_1.UtilsServiceInstance !== "undefined" && UtilsService_1.UtilsServiceInstance) === "function" ? _e : Object)
+], RWSViewComponent.prototype, "utilsService", void 0);
+__decorate([
+    (0, _decorator_1.RWSInject)(ApiService_1.default, true),
+    __metadata("design:type", typeof (_f = typeof ApiService_1.ApiServiceInstance !== "undefined" && ApiService_1.ApiServiceInstance) === "function" ? _f : Object)
+], RWSViewComponent.prototype, "apiService", void 0);
+__decorate([
+    (0, _decorator_1.RWSInject)(NotifyService_1.default, true),
+    __metadata("design:type", typeof (_g = typeof NotifyService_1.NotifyServiceInstance !== "undefined" && NotifyService_1.NotifyServiceInstance) === "function" ? _g : Object)
+], RWSViewComponent.prototype, "notifyService", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Number)
+], RWSViewComponent.prototype, "trashIterator", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Object)
+], RWSViewComponent.prototype, "fileAssets", void 0);
+exports["default"] = RWSViewComponent;
+
+
+/***/ },
+
+/***/ "../.dev/client/src/components/_container.ts"
+/*!***************************************************!*\
+  !*** ../.dev/client/src/components/_container.ts ***!
+  \***************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Key = exports.InterfaceSymbol = exports.Registration = exports.Container = exports.DI = void 0;
+const rws_foundation_1 = __webpack_require__(/*! ../../foundation/rws-foundation */ "../.dev/client/foundation/rws-foundation.js");
+Object.defineProperty(exports, "DI", ({ enumerable: true, get: function () { return rws_foundation_1.DI; } }));
+Object.defineProperty(exports, "Container", ({ enumerable: true, get: function () { return rws_foundation_1.Container; } }));
+Object.defineProperty(exports, "Registration", ({ enumerable: true, get: function () { return rws_foundation_1.Registration; } }));
+Object.defineProperty(exports, "InterfaceSymbol", ({ enumerable: true, get: function () { return rws_foundation_1.InterfaceSymbol; } }));
+Object.defineProperty(exports, "Key", ({ enumerable: true, get: function () { return rws_foundation_1.Key; } }));
+const RWSWindow_1 = __webpack_require__(/*! ../types/RWSWindow */ "../.dev/client/src/types/RWSWindow.ts");
+exports["default"] = () => {
+    const richWindow = (0, RWSWindow_1.loadRWSRichWindow)();
+    if (richWindow.RWS.container) {
+        return richWindow.RWS.container;
+    }
+    richWindow.RWS.container = rws_foundation_1.DI.getOrCreateDOMContainer(richWindow.RWS.container_node);
+    return richWindow.RWS.container;
+};
+
+
+/***/ },
+
+/***/ "../.dev/client/src/components/_css_injection.ts"
+/*!*******************************************************!*\
+  !*** ../.dev/client/src/components/_css_injection.ts ***!
+  \*******************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CSSInjectionManager = void 0;
+const events_1 = __webpack_require__(/*! ../events */ "../.dev/client/src/events.ts");
+const _DEFAULT_INJECT_CSS_CACHE_LIMIT_DAYS = 1;
+class CSSInjectionManager {
+    static getCachedStyles(styleLinks) {
+        return styleLinks
+            .filter(link => CSSInjectionManager.CACHED_STYLES.has(link))
+            .map(link => CSSInjectionManager.CACHED_STYLES.get(link));
+    }
+    static hasCachedStyles(styleLinks) {
+        return styleLinks.every(link => CSSInjectionManager.CACHED_STYLES.has(link));
+    }
+    static getStylesOwnerComponent() {
+        return CSSInjectionManager.STYLES_OWNER_COMPONENT;
+    }
+    static clearCachedStyles() {
+        CSSInjectionManager.CACHED_STYLES.clear();
+        CSSInjectionManager.STYLES_OWNER_COMPONENT = null;
+    }
+    static async injectStyles(component, styleLinks, options = {}) {
+        const { mode = 'adopted', maxDaysExp } = options;
+        if (!component.shadowRoot) {
+            throw new Error('Component must have a shadow root for CSS injection');
+        }
+        // Only proceed if there are actually styles to inject
+        if (!styleLinks || styleLinks.length === 0) {
+            return;
+        }
+        // Only add initial opacity transition styles when explicitly injecting styles
+        // This prevents components from being invisible by default
+        const transitionSheet = new CSSStyleSheet();
+        await transitionSheet.replace(`
+            :host {
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+            }
+        `);
+        component.shadowRoot.adoptedStyleSheets = [
+            transitionSheet,
+            ...component.shadowRoot.adoptedStyleSheets,
+        ];
+        let adoptedSheets = [];
+        let doneAdded = false;
+        // Check if we already have cached styles from the owner component
+        const cachedSheets = [];
+        const uncachedLinks = [];
+        for (const styleLink of styleLinks) {
+            if (CSSInjectionManager.CACHED_STYLES.has(styleLink)) {
+                cachedSheets.push(CSSInjectionManager.CACHED_STYLES.get(styleLink));
+            }
+            else {
+                uncachedLinks.push(styleLink);
+            }
+        }
+        // If we have cached styles, use them immediately
+        if (cachedSheets.length > 0) {
+            adoptedSheets.push(...cachedSheets);
+            doneAdded = true;
+        }
+        // Only process uncached styles
+        if (uncachedLinks.length > 0) {
+            // Set this component as the owner if no owner exists yet
+            if (!CSSInjectionManager.STYLES_OWNER_COMPONENT) {
+                CSSInjectionManager.STYLES_OWNER_COMPONENT = component;
+            }
+            const dbName = 'css-cache';
+            const storeName = 'styles';
+            const db = await component.indexedDBService.openDB(dbName, storeName);
+            const maxAgeMs = 1000 * 60 * 60 * 24; // 24h
+            const maxDaysAge = maxDaysExp ? maxDaysExp : _DEFAULT_INJECT_CSS_CACHE_LIMIT_DAYS;
+            const maxAgeDays = maxAgeMs * maxDaysAge;
+            for (const styleLink of uncachedLinks) {
+                const loadPromise = new Promise(async (resolve, reject) => {
+                    if (mode === 'legacy' || mode === 'both') {
+                        const link = document.createElement('link');
+                        link.rel = 'stylesheet';
+                        link.href = styleLink;
+                        component.shadowRoot.appendChild(link);
+                        link.onload = () => {
+                            doneAdded = true;
+                            if (mode === 'legacy') {
+                                resolve();
+                            }
+                        };
+                    }
+                    if (mode === 'adopted' || mode === 'both') {
+                        const entry = await component.indexedDBService.getFromDB(db, storeName, styleLink);
+                        let cssText = null;
+                        if (entry && typeof entry === 'object' && 'css' in entry && 'timestamp' in entry) {
+                            const expired = Date.now() - entry.timestamp > maxAgeDays;
+                            if (!expired) {
+                                cssText = entry.css;
+                            }
+                        }
+                        if (!cssText) {
+                            cssText = await fetch(styleLink).then(res => res.text());
+                            await component.indexedDBService.saveToDB(db, storeName, styleLink, {
+                                css: cssText,
+                                timestamp: Date.now()
+                            });
+                            console.log(`System saved stylesheet: ${styleLink} to IndexedDB`);
+                        }
+                        const sheet = new CSSStyleSheet();
+                        await sheet.replace(cssText);
+                        // Cache the stylesheet for future use
+                        CSSInjectionManager.CACHED_STYLES.set(styleLink, sheet);
+                        adoptedSheets.push(sheet);
+                        if (mode === 'adopted' || mode === 'both') {
+                            resolve();
+                        }
+                    }
+                });
+                await loadPromise;
+            }
+            doneAdded = true;
+        }
+        if (adoptedSheets.length) {
+            component.shadowRoot.adoptedStyleSheets = [
+                ...adoptedSheets,
+                ...component.shadowRoot.adoptedStyleSheets,
+            ];
+            doneAdded = true;
+        }
+        if (doneAdded) {
+            // Set opacity to 1 to fade in the component
+            const opacitySheet = new CSSStyleSheet();
+            await opacitySheet.replace(`
+                :host {
+                    opacity: 1 !important;
+                }
+            `);
+            component.shadowRoot.adoptedStyleSheets = [
+                opacitySheet,
+                ...component.shadowRoot.adoptedStyleSheets,
+            ];
+            component.$emit(events_1.domEvents.loadedLinkedStyles);
+        }
+    }
+}
+exports.CSSInjectionManager = CSSInjectionManager;
+CSSInjectionManager.CACHED_STYLES = new Map();
+CSSInjectionManager.STYLES_OWNER_COMPONENT = null;
+exports["default"] = CSSInjectionManager;
+
+
+/***/ },
+
+/***/ "../.dev/client/src/components/_decorator.ts"
+/*!***************************************************!*\
+  !*** ../.dev/client/src/components/_decorator.ts ***!
+  \***************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.applyConstructor = exports.RWSInject = void 0;
+exports.RWSView = RWSView;
+exports.RWSIgnore = RWSIgnore;
+const _container_1 = __importDefault(__webpack_require__(/*! ./_container */ "../.dev/client/src/components/_container.ts"));
+const ConfigService_1 = __importDefault(__webpack_require__(/*! ../services/ConfigService */ "../.dev/client/src/services/ConfigService.ts"));
+const RWSWindow_1 = __webpack_require__(/*! ../types/RWSWindow */ "../.dev/client/src/types/RWSWindow.ts");
+const _component_1 = __importDefault(__webpack_require__(/*! ./_component */ "../.dev/client/src/components/_component.ts"));
+const RWSInject_1 = __webpack_require__(/*! ./_decorators/RWSInject */ "../.dev/client/src/components/_decorators/RWSInject.ts");
+Object.defineProperty(exports, "RWSInject", ({ enumerable: true, get: function () { return RWSInject_1.RWSInject; } }));
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+const _external_handler_1 = __webpack_require__(/*! ./_attrs/_external_handler */ "../.dev/client/src/components/_attrs/_external_handler.ts");
+function RWSView(name, data, override) {
+    return (theComponent, args) => {
+        theComponent.definition = { name, template: null };
+        if (override) {
+            if (override.styles) {
+                theComponent.definition.styles = override.styles;
+            }
+            if (override.template) {
+                theComponent.definition.template = override.template;
+            }
+            if (override.options) {
+                theComponent.definition.options = override.options;
+            }
+        }
+    };
+}
+function RWSIgnore(params = null) {
+    return () => { };
+}
+function getParentConstructor(instance) {
+    const proto = Object.getPrototypeOf(instance.constructor.prototype);
+    if (proto && proto.constructor) {
+        return proto.constructor;
+    }
+    return null;
+}
+const applyConstructor = (component, x = false) => {
+    const mainConstructor = component.constructor;
+    const parent = getParentConstructor(component);
+    if (parent.name !== 'RWSViewComponent') {
+        return;
+    }
+    const existingInjectedDependencies = mainConstructor._toInject;
+    const regServices = (0, RWSWindow_1.loadRWSRichWindow)().RWS._registered;
+    const depsToInject = mainConstructor._depKeys[mainConstructor.name] || [];
+    const depsInInjector = Object.keys(existingInjectedDependencies);
+    const toInject = [...depsToInject];
+    const _target = component;
+    function inject(services) {
+        for (const prop in services) {
+            const service = (typeof services[prop] === 'string' ? existingInjectedDependencies[prop] : services[prop]);
+            _target[prop] = service;
+        }
+    }
+    inject(toInject.reduce((acc, cur) => {
+        acc[cur] = cur;
+        return acc;
+    }, {}));
+    const defaultDeps = Object.keys(existingInjectedDependencies)
+        .filter((depKey) => existingInjectedDependencies[depKey].isDefault()).map((depKey => [depKey, existingInjectedDependencies[depKey]]));
+    inject(defaultDeps.reduce((acc, cur) => {
+        acc[cur[0]] = cur[1];
+        return acc;
+    }, {}));
+    inject({
+        config: (0, _container_1.default)().get(ConfigService_1.default)
+    });
+    if (Object.keys(_component_1.default._externalAttrs).includes(_target.constructor.name)) {
+        for (const exAttrKey in _component_1.default._externalAttrs[_target.constructor.name]) {
+            const exAttr = _component_1.default._externalAttrs[_target.constructor.name][exAttrKey];
+            const notifier = fast_element_1.Observable.getNotifier(_target);
+            notifier.subscribe({
+                handleChange(source, key) {
+                    if (key === exAttr && !_target.__exAttrLoaded.includes(exAttr)) {
+                        (0, _external_handler_1.handleExternalChange)(source, key);
+                        _target.__exAttrLoaded.push(key);
+                    }
+                }
+            }, exAttr);
+        }
+    }
+};
+exports.applyConstructor = applyConstructor;
+
+
+/***/ },
+
+/***/ "../.dev/client/src/components/_decorators/RWSFillBuild.ts"
+/*!*****************************************************************!*\
+  !*** ../.dev/client/src/components/_decorators/RWSFillBuild.ts ***!
+  \*****************************************************************/
+(__unused_webpack_module, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RWSFillBuild = RWSFillBuild;
+function extractEnvVar(envVar) {
+    const extractedVars = JSON.parse(JSON.stringify(envVar));
+    const { backendUrl, wsUrl, partedDirUrlPrefix, partedPrefix, pubUrlFilePrefix, transports, parted } = extractedVars;
+    const extractedFrontendVars = {
+        backendUrl,
+        wsUrl,
+        partedDirUrlPrefix,
+        partedPrefix,
+        pubUrlFilePrefix,
+        transports,
+        parted
+    };
+    return {
+        extractedVars,
+        extractedFrontendVars
+    };
+}
+function RWSFillBuild(config = {}) {
+    return function (constructor) {
+        return class extends constructor {
+            constructor(...args) {
+                super(...args);
+                const extractedFrontendDefaults = extractEnvVar({"dev":true,"hot":false,"report":false,"publicDir":"../public","publicIndex":"index.html","outputFileName":"poke.rws.js","outputDir":"../public/js","tsConfigPath":"./tsconfig.json","backendUrl":null,"wsUrl":null,"partedPrefix":"rws","pubUrlFilePrefix":"/","transports":["websocket"],"devRouteProxy":"/api","devApiPort":3002,"plugins":[],"environment":"node","devtools":"source-map","entrypoint":"./src/index.ts","executionDir":"/var/www/pokedex/code","cssDir":"../public/css","hotReload":true}).extractedFrontendVars;
+                this._DEFAULTS = {
+                    ...config,
+                    ...extractedFrontendDefaults
+                };
+                const extractedFrontendBuildVars = extractEnvVar({"dev":true,"hot":false,"report":false,"publicDir":"../public","publicIndex":"index.html","outputFileName":"poke.rws.js","outputDir":"../public/js","tsConfigPath":"./tsconfig.json","backendUrl":null,"wsUrl":null,"partedPrefix":"rws","pubUrlFilePrefix":"/","transports":["websocket"],"devRouteProxy":"/api","devApiPort":3002,"plugins":[],"environment":"node","devtools":"source-map","entrypoint":"./src/index.ts","executionDir":"/var/www/pokedex/code","cssDir":"../public/css","hotReload":true}).extractedFrontendVars;
+                this._BUILD_OVERRIDE = extractedFrontendBuildVars;
+            }
+        };
+    };
+}
+
+
+/***/ },
+
+/***/ "../.dev/client/src/components/_decorators/RWSInject.ts"
+/*!**************************************************************!*\
+  !*** ../.dev/client/src/components/_decorators/RWSInject.ts ***!
+  \**************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RWSInject = RWSInject;
+const _di_1 = __webpack_require__(/*! ./_di */ "../.dev/client/src/components/_decorators/_di.ts");
+function addToComponentInjection(targetComponentName, constructor, depKey, dependencyClass, isDefaultService = false) {
+    if (isDefaultService) {
+        targetComponentName = '_all';
+    }
+    if (!Object.keys(constructor._depKeys).includes(targetComponentName)) {
+        constructor._depKeys = { [targetComponentName]: [] };
+    }
+    if (!constructor._depKeys[targetComponentName].includes(depKey)) {
+        constructor._depKeys[targetComponentName].push(depKey);
+    }
+    if (!Object.keys(constructor._toInject).includes(depKey)) {
+        const loadedDependency = (0, _di_1.loadDep)(dependencyClass);
+        constructor._toInject[depKey] = loadedDependency;
+    }
+}
+function RWSInject(dependencyClass, defaultService = false) {
+    return (target, key, parameterIndex) => {
+        if (key) {
+            const targetConstructor = typeof target === 'function' ? target : target.constructor;
+            addToComponentInjection(targetConstructor.name, targetConstructor, key, dependencyClass, defaultService);
+        }
+        else {
+            const targetConstructor = target.prototype.constructor;
+            const paramNames = (0, _di_1.getFunctionParamNames)(targetConstructor);
+            const depKey = paramNames[parameterIndex];
+            addToComponentInjection(targetConstructor.name, targetConstructor, depKey, dependencyClass, defaultService);
+        }
+    };
+}
+
+
+/***/ },
+
+/***/ "../.dev/client/src/components/_decorators/_di.ts"
+/*!********************************************************!*\
+  !*** ../.dev/client/src/components/_decorators/_di.ts ***!
+  \********************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.loadDep = loadDep;
+exports.getFunctionParamNames = getFunctionParamNames;
+const _container_1 = __importDefault(__webpack_require__(/*! ../_container */ "../.dev/client/src/components/_container.ts"));
+function getFunctionParamNames(func) {
+    const constructorMatch = func.toString().match(/constructor\s*\(([^)]*)\)/);
+    if (!constructorMatch)
+        return null;
+    return constructorMatch[1].split(',').map(param => param.trim());
+}
+function loadDep(dependencyKeyClass) {
+    return (0, _container_1.default)().get(dependencyKeyClass);
+}
+
+
+/***/ },
+
+/***/ "../.dev/client/src/components/_definitions.ts"
+/*!*****************************************************!*\
+  !*** ../.dev/client/src/components/_definitions.ts ***!
+  \*****************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isDefined = isDefined;
+exports.defineComponent = defineComponent;
+exports.getDefinition = getDefinition;
+const RWSWindow_1 = __webpack_require__(/*! ../types/RWSWindow */ "../.dev/client/src/types/RWSWindow.ts");
+function isDefined(element) {
+    const richWindow = (0, RWSWindow_1.loadRWSRichWindow)();
+    if (!element.definition) {
+        return false;
+    }
+    return Object.keys(richWindow.RWS.components).includes(element.definition.name);
+}
+function defineComponent(element) {
+    if (element.isDefined()) {
+        if (element._verbose) {
+            console.warn(`Component ${element.name} is already declared`);
+        }
+        return;
+    }
+    const richWindow = (0, RWSWindow_1.loadRWSRichWindow)();
+    if (!element.definition) {
+        throw new Error('RWS component is not named. Add `static definition = {name, template};`');
+    }
+    const composedComp = element.compose({
+        baseName: element.definition.name,
+        template: element.definition.template,
+        styles: element.definition.styles
+    });
+    if (!richWindow.RWS) {
+        throw new Error('RWS client not initialized');
+    }
+    element.sendEventToOutside(element._EVENTS.component_define, element.definition.name);
+    richWindow.RWS.components[element.definition.name] = {
+        interface: composedComp,
+        component: element
+    };
+}
+function getDefinition(tagName, htmlTemplate, styles = null) {
+    const def = {
+        name: tagName,
+        template: htmlTemplate
+    };
+    if (styles) {
+        def.styles = styles;
+    }
+    return def;
+}
+
+
+/***/ },
+
+/***/ "../.dev/client/src/components/_event_handling.ts"
+/*!********************************************************!*\
+  !*** ../.dev/client/src/components/_event_handling.ts ***!
+  \********************************************************/
+(__unused_webpack_module, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.on = on;
+exports.$emitDown = $emitDown;
+exports.observe = observe;
+exports.sendEventToOutside = sendEventToOutside;
+function on(type, listener) {
+    this.addEventListener(type, (baseEvent) => {
+        listener(baseEvent);
+    });
+}
+function $emitDown(eventName, payload) {
+    this.$emit(eventName, payload, {
+        bubbles: true,
+        composed: true
+    });
+}
+function observe(callback, condition = null, observeRemoved = false) {
+    const observer = new MutationObserver((mutationsList, observer) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                const mutationObserveType = observeRemoved ? mutation.removedNodes : mutation.addedNodes;
+                mutationObserveType.forEach(node => {
+                    if ((condition !== null && condition(this, node))) {
+                        callback(this, node, observer);
+                    }
+                    else if (condition === null) {
+                        callback(this, node, observer);
+                    }
+                });
+            }
+        }
+    });
+    observer.observe(this.getShadowRoot(), { childList: true, subtree: true });
+}
+function sendEventToOutside(eventName, data) {
+    document.dispatchEvent(new CustomEvent(eventName, {
+        detail: data,
+    }));
+}
+
+
+/***/ },
+
+/***/ "../.dev/client/src/events.ts"
+/*!************************************!*\
+  !*** ../.dev/client/src/events.ts ***!
+  \************************************/
+(__unused_webpack_module, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.domEvents = void 0;
+exports.domEvents = {
+    loadedLinkedStyles: 'loaded:linked'
+};
+
+
+/***/ },
+
+/***/ "../.dev/client/src/index.ts"
+/*!***********************************!*\
+  !*** ../.dev/client/src/index.ts ***!
+  \***********************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RWSEvents = exports.RWSContainer = exports.RWSViewComponent = exports.RWSService = exports.ngAttr = exports.attr = exports.jsonAttr = exports.externalAttr = exports.externalObservable = exports.observable = exports.RWSInject = exports.RWSIgnore = exports.RWSView = exports.ServiceWorkerService = exports.ServiceWorkerServiceInstance = exports.ConfigService = exports.ConfigServiceInstance = exports.NotifyService = exports.NotifyServiceInstance = exports.DOMService = exports.DOMServiceInstance = exports.UtilsService = exports.UtilsServiceInstance = exports.ApiService = exports.ApiServiceInstance = exports.RWSPlugin = exports.RWSClientInstance = exports.RWSClient = void 0;
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+Object.defineProperty(exports, "observable", ({ enumerable: true, get: function () { return fast_element_1.observable; } }));
+Object.defineProperty(exports, "attr", ({ enumerable: true, get: function () { return fast_element_1.attr; } }));
+const _service_1 = __importDefault(__webpack_require__(/*! ./services/_service */ "../.dev/client/src/services/_service.ts"));
+exports.RWSService = _service_1.default;
+const ConfigService_1 = __importStar(__webpack_require__(/*! ./services/ConfigService */ "../.dev/client/src/services/ConfigService.ts"));
+exports.ConfigService = ConfigService_1.default;
+Object.defineProperty(exports, "ConfigServiceInstance", ({ enumerable: true, get: function () { return ConfigService_1.ConfigServiceInstance; } }));
+const NotifyService_1 = __importStar(__webpack_require__(/*! ./services/NotifyService */ "../.dev/client/src/services/NotifyService.ts"));
+exports.NotifyService = NotifyService_1.default;
+Object.defineProperty(exports, "NotifyServiceInstance", ({ enumerable: true, get: function () { return NotifyService_1.NotifyServiceInstance; } }));
+const DOMService_1 = __importStar(__webpack_require__(/*! ./services/DOMService */ "../.dev/client/src/services/DOMService.ts"));
+exports.DOMService = DOMService_1.default;
+Object.defineProperty(exports, "DOMServiceInstance", ({ enumerable: true, get: function () { return DOMService_1.DOMServiceInstance; } }));
+const ApiService_1 = __importStar(__webpack_require__(/*! ./services/ApiService */ "../.dev/client/src/services/ApiService.ts"));
+exports.ApiService = ApiService_1.default;
+Object.defineProperty(exports, "ApiServiceInstance", ({ enumerable: true, get: function () { return ApiService_1.ApiServiceInstance; } }));
+const UtilsService_1 = __importStar(__webpack_require__(/*! ./services/UtilsService */ "../.dev/client/src/services/UtilsService.ts"));
+exports.UtilsService = UtilsService_1.default;
+Object.defineProperty(exports, "UtilsServiceInstance", ({ enumerable: true, get: function () { return UtilsService_1.UtilsServiceInstance; } }));
+const ServiceWorkerService_1 = __importStar(__webpack_require__(/*! ./services/ServiceWorkerService */ "../.dev/client/src/services/ServiceWorkerService.ts"));
+exports.ServiceWorkerService = ServiceWorkerService_1.default;
+Object.defineProperty(exports, "ServiceWorkerServiceInstance", ({ enumerable: true, get: function () { return ServiceWorkerService_1.ServiceWorkerServiceInstance; } }));
+const angular_attr_1 = __webpack_require__(/*! ./components/_attrs/angular-attr */ "../.dev/client/src/components/_attrs/angular-attr.ts");
+Object.defineProperty(exports, "ngAttr", ({ enumerable: true, get: function () { return angular_attr_1.ngAttr; } }));
+const external_observable_1 = __webpack_require__(/*! ./components/_attrs/external-observable */ "../.dev/client/src/components/_attrs/external-observable.ts");
+Object.defineProperty(exports, "externalObservable", ({ enumerable: true, get: function () { return external_observable_1.externalObservable; } }));
+const external_attr_1 = __webpack_require__(/*! ./components/_attrs/external-attr */ "../.dev/client/src/components/_attrs/external-attr.ts");
+Object.defineProperty(exports, "externalAttr", ({ enumerable: true, get: function () { return external_attr_1.externalAttr; } }));
+const json_attr_1 = __webpack_require__(/*! ./components/_attrs/json-attr */ "../.dev/client/src/components/_attrs/json-attr.ts");
+Object.defineProperty(exports, "jsonAttr", ({ enumerable: true, get: function () { return json_attr_1.jsonAttr; } }));
+const _plugin_1 = __webpack_require__(/*! ./plugins/_plugin */ "../.dev/client/src/plugins/_plugin.ts");
+Object.defineProperty(exports, "RWSPlugin", ({ enumerable: true, get: function () { return _plugin_1.RWSPlugin; } }));
+const client_1 = __importStar(__webpack_require__(/*! ./client */ "../.dev/client/src/client.ts"));
+exports.RWSClient = client_1.default;
+Object.defineProperty(exports, "RWSClientInstance", ({ enumerable: true, get: function () { return client_1.RWSClientInstance; } }));
+const _component_1 = __importDefault(__webpack_require__(/*! ./components/_component */ "../.dev/client/src/components/_component.ts"));
+exports.RWSViewComponent = _component_1.default;
+const _container_1 = __importDefault(__webpack_require__(/*! ./components/_container */ "../.dev/client/src/components/_container.ts"));
+exports.RWSContainer = _container_1.default;
+const _decorator_1 = __webpack_require__(/*! ./components/_decorator */ "../.dev/client/src/components/_decorator.ts");
+Object.defineProperty(exports, "RWSIgnore", ({ enumerable: true, get: function () { return _decorator_1.RWSIgnore; } }));
+Object.defineProperty(exports, "RWSInject", ({ enumerable: true, get: function () { return _decorator_1.RWSInject; } }));
+Object.defineProperty(exports, "RWSView", ({ enumerable: true, get: function () { return _decorator_1.RWSView; } }));
+const RWSEvents = __importStar(__webpack_require__(/*! ./events */ "../.dev/client/src/events.ts"));
+exports.RWSEvents = RWSEvents;
+exports["default"] = client_1.default;
+
+
+/***/ },
+
+/***/ "../.dev/client/src/plugins/_plugin.ts"
+/*!*********************************************!*\
+  !*** ../.dev/client/src/plugins/_plugin.ts ***!
+  \*********************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RWSPlugin = void 0;
+const _container_1 = __importDefault(__webpack_require__(/*! ../components/_container */ "../.dev/client/src/components/_container.ts"));
+const RWSWindow_1 = __webpack_require__(/*! ../types/RWSWindow */ "../.dev/client/src/types/RWSWindow.ts");
+const IRWSPlugin_1 = __webpack_require__(/*! ../types/IRWSPlugin */ "../.dev/client/src/types/IRWSPlugin.ts");
+class RWSPlugin extends IRWSPlugin_1.IRWSPlugin {
+    constructor(options = { enabled: true }) {
+        super();
+        this.isLoaded = false;
+        this.isLoaded = true;
+        this.container = RWSPlugin.container;
+        this.window = RWSPlugin.window;
+        this.options = options;
+    }
+    async onClientStart() {
+        // Implementation
+    }
+    async onPartedComponentsLoad(componentParts) {
+        // Implementation
+    }
+    async onComponentsDeclare() {
+        // Implementation
+    }
+    async onSetUser(user) {
+        // Implementation
+    }
+    static getPlugin(pluginClass) {
+        const plugin = this.window.RWS.plugins[pluginClass.name];
+        return plugin ? plugin : null;
+    }
+    static getAllPlugins() {
+        return Object.keys(this.window.RWS.plugins)
+            .map((key) => this.window.RWS.plugins[key]);
+    }
+}
+exports.RWSPlugin = RWSPlugin;
+RWSPlugin.window = (0, RWSWindow_1.loadRWSRichWindow)();
+RWSPlugin.container = (0, _container_1.default)();
+
+
+/***/ },
+
+/***/ "../.dev/client/src/services/ApiService.ts"
+/*!*************************************************!*\
+  !*** ../.dev/client/src/services/ApiService.ts ***!
+  \*************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ApiServiceInstance = void 0;
+const _service_1 = __importDefault(__webpack_require__(/*! ./_service */ "../.dev/client/src/services/_service.ts"));
+//@4DI
+const ConfigService_1 = __importStar(__webpack_require__(/*! ./ConfigService */ "../.dev/client/src/services/ConfigService.ts"));
+const upload_1 = __webpack_require__(/*! upload */ "../node_modules/upload/lib/index.js");
+const backend_1 = __webpack_require__(/*! ./_api/backend */ "../.dev/client/src/services/_api/backend.ts");
+const calls_1 = __webpack_require__(/*! ./_api/calls */ "../.dev/client/src/services/_api/calls.ts");
+let ApiService = class ApiService extends _service_1.default {
+    constructor(config) {
+        super();
+        this.config = config;
+        this.pureGet = calls_1.calls.pureGet;
+        this.get = calls_1.calls.get;
+        this.post = calls_1.calls.post;
+        this.put = calls_1.calls.put;
+        this.delete = calls_1.calls.delete;
+        this.back = {
+            get: async (routeName, options, token) => calls_1.calls.get.bind(this)(backend_1.backend.getBackendUrl.bind(this)(routeName, options === null || options === void 0 ? void 0 : options.routeParams, options === null || options === void 0 ? void 0 : options.queryParams), options),
+            post: async (routeName, payload, options) => calls_1.calls.post.bind(this)(backend_1.backend.getBackendUrl.bind(this)(routeName, options === null || options === void 0 ? void 0 : options.routeParams, options === null || options === void 0 ? void 0 : options.queryParams), payload, options),
+            put: async (routeName, payload, options) => calls_1.calls.put.bind(this)(backend_1.backend.getBackendUrl.bind(this)(routeName, options === null || options === void 0 ? void 0 : options.routeParams, options === null || options === void 0 ? void 0 : options.queryParams), payload, options),
+            delete: async (routeName, options) => calls_1.calls.delete.bind(this)(backend_1.backend.getBackendUrl.bind(this)(routeName, options === null || options === void 0 ? void 0 : options.routeParams, options === null || options === void 0 ? void 0 : options.queryParams), options),
+            uploadFile: async (routeName, file, onProgress, options = {}, payload = {}) => this.uploadFile(backend_1.backend.getBackendUrl.bind(this)(routeName, options === null || options === void 0 ? void 0 : options.routeParams), file, onProgress, payload),
+        };
+    }
+    setToken(token) {
+        this.token = token;
+    }
+    async isGetTargetReachable(url, options = {}) {
+        try {
+            return !!(await calls_1.calls.pureGet.bind(this)(url, options));
+        }
+        catch (error) {
+            return false;
+        }
+    }
+    async uploadFile(url, file, onProgress, payload = {}) {
+        return (0, upload_1.upload)(url, {
+            file,
+            ...payload
+        }, {
+            onProgress,
+            headers: this.token ? { Authorization: `Bearer ${this.token}` } : null,
+        });
+    }
+    async getResource(resourceName) {
+        return calls_1.calls.get.bind(this)(`${this.config.get('backendUrl')}${this.config.get('apiPrefix') || ''}/api/rws/resource/${resourceName}`);
+    }
+};
+exports.ApiServiceInstance = ApiService;
+ApiService._DEFAULT = true;
+exports.ApiServiceInstance = ApiService = __decorate([
+    __param(0, ConfigService_1.default),
+    __metadata("design:paramtypes", [typeof (_a = typeof ConfigService_1.ConfigServiceInstance !== "undefined" && ConfigService_1.ConfigServiceInstance) === "function" ? _a : Object])
+], ApiService);
+exports["default"] = ApiService.getSingleton();
+
+
+/***/ },
+
+/***/ "../.dev/client/src/services/ConfigService.ts"
+/*!****************************************************!*\
+  !*** ../.dev/client/src/services/ConfigService.ts ***!
+  \****************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var ConfigService_1;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ConfigServiceInstance = void 0;
+const _service_1 = __importDefault(__webpack_require__(/*! ./_service */ "../.dev/client/src/services/_service.ts"));
+const RWSFillBuild_1 = __webpack_require__(/*! ../components/_decorators/RWSFillBuild */ "../.dev/client/src/components/_decorators/RWSFillBuild.ts");
+const _event_handling_1 = __webpack_require__(/*! ../components/_event_handling */ "../.dev/client/src/components/_event_handling.ts");
+const __SENT_TO_COMPONENTS = [];
+let ConfigService = ConfigService_1 = class ConfigService extends _service_1.default {
+    constructor() {
+        super();
+        this._DEFAULTS = {};
+        this._BUILD_OVERRIDE = {};
+        this.data = {};
+    }
+    get(key) {
+        if (!this._DEFAULTS) {
+            throw new Error('No _DEFAULTS loaded!');
+        }
+        const isInDefaults = Object.keys(this._DEFAULTS).includes(key);
+        const isInData = Object.keys(this.data).includes(key);
+        const isInBuildVars = Object.keys(this._BUILD_OVERRIDE).includes(key);
+        let isDev = false;
+        if ((Object.keys(this._BUILD_OVERRIDE).includes('dev'))) {
+            isDev = Object.keys(this._BUILD_OVERRIDE).includes('dev') && this._BUILD_OVERRIDE.dev;
+        }
+        if (!isInData) {
+            let defaultVal = null;
+            if (isInDefaults) {
+                defaultVal = this._DEFAULTS[key];
+            }
+            if (defaultVal && defaultVal[0] === '@') {
+                defaultVal = this.data[(defaultVal.slice(1))];
+            }
+            if (isInBuildVars && Object.keys(this._BUILD_OVERRIDE).includes(key)) {
+                if (isDev) {
+                    console.warn(`.rws.json override [${key}]:`), this._BUILD_OVERRIDE[key];
+                }
+                defaultVal = this._BUILD_OVERRIDE[key];
+            }
+            return defaultVal;
+        }
+        return this.data[key];
+    }
+    set(key, value) {
+        this.data[key] = value;
+    }
+    async waitForConfig(tagName) {
+        let t = null;
+        if (!this.data._noLoad || __SENT_TO_COMPONENTS.includes(tagName)) {
+            return;
+        }
+        __SENT_TO_COMPONENTS.push(tagName);
+        (0, _event_handling_1.sendEventToOutside)('rws_cfg_call', { tagName });
+        return new Promise((resolve) => {
+            const tick = () => {
+                if (ConfigService_1.isLoaded) {
+                    clearTimeout(t);
+                    resolve(true);
+                    return;
+                }
+                t = setTimeout(tick, 200);
+            };
+            t = setTimeout(tick, 200);
+        });
+    }
+    isLoaded() {
+        return ConfigService_1.isLoaded;
+    }
+    mergeConfig(config) {
+        const unloaded = ConfigService_1.isLoaded;
+        this.data.plugins = [];
+        this.data = Object.assign(this.data, config);
+        if (unloaded) {
+            ConfigService_1.isLoaded = true;
+        }
+        return this.data;
+    }
+    getData() {
+        return this.data;
+    }
+};
+exports.ConfigServiceInstance = ConfigService;
+ConfigService._DEFAULT = false;
+ConfigService.isLoaded = false;
+exports.ConfigServiceInstance = ConfigService = ConfigService_1 = __decorate([
+    (0, RWSFillBuild_1.RWSFillBuild)(),
+    __metadata("design:paramtypes", [])
+], ConfigService);
+exports["default"] = ConfigService.getSingleton('ConfigService');
+
+
+/***/ },
+
+/***/ "../.dev/client/src/services/DOMService.ts"
+/*!*************************************************!*\
+  !*** ../.dev/client/src/services/DOMService.ts ***!
+  \*************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DOMServiceInstance = exports.DOMService = void 0;
+const _service_1 = __importDefault(__webpack_require__(/*! ./_service */ "../.dev/client/src/services/_service.ts"));
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+const dompurify_1 = __importDefault(__webpack_require__(/*! dompurify */ "../node_modules/dompurify/dist/purify.cjs.js"));
+class DOMService extends _service_1.default {
+    parse$(input, directReturn = false) {
+        if (input.length > 1 || directReturn) {
+            return input;
+        }
+        if (input.length === 1) {
+            return input[0];
+        }
+        return null;
+    }
+    $(shadowRoot, selectors, directReturn = false) {
+        const elements = shadowRoot.querySelectorAll(selectors);
+        return elements ? this.parse$(elements, directReturn) : null;
+    }
+    async scrollToBottom(scrollContainer, contentSelector = '.scroll-content') {
+        if (scrollContainer) {
+            const scrollContent = scrollContainer.querySelector(contentSelector);
+            if (scrollContent) {
+                scrollContainer.scrollTop = (scrollContent.scrollHeight - scrollContainer.clientHeight) + 150;
+            }
+        }
+    }
+    setHTMLPolicy(policyName, policyImplementation) {
+        const myPolicy = trustedTypes.createPolicy(policyName, {
+            createHTML(html) {
+                return policyImplementation(html);
+            }
+        });
+        fast_element_1.DOM.setHTMLPolicy(myPolicy);
+    }
+    enforceAllowedTags(htmlText, allowedHTMLTags) {
+        // Create a regular expression pattern to match HTML tags
+        const tagPattern = /<\s*\/?\s*([^\s>/]+)(\s+[^>]*)?>/g;
+        // Replace any tags in the htmlText that are not in allowedHTMLTags array
+        const sanitizedText = htmlText.replace(tagPattern, (match, tag, attributes) => {
+            const lowerCaseTag = tag.toLowerCase();
+            if (allowedHTMLTags.includes(lowerCaseTag)) {
+                return match; // Return the original tag if it's allowed
+            }
+            else {
+                // Replace the disallowed tag with an empty string
+                return '';
+            }
+        });
+        return sanitizedText;
+    }
+    async onDOMLoad() {
+        return new Promise((resolve) => {
+            document.addEventListener('DOMContentLoaded', () => {
+                resolve();
+            });
+        });
+    }
+    sanitizeHTML(line, sanitizeOptions = {}) {
+        const output = line.trim();
+        const sanitized = dompurify_1.default.sanitize(output, { USE_PROFILES: { html: true }, ...sanitizeOptions });
+        return sanitized;
+    }
+}
+exports.DOMService = DOMService;
+exports.DOMServiceInstance = DOMService;
+DOMService._DEFAULT = true;
+exports["default"] = DOMService.getSingleton();
+
+
+/***/ },
+
+/***/ "../.dev/client/src/services/IndexedDBService.ts"
+/*!*******************************************************!*\
+  !*** ../.dev/client/src/services/IndexedDBService.ts ***!
+  \*******************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IndexedDBServiceInstance = void 0;
+const _service_1 = __importDefault(__webpack_require__(/*! ./_service */ "../.dev/client/src/services/_service.ts"));
+class IndexedDBService extends _service_1.default {
+    openDB(dbName, storeName) {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(dbName, 1);
+            request.onupgradeneeded = () => {
+                const db = request.result;
+                if (!db.objectStoreNames.contains(storeName)) {
+                    db.createObjectStore(storeName);
+                }
+            };
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+        });
+    }
+    getFromDB(db, store, key) {
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(store, 'readonly');
+            const request = tx.objectStore(store).get(key);
+            request.onsuccess = () => { var _a; return resolve((_a = request.result) !== null && _a !== void 0 ? _a : null); };
+            request.onerror = () => reject(request.error);
+        });
+    }
+    saveToDB(db, store, key, value) {
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(store, 'readwrite');
+            const request = tx.objectStore(store).put(value, key);
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error);
+        });
+    }
+}
+exports.IndexedDBServiceInstance = IndexedDBService;
+IndexedDBService._DEFAULT = true;
+exports["default"] = IndexedDBService.getSingleton();
+
+
+/***/ },
+
+/***/ "../.dev/client/src/services/NotifyService.ts"
+/*!****************************************************!*\
+  !*** ../.dev/client/src/services/NotifyService.ts ***!
+  \****************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.NotifyServiceInstance = void 0;
+const _service_1 = __importDefault(__webpack_require__(/*! ./_service */ "../.dev/client/src/services/_service.ts"));
+/**
+ * @class
+ * @extends TheService
+ */
+class NotifyService extends _service_1.default {
+    setNotifier(notifier) {
+        this.notifier = notifier;
+    }
+    alert(message, logType = 'info', onConfirm, alertOptions) {
+        if (!this.notifier) {
+            console.warn('No notifier added to RWS Client');
+            return;
+        }
+        return this.notifier(message, logType, 'alert', onConfirm, alertOptions);
+    }
+    notify(message, logType = 'info', onConfirm) {
+        if (!this.notifier) {
+            console.warn('No notifier added to RWS Client');
+            return;
+        }
+        this.notifier(message, logType, 'notification', onConfirm);
+    }
+    silent(message, logType = 'info') {
+        if (!this.notifier) {
+            console.warn('No notifier added to RWS Client');
+            return;
+        }
+        this.notifier(message, logType, 'silent');
+    }
+}
+exports.NotifyServiceInstance = NotifyService;
+NotifyService._DEFAULT = true;
+exports["default"] = NotifyService.getSingleton();
+
+
+/***/ },
+
+/***/ "../.dev/client/src/services/ServiceWorkerService.ts"
+/*!***********************************************************!*\
+  !*** ../.dev/client/src/services/ServiceWorkerService.ts ***!
+  \***********************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ServiceWorkerServiceInstance = void 0;
+const _service_1 = __importDefault(__webpack_require__(/*! ./_service */ "../.dev/client/src/services/_service.ts"));
+class ServiceWorkerService extends _service_1.default {
+    async registerServiceWorker() {
+        await ServiceWorkerService.registerServiceWorker();
+    }
+    static registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                if (registrations.length) {
+                    return;
+                }
+                try {
+                    return (navigator.serviceWorker.register('/service_worker.js', {
+                        scope: '/'
+                    }).then((registration) => {
+                        if (registration.installing) {
+                            console.log('Service worker installing');
+                        }
+                        else if (registration.waiting) {
+                            console.log('Service worker installed');
+                        }
+                        else if (registration.active) {
+                            console.log('Service worker active');
+                        }
+                    }));
+                }
+                catch (error) {
+                    console.error(`Registration failed with ${error}`);
+                }
+            });
+            return;
+        }
+    }
+    sendDataToServiceWorker(type, data, asset_type = 'data_push') {
+        if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+                command: type,
+                asset_type,
+                params: data
+            });
+        }
+        else {
+            throw new Error('Service worker is not available');
+        }
+    }
+}
+exports.ServiceWorkerServiceInstance = ServiceWorkerService;
+ServiceWorkerService._DEFAULT = true;
+exports["default"] = ServiceWorkerService.getSingleton();
+
+
+/***/ },
+
+/***/ "../.dev/client/src/services/UtilsService.ts"
+/*!***************************************************!*\
+  !*** ../.dev/client/src/services/UtilsService.ts ***!
+  \***************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.UtilsServiceInstance = void 0;
+const _service_1 = __importDefault(__webpack_require__(/*! ./_service */ "../.dev/client/src/services/_service.ts"));
+class UtilsService extends _service_1.default {
+    mergeDeep(target, source) {
+        const isObject = (obj) => obj && typeof obj === 'object';
+        if (!isObject(target) || !isObject(source)) {
+            return source;
+        }
+        Object.keys(source).forEach(key => {
+            const targetValue = target[key];
+            const sourceValue = source[key];
+            if (Array.isArray(targetValue) && Array.isArray(sourceValue)) {
+                target[key] = targetValue.concat(sourceValue);
+            }
+            else if (isObject(targetValue) && isObject(sourceValue)) {
+                target[key] = this.mergeDeep(Object.assign({}, targetValue), sourceValue);
+            }
+            else {
+                target[key] = sourceValue;
+            }
+        });
+        return target;
+    }
+    async fetchSourceMap(jsFilePath) {
+        // Assuming the source map URL is the JS file URL with a '.map' extension
+        const sourceMapUrl = jsFilePath;
+        try {
+            const response = await fetch(sourceMapUrl);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return await response.json();
+        }
+        catch (error) {
+            console.error('Failed to fetch source map:', error);
+            return null;
+        }
+    }
+    async getCurrentLineNumber(error = null) {
+        if (!error) {
+            error = new Error();
+        }
+        return 0;
+    }
+}
+exports.UtilsServiceInstance = UtilsService;
+UtilsService._DEFAULT = true;
+exports["default"] = UtilsService.getSingleton();
+
+
+/***/ },
+
+/***/ "../.dev/client/src/services/_api/backend.ts"
+/*!***************************************************!*\
+  !*** ../.dev/client/src/services/_api/backend.ts ***!
+  \***************************************************/
+(__unused_webpack_module, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.backend = void 0;
+exports.backend = {
+    getBackendUrl(routeName, params = {}, queryParams = {}) {
+        const config = this.config;
+        const routesPackage = config.get('backendRoutes');
+        let routes = [];
+        routesPackage.forEach((item) => {
+            // Check if item is an instance of IPrefixedHTTProutes
+            if ('prefix' in item && 'routes' in item && Array.isArray(item.routes)) {
+                // Handle the case where item is of type IPrefixedHTTProutes
+                if (item.exportAutoRoutes) {
+                    item.routes = [...item.routes,
+                        {
+                            name: `list`,
+                            path: '/',
+                            method: 'GET'
+                        },
+                        {
+                            name: `create`,
+                            path: '/',
+                            method: 'POST'
+                        },
+                        {
+                            name: `show`,
+                            path: '/:id',
+                            method: 'GET'
+                        },
+                        {
+                            name: `update`,
+                            path: '/:id',
+                            method: 'PUT'
+                        },
+                        {
+                            name: `delete`,
+                            path: '/:id',
+                            method: 'DELETE'
+                        },
+                    ];
+                }
+                routes = [...routes, ...item.routes.map((subRouteItem) => {
+                        const subRoute = {
+                            path: Array.isArray(subRouteItem.path) ? subRouteItem.path.map(subPath => item.prefix + subPath) : item.prefix + subRouteItem.path,
+                            name: exports.backend.checkPrefixedRouteName(subRouteItem.name, item.controllerName),
+                            method: subRouteItem.method || 'GET'
+                        };
+                        return subRoute;
+                    })];
+            }
+            else {
+                // Handle the case where item is of type IHTTProute
+                routes.push(item);
+            }
+        });
+        const route = routes.find((item) => item.name === routeName);
+        if (!route) {
+            throw new Error(`Backend route '${routeName}' does not exist.`);
+        }
+        let apiPath = route.path;
+        if (Array.isArray(apiPath)) {
+            const paramsLength = Object.keys(params).length;
+            if (paramsLength > 0) {
+                for (const searchedPath of apiPath) {
+                    let foundParams = 0;
+                    for (const p of Object.keys(params)) {
+                        if (searchedPath.indexOf(`:${p}`) !== -1) {
+                            foundParams++;
+                        }
+                    }
+                    if (foundParams === paramsLength) {
+                        apiPath = searchedPath;
+                        break;
+                    }
+                }
+            }
+            else {
+                for (const searchedPath of apiPath) {
+                    if (!searchedPath.includes(':')) {
+                        apiPath = searchedPath;
+                        break;
+                    }
+                }
+            }
+        }
+        Object.keys(params).forEach((paramKey) => {
+            const paramValue = params[paramKey];
+            apiPath = apiPath.replace(`:${paramKey}`, paramValue);
+        });
+        let finalUrl = `${config.get('backendUrl')}${config.get('apiPrefix') || ''}${apiPath}`;
+        if (Object.keys(queryParams).length > 0) {
+            const queryString = new URLSearchParams(queryParams).toString();
+            finalUrl += `?${queryString}`;
+        }
+        return finalUrl;
+    },
+    checkPrefixedRouteName(routeName, prefixName) {
+        let finalRoute = routeName;
+        if (routeName.indexOf(prefixName) === -1) {
+            finalRoute = `${routeName}`;
+        }
+        return finalRoute;
+    }
+};
+
+
+/***/ },
+
+/***/ "../.dev/client/src/services/_api/calls.ts"
+/*!*************************************************!*\
+  !*** ../.dev/client/src/services/_api/calls.ts ***!
+  \*************************************************/
+(__unused_webpack_module, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.calls = void 0;
+const _DEFAULT_CONTENT_TYPE = 'application/json';
+exports.calls = {
+    addHeader(headers, key, val) {
+        if (headers instanceof Headers) {
+            headers.append(key, val);
+        }
+        else if (Array.isArray(headers)) {
+            headers.push([key, val]);
+        }
+        else {
+            headers[key] = val;
+        }
+    },
+    getHeaders(token = null, optHeaders = {}) {
+        const headers = { ...optHeaders };
+        if (!('Content-Type' in headers)) {
+            this.addHeader(headers, 'Content-Type', _DEFAULT_CONTENT_TYPE);
+        }
+        if (token) {
+            this.addHeader(headers, 'Authorization', `Bearer ${token}`);
+        }
+        if (headers['Content-Type']) {
+            this.addHeader(headers, 'Accept', '*/*');
+        }
+        else {
+            this.addHeader(headers, 'Accept', headers['Content-Type'] || _DEFAULT_CONTENT_TYPE);
+        }
+        return headers;
+    },
+    async pureGet(url, options = {}) {
+        try {
+            const response = await fetch(url, {
+                headers: exports.calls.getHeaders(this.token, options.headers),
+            });
+            return await response.text();
+        }
+        catch (error) {
+            console.error('GET request failed:', error);
+            throw error;
+        }
+    },
+    async get(url, options = {}) {
+        try {
+            const response = await fetch(url, {
+                headers: exports.calls.getHeaders(this.token, options.headers),
+            });
+            const data = await response.json();
+            return data;
+        }
+        catch (error) {
+            console.error('GET request failed:', error);
+            throw error;
+        }
+    },
+    async post(url, payload, options = {}) {
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: exports.calls.getHeaders(this.token, options.headers),
+                body: payload ? JSON.stringify(payload) : null,
+            });
+            const data = await response.json();
+            return data;
+        }
+        catch (error) {
+            console.error('POST request failed:', error);
+            throw error;
+        }
+    },
+    async put(url, payload, options = {}) {
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: exports.calls.getHeaders(this.token, options.headers),
+                body: JSON.stringify(payload),
+            });
+            const data = await response.json();
+            return data;
+        }
+        catch (error) {
+            console.error('PUT request failed:', error);
+            throw error;
+        }
+    },
+    async delete(url, options = {}) {
+        try {
+            const response = await fetch(url, {
+                method: 'DELETE',
+                headers: exports.calls.getHeaders(this.token, options.headers),
+            });
+            const data = await response.json();
+            return data;
+        }
+        catch (error) {
+            console.error('DELETE request failed:', error);
+            throw error;
+        }
+    }
+};
+
+
+/***/ },
+
+/***/ "../.dev/client/src/services/_service.ts"
+/*!***********************************************!*\
+  !*** ../.dev/client/src/services/_service.ts ***!
+  \***********************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const _container_1 = __importStar(__webpack_require__(/*! ../components/_container */ "../.dev/client/src/components/_container.ts"));
+const RWSWindow_1 = __webpack_require__(/*! ../types/RWSWindow */ "../.dev/client/src/types/RWSWindow.ts");
+class TheRWSService {
+    constructor() {
+        this._RELOADABLE = false;
+    }
+    register() {
+        this.getSingleton();
+    }
+    getSingleton() {
+        return this.getSingleton();
+    }
+    static register() {
+        this.getSingleton();
+    }
+    static getSingleton(serviceName = null) {
+        const richWindow = (0, RWSWindow_1.loadRWSRichWindow)();
+        if (!serviceName) {
+            serviceName = this.name;
+        }
+        if (Object.keys(richWindow.RWS._registered).includes(serviceName)) {
+            return richWindow.RWS._registered[serviceName];
+        }
+        const interf = _container_1.DI.createInterface(serviceName);
+        (0, _container_1.default)().register(_container_1.Registration.singleton(interf, this));
+        richWindow.RWS._registered[serviceName] = interf;
+        return interf;
+    }
+    isDefault() {
+        return this.constructor._DEFAULT;
+    }
+    isInClient() {
+        return this.constructor._IN_CLIENT;
+    }
+}
+TheRWSService._IN_CLIENT = false;
+TheRWSService._DEFAULT = false;
+exports["default"] = TheRWSService;
+
+
+/***/ },
+
+/***/ "../.dev/client/src/types/IRWSPlugin.ts"
+/*!**********************************************!*\
+  !*** ../.dev/client/src/types/IRWSPlugin.ts ***!
+  \**********************************************/
+(__unused_webpack_module, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IRWSPlugin = void 0;
+class IRWSPlugin {
+}
+exports.IRWSPlugin = IRWSPlugin;
+
+
+/***/ },
+
+/***/ "../.dev/client/src/types/RWSWindow.ts"
+/*!*********************************************!*\
+  !*** ../.dev/client/src/types/RWSWindow.ts ***!
+  \*********************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.loadRWSRichWindow = loadRWSRichWindow;
+const uuid_1 = __webpack_require__(/*! uuid */ "../node_modules/uuid/dist/commonjs-browser/index.js");
+function loadRWSRichWindow() {
+    const richWindow = window;
+    if (!richWindow.RWS) {
+        const newNode = document.createElement('main');
+        newNode.id = 'rws-cntr-id-' + (0, uuid_1.v1)();
+        console.log('\x1b[1m[RWS]\x1b[0m Created new container node: ', newNode.id);
+        richWindow.RWS = {
+            client: null,
+            components: {},
+            plugins: {},
+            container: null,
+            container_node: newNode,
+            _registered: {}
+        };
+    }
+    return richWindow;
+}
+
+
+/***/ },
+
 /***/ "../node_modules/@ai-sdk/gateway/dist/index.js"
 /*!*****************************************************!*\
   !*** ../node_modules/@ai-sdk/gateway/dist/index.js ***!
@@ -16204,8 +18909,8 @@ const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../no
 __webpack_require__(/*! ./template.html */ "../node_modules/@rws-framework/browser-router/src/components/router/template.html");
 const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
 const RoutingService_1 = __importStar(__webpack_require__(/*! ../../services/RoutingService */ "../node_modules/@rws-framework/browser-router/src/services/RoutingService.ts"));
-const _component_1 = __importDefault(__webpack_require__(/*! @rws-framework/client/src/components/_component */ "../node_modules/@rws-framework/client/src/components/_component.ts"));
-const _decorator_1 = __webpack_require__(/*! @rws-framework/client/src/components/_decorator */ "../node_modules/@rws-framework/client/src/components/_decorator.ts");
+const _component_1 = __importDefault(__webpack_require__(/*! @rws-framework/client/src/components/_component */ "../.dev/client/src/components/_component.ts"));
+const _decorator_1 = __webpack_require__(/*! @rws-framework/client/src/components/_decorator */ "../.dev/client/src/components/_decorator.ts");
 //@ts-ignore                
 let rwsTemplate = T.html `<div class="router"></div>`;
 const styles = null;
@@ -16331,7 +19036,7 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports._ROUTING_EVENT_NAME = exports.renderRouteComponent = exports.REGEX_MATCH_PARAM = exports.RWSRouter = exports.RouterComponent = exports.RoutingServiceInstance = exports.RoutingService = exports.RWSBrowserRouter = void 0;
-const client_1 = __webpack_require__(/*! @rws-framework/client */ "../node_modules/@rws-framework/client/src/index.ts");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
 const component_1 = __webpack_require__(/*! ./components/router/component */ "../node_modules/@rws-framework/browser-router/src/components/router/component.ts");
 Object.defineProperty(exports, "RouterComponent", ({ enumerable: true, get: function () { return component_1.RouterComponent; } }));
 const RoutingService_1 = __importStar(__webpack_require__(/*! ./services/RoutingService */ "../node_modules/@rws-framework/browser-router/src/services/RoutingService.ts"));
@@ -16465,12 +19170,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports._ROUTING_EVENT_NAME = exports.renderRouteComponent = exports.RWSRouter = exports.RoutingServiceInstance = exports.REGEX_MATCH_PARAM = void 0;
-const _service_1 = __importDefault(__webpack_require__(/*! @rws-framework/client/src/services/_service */ "../node_modules/@rws-framework/client/src/services/_service.ts"));
+const _service_1 = __importDefault(__webpack_require__(/*! @rws-framework/client/src/services/_service */ "../.dev/client/src/services/_service.ts"));
 const url_router_1 = __importDefault(__webpack_require__(/*! url-router */ "../node_modules/url-router/dist/index.cjs"));
 const _router_1 = __webpack_require__(/*! ../routing/_router */ "../node_modules/@rws-framework/browser-router/src/routing/_router.ts");
 Object.defineProperty(exports, "RWSRouter", ({ enumerable: true, get: function () { return _router_1.RWSRouter; } }));
-const UtilsService_1 = __importStar(__webpack_require__(/*! @rws-framework/client/src/services/UtilsService */ "../node_modules/@rws-framework/client/src/services/UtilsService.ts"));
-const ConfigService_1 = __importStar(__webpack_require__(/*! @rws-framework/client/src/services/ConfigService */ "../node_modules/@rws-framework/client/src/services/ConfigService.ts"));
+const UtilsService_1 = __importStar(__webpack_require__(/*! @rws-framework/client/src/services/UtilsService */ "../.dev/client/src/services/UtilsService.ts"));
+const ConfigService_1 = __importStar(__webpack_require__(/*! @rws-framework/client/src/services/ConfigService */ "../.dev/client/src/services/ConfigService.ts"));
 exports.REGEX_MATCH_PARAM = /\/:([a-zA-Z0-9]*)\/?/;
 let RoutingService = class RoutingService extends _service_1.default {
     constructor(utilsService, config) {
@@ -16537,35 +19242,59 @@ exports["default"] = RoutingService.getSingleton();
 
 /***/ },
 
-/***/ "../node_modules/@rws-framework/client/foundation/rws-foundation.js"
-/*!**************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/foundation/rws-foundation.js ***!
-  \**************************************************************************/
-(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ "../node_modules/@rws-framework/components/src/components/index.ts"
+/*!*************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/index.ts ***!
+  \*************************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Container: () => (/* reexport safe */ _microsoft_fast_foundation_dist_esm_di_di__WEBPACK_IMPORTED_MODULE_0__.Container),
-/* harmony export */   DI: () => (/* reexport safe */ _microsoft_fast_foundation_dist_esm_di_di__WEBPACK_IMPORTED_MODULE_0__.DI),
-/* harmony export */   FoundationElement: () => (/* reexport safe */ _microsoft_fast_foundation_dist_esm_foundation_element_foundation_element__WEBPACK_IMPORTED_MODULE_1__.FoundationElement),
-/* harmony export */   FoundationElementRegistry: () => (/* reexport safe */ _microsoft_fast_foundation_dist_esm_foundation_element_foundation_element__WEBPACK_IMPORTED_MODULE_1__.FoundationElementRegistry),
-/* harmony export */   Registration: () => (/* reexport safe */ _microsoft_fast_foundation_dist_esm_di_di__WEBPACK_IMPORTED_MODULE_0__.Registration)
-/* harmony export */ });
-/* harmony import */ var _microsoft_fast_foundation_dist_esm_di_di__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @microsoft/fast-foundation/dist/esm/di/di */ "../node_modules/@microsoft/fast-foundation/dist/esm/di/di.js");
-/* harmony import */ var _microsoft_fast_foundation_dist_esm_foundation_element_foundation_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @microsoft/fast-foundation/dist/esm/foundation-element/foundation-element */ "../node_modules/@microsoft/fast-foundation/dist/esm/foundation-element/foundation-element.js");
-// Extract only needed from fast-foundation
 
-
-
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ReFormer = exports.RWSApiResource = exports.TableControls = exports.RWSTooltip = exports.LineSplitter = exports.RWSModal = exports.RWSTable = exports.RWSLoader = exports.RWSProgress = exports.RWSUploader = void 0;
+exports.declareRWSComponents = declareRWSComponents;
+const component_1 = __webpack_require__(/*! ./rws/uploader/component */ "../node_modules/@rws-framework/components/src/components/rws/uploader/component.ts");
+Object.defineProperty(exports, "RWSUploader", ({ enumerable: true, get: function () { return component_1.RWSUploader; } }));
+const component_2 = __webpack_require__(/*! ./rws/progress/component */ "../node_modules/@rws-framework/components/src/components/rws/progress/component.ts");
+Object.defineProperty(exports, "RWSProgress", ({ enumerable: true, get: function () { return component_2.RWSProgress; } }));
+const component_3 = __webpack_require__(/*! ./rws/loader/component */ "../node_modules/@rws-framework/components/src/components/rws/loader/component.ts");
+Object.defineProperty(exports, "RWSLoader", ({ enumerable: true, get: function () { return component_3.RWSLoader; } }));
+const component_4 = __webpack_require__(/*! ./rws/rws-api-resource/component */ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/component.ts");
+Object.defineProperty(exports, "RWSApiResource", ({ enumerable: true, get: function () { return component_4.RWSApiResource; } }));
+const component_5 = __webpack_require__(/*! ./rws/reformer/component */ "../node_modules/@rws-framework/components/src/components/rws/reformer/component.ts");
+Object.defineProperty(exports, "ReFormer", ({ enumerable: true, get: function () { return component_5.ReFormer; } }));
+const component_6 = __webpack_require__(/*! ./rws/rws-table/component */ "../node_modules/@rws-framework/components/src/components/rws/rws-table/component.ts");
+Object.defineProperty(exports, "RWSTable", ({ enumerable: true, get: function () { return component_6.RWSTable; } }));
+const component_7 = __webpack_require__(/*! ./rws/rws-modal/component */ "../node_modules/@rws-framework/components/src/components/rws/rws-modal/component.ts");
+Object.defineProperty(exports, "RWSModal", ({ enumerable: true, get: function () { return component_7.RWSModal; } }));
+const component_8 = __webpack_require__(/*! ./rws/line-splitter/component */ "../node_modules/@rws-framework/components/src/components/rws/line-splitter/component.ts");
+Object.defineProperty(exports, "LineSplitter", ({ enumerable: true, get: function () { return component_8.LineSplitter; } }));
+const component_9 = __webpack_require__(/*! ./rws/table-controls/component */ "../node_modules/@rws-framework/components/src/components/rws/table-controls/component.ts");
+Object.defineProperty(exports, "TableControls", ({ enumerable: true, get: function () { return component_9.TableControls; } }));
+const component_10 = __webpack_require__(/*! ./tooltip/component */ "../node_modules/@rws-framework/components/src/components/tooltip/component.ts");
+Object.defineProperty(exports, "RWSTooltip", ({ enumerable: true, get: function () { return component_10.RWSTooltip; } }));
+function declareRWSComponents(parted = false) {
+    if (!parted) {
+        component_1.RWSUploader;
+        component_2.RWSProgress;
+        component_3.RWSLoader;
+        component_6.RWSTable;
+        component_7.RWSModal;
+        component_8.LineSplitter;
+        component_10.RWSTooltip;
+        component_9.TableControls;
+        component_4.RWSApiResource;
+        component_5.ReFormer;
+    }
+}
 
 
 /***/ },
 
-/***/ "../node_modules/@rws-framework/client/src/client.ts"
-/*!***********************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/client.ts ***!
-  \***********************************************************/
+/***/ "../node_modules/@rws-framework/components/src/components/rws/line-splitter/component.ts"
+/*!***********************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/line-splitter/component.ts ***!
+  \***********************************************************************************************/
 (__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -16612,739 +19341,700 @@ var __importStar = (this && this.__importStar) || (function () {
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-var _a, _b, _c, _d, _e, _f;
+var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RWSClientInstance = void 0;
-const ConfigService_1 = __importStar(__webpack_require__(/*! ./services/ConfigService */ "../node_modules/@rws-framework/client/src/services/ConfigService.ts"));
-const UtilsService_1 = __importStar(__webpack_require__(/*! ./services/UtilsService */ "../node_modules/@rws-framework/client/src/services/UtilsService.ts"));
-const DOMService_1 = __importStar(__webpack_require__(/*! ./services/DOMService */ "../node_modules/@rws-framework/client/src/services/DOMService.ts"));
-const ApiService_1 = __importStar(__webpack_require__(/*! ./services/ApiService */ "../node_modules/@rws-framework/client/src/services/ApiService.ts"));
-const NotifyService_1 = __importStar(__webpack_require__(/*! ./services/NotifyService */ "../node_modules/@rws-framework/client/src/services/NotifyService.ts"));
-const ServiceWorkerService_1 = __importStar(__webpack_require__(/*! ./services/ServiceWorkerService */ "../node_modules/@rws-framework/client/src/services/ServiceWorkerService.ts"));
-const RWSWindow_1 = __webpack_require__(/*! ./types/RWSWindow */ "../node_modules/@rws-framework/client/src/types/RWSWindow.ts");
-const _container_1 = __webpack_require__(/*! ./components/_container */ "../node_modules/@rws-framework/client/src/components/_container.ts");
-const _container_2 = __importDefault(__webpack_require__(/*! ./components/_container */ "../node_modules/@rws-framework/client/src/components/_container.ts"));
-const components_1 = __importStar(__webpack_require__(/*! ./client/components */ "../node_modules/@rws-framework/client/src/client/components.ts"));
-const services_1 = __importDefault(__webpack_require__(/*! ./client/services */ "../node_modules/@rws-framework/client/src/client/services.ts"));
-const config_1 = __importDefault(__webpack_require__(/*! ./client/config */ "../node_modules/@rws-framework/client/src/client/config.ts"));
-const hotReload_1 = __importStar(__webpack_require__(/*! ./client/hotReload */ "../node_modules/@rws-framework/client/src/client/hotReload.ts"));
-const _plugin_1 = __webpack_require__(/*! ./plugins/_plugin */ "../node_modules/@rws-framework/client/src/plugins/_plugin.ts");
-let RWSClient = class RWSClient {
-    constructor(appConfig, domService, utilsService, apiService, swService, notifyService) {
-        this.appConfig = appConfig;
-        this.domService = domService;
-        this.utilsService = utilsService;
-        this.apiService = apiService;
-        this.swService = swService;
-        this.notifyService = notifyService;
-        this.user = null;
-        this.config = {};
-        this.plugins = {};
-        this.isSetup = false;
-        this.devStorage = {};
-        this.customServices = {};
-        this.defaultServices = {};
-        this.hrSetup = { enabled: false, port: hotReload_1._DEFAULT_HR_PORT };
-        this.componentHelper = components_1.default.bind(this)();
-        this.servicesHelper = services_1.default.bind(this)();
-        this.configHelper = config_1.default.bind(this)();
-        this.hotReloadHelper = hotReload_1.default.bind(this)();
-        this.initCallback = async () => { };
-        this._container = (0, _container_2.default)();
-        this.user = this.getUser();
-        this.loadServices();
-        this.config.plugins = [];
-        this.pushDataToServiceWorker('SET_WS_URL', { url: this.appConfig.get('wsUrl') }, 'ws_url');
-        if (this.user) {
-            this.pushUserToServiceWorker({ ...this.user, instructor: false });
-        }
-    }
-    addPlugin(pluginEntry, options) {
-        this.config.plugins.push({ pluginEntry, options });
-    }
-    async setup(config = {}) {
-        return this.configHelper.setup(config);
-    }
-    async start(config = {}) {
-        return this.configHelper.start(config);
-    }
-    loadServices() {
-        return this.servicesHelper.loadServices();
-    }
-    get(key) {
-        return this.configHelper.get(key);
-    }
-    setNotifier(notifier) {
-        this.notifyService.setNotifier(notifier);
-        return this;
-    }
-    setDefaultLayout(DefaultLayout) {
-        this.config.defaultLayout = DefaultLayout;
-        return this;
-    }
-    setBackendRoutes(routes) {
-        this.config.backendRoutes = routes;
-        this.appConfig.set('backendRoutes', routes);
-        return this;
-    }
-    async onInit(callback) {
-        this.initCallback = callback;
-        for (const plugin of _plugin_1.RWSPlugin.getAllPlugins()) {
-            plugin.onComponentsDeclare();
-        }
-        return this;
-    }
-    pushDataToServiceWorker(type, data, asset_type = 'data_push') {
-        this.configHelper.pushDataToServiceWorker(type, data, asset_type);
-    }
-    pushUserToServiceWorker(userData) {
-        this.configHelper.pushUserToServiceWorker(userData);
-    }
-    getUser() {
-        return this.configHelper.getUser();
-    }
-    setUser(user) {
-        return this.configHelper.setUser(user);
-    }
-    getConfig() {
-        return this.appConfig;
-    }
-    on(eventName, listener) {
-        document.addEventListener(eventName, (event) => {
-            listener(event);
-        });
-    }
-    setDevStorage(key, stuff) {
-        this.devStorage[key] = stuff;
-        return this;
-    }
-    getDevStorage(key) {
-        return this.devStorage[key];
-    }
-    registerToDI() {
-    }
-    async loadPartedComponents() {
-        return this.componentHelper.loadPartedComponents();
-    }
-    async onDOMLoad() {
-        return this.domService.onDOMLoad();
-    }
-    assignClientToBrowser() {
-        this.getBrowserObject().RWS.client = this;
-    }
-    enableRouting() {
-        this.appConfig.mergeConfig({ routing_enabled: true });
-    }
-    disableRouting() {
-        this.appConfig.mergeConfig({ routing_enabled: false });
-    }
-    getBrowserObject() {
-        (0, RWSWindow_1.loadRWSRichWindow)();
-        return window;
-    }
-    static getDI() {
-        return _container_1.DI;
-    }
-    static defineAllComponents() {
-        components_1.ComponentHelperStatic.defineAllComponents();
-    }
-    defineComponents() {
-        components_1.ComponentHelperStatic.defineAllComponents();
-    }
-    logout() {
-        this.user = null;
-        localStorage.removeItem('the_rws_user');
-    }
-};
-exports.RWSClientInstance = RWSClient;
-exports.RWSClientInstance = RWSClient = __decorate([
-    __param(0, ConfigService_1.default),
-    __param(1, DOMService_1.default),
-    __param(2, UtilsService_1.default),
-    __param(3, ApiService_1.default),
-    __param(4, ServiceWorkerService_1.default),
-    __param(5, NotifyService_1.default),
-    __metadata("design:paramtypes", [typeof (_a = typeof ConfigService_1.ConfigServiceInstance !== "undefined" && ConfigService_1.ConfigServiceInstance) === "function" ? _a : Object, typeof (_b = typeof DOMService_1.DOMServiceInstance !== "undefined" && DOMService_1.DOMServiceInstance) === "function" ? _b : Object, typeof (_c = typeof UtilsService_1.UtilsServiceInstance !== "undefined" && UtilsService_1.UtilsServiceInstance) === "function" ? _c : Object, typeof (_d = typeof ApiService_1.ApiServiceInstance !== "undefined" && ApiService_1.ApiServiceInstance) === "function" ? _d : Object, typeof (_e = typeof ServiceWorkerService_1.ServiceWorkerServiceInstance !== "undefined" && ServiceWorkerService_1.ServiceWorkerServiceInstance) === "function" ? _e : Object, typeof (_f = typeof NotifyService_1.NotifyServiceInstance !== "undefined" && NotifyService_1.NotifyServiceInstance) === "function" ? _f : Object])
-], RWSClient);
-exports["default"] = _container_1.DI.createInterface(x => x.singleton(RWSClient));
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/client/components.ts"
-/*!**********************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/client/components.ts ***!
-  \**********************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ComponentHelperStatic = void 0;
-const _component_1 = __importDefault(__webpack_require__(/*! ../components/_component */ "../node_modules/@rws-framework/client/src/components/_component.ts"));
-const _plugin_1 = __webpack_require__(/*! ../plugins/_plugin */ "../node_modules/@rws-framework/client/src/plugins/_plugin.ts");
-async function loadPartedComponents() {
-    this.assignClientToBrowser();
-    return new Promise(async (resolve, reject) => {
-        const componentParts = await this.apiService.get(this.appConfig.get('partedDirUrlPrefix') + '/rws_info.json');
-        const loadedComponents = [];
-        document.addEventListener(_component_1.default._EVENTS.component_define, (event) => {
-            const customEvent = event;
-            loadedComponents.push(customEvent.detail);
-        });
-        let compList = '';
-        componentParts.components.forEach((componentName, key) => {
-            const partUrl = `${this.appConfig.get('partedDirUrlPrefix')}/${this.appConfig.get('partedPrefix')}.${componentName}.js`;
-            compList += `  - \x1b[1m${componentParts.components[key]}:\x1b[0m component (${partUrl}) \n`;
-            const script = document.createElement('script');
-            script.async = true;
-            script.src = partUrl;
-            script.type = 'text/javascript';
-            document.body.appendChild(script);
-        });
-        console.info(`\x1b[1m[RWS]\x1b[0m" \x1b[1mPARTED\x1b[0m" mode asynchronously added components: \n${compList}`);
-        resolve(componentParts);
-    });
-}
-function defineAllComponents() {
-    const richWindowComponents = window.RWS.components;
-    Object.keys(richWindowComponents).map(key => richWindowComponents[key].component).forEach((el) => {
-        el.define(el, el.definition);
-    });
-    for (const plugin of _plugin_1.RWSPlugin.getAllPlugins()) {
-        plugin.onComponentsDeclare();
-    }
-}
-function getBinds() {
-    return {
-        loadPartedComponents: loadPartedComponents.bind(this)
-    };
-}
-exports["default"] = getBinds;
-const ComponentHelperStatic = {
-    defineAllComponents: defineAllComponents
-};
-exports.ComponentHelperStatic = ComponentHelperStatic;
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/client/config.ts"
-/*!******************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/client/config.ts ***!
-  \******************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const _plugin_1 = __webpack_require__(/*! ../plugins/_plugin */ "../node_modules/@rws-framework/client/src/plugins/_plugin.ts");
-const RWSWindow_1 = __webpack_require__(/*! ../types/RWSWindow */ "../node_modules/@rws-framework/client/src/types/RWSWindow.ts");
-const deepmerge_1 = __importDefault(__webpack_require__(/*! deepmerge */ "../node_modules/deepmerge/dist/cjs.js"));
-const hotReload_1 = __webpack_require__(/*! ./hotReload */ "../node_modules/@rws-framework/client/src/client/hotReload.ts");
-function getUser() {
-    const localSaved = localStorage.getItem('the_rws_user');
-    if (localSaved) {
-        this.setUser(JSON.parse(localSaved));
-    }
-    return this.user;
-}
-function setUser(user) {
-    if (!user || !(user === null || user === void 0 ? void 0 : user.jwt_token)) {
-        console.warn('[RWS Client Warning]', 'Passed user is not valid', user);
-        return this;
-    }
-    this.user = user;
-    this.apiService.setToken(this.user.jwt_token);
-    localStorage.setItem('the_rws_user', JSON.stringify(this.user));
-    for (const plugin of _plugin_1.RWSPlugin.getAllPlugins()) {
-        plugin.onSetUser(user);
-    }
-    return this;
-}
-function pushDataToServiceWorker(type, data, asset_type = 'data_push') {
-    let tries = 0;
-    const doIt = () => {
-        try {
-            this.swService.sendDataToServiceWorker(type, data, asset_type);
-        }
-        catch (e) {
-            if (tries < 3) {
-                setTimeout(() => { doIt(); }, 300);
-                tries++;
-            }
-        }
-    };
-    doIt();
-}
-function pushUserToServiceWorker(userData) {
-    this.setUser(userData);
-    this.pushDataToServiceWorker('SET_USER', userData, 'logged_user');
-}
-function get(key) {
-    if (Object.keys(this.customServices).includes(key)) {
-        return this.customServices[key];
-    }
-    if (Object.keys(this.defaultServices).includes(key)) {
-        return this.defaultServices[key];
-    }
-    return null;
-}
-function addPlugin(pluginEntry) {
-    const rwsWindow = (0, RWSWindow_1.loadRWSRichWindow)();
-    const pluginClass = pluginEntry.pluginEntry;
-    const pluginOptions = (Array.isArray(pluginEntry) ? pluginEntry[1] : { enabled: true });
-    if (!Object.keys(rwsWindow.RWS.plugins).find(item => { item === pluginClass.name; })) {
-        const pluginInstance = new pluginClass(pluginOptions);
-        this.plugins[pluginClass.name] = pluginInstance;
-        rwsWindow.RWS.plugins[pluginClass.name] = pluginInstance;
-    }
-}
-async function setup(config = {}) {
-    if (this.isSetup) {
-        return this.config;
-    }
-    if (this.config) {
-        this.config = (0, deepmerge_1.default)(this.config, config);
-    }
-    this.appConfig.mergeConfig(this.config);
-    if (this.appConfig.get('hotReload') === true) {
-        if (!this.appConfig.get('hotReloadPort')) {
-            this.appConfig.set('hotReloadPort', hotReload_1._DEFAULT_HR_PORT);
-        }
-    }
-    if (this.config.plugins) {
-        for (const pluginEntry of this.config.plugins) {
-            addPlugin.bind(this)(pluginEntry);
-        }
-    }
-    if (config === null || config === void 0 ? void 0 : config.user) {
-        this.setUser(config.user);
-    }
-    if (this.appConfig.get('parted')) {
-        const componentParts = await this.loadPartedComponents();
-        for (const plugin of _plugin_1.RWSPlugin.getAllPlugins()) {
-            plugin.onPartedComponentsLoad(componentParts);
-        }
-    }
-    this.isSetup = true;
-    return this.config;
-}
-async function start(config = {}) {
-    this.config = { ...this.config, ...config };
-    if (!this.isSetup) {
-        this.config = await this.setup(this.config);
-    }
-    if (Object.keys(config).length) {
-        this.appConfig.mergeConfig(this.config);
-    }
-    const setThisUser = (config === null || config === void 0 ? void 0 : config.user) || this.getUser();
-    if (setThisUser) {
-        this.config.user = setThisUser;
-        this.setUser(setThisUser);
-    }
-    if (this.config.user && !this.config.dontPushToSW) {
-        this.pushUserToServiceWorker(this.user);
-    }
-    await this.initCallback();
-    for (const plugin of _plugin_1.RWSPlugin.getAllPlugins()) {
-        await plugin.onClientStart();
-    }
-    // if(this.appConfig.get('hotReload')){
-    //     if (module.hot) {
-    //         module.hot.accept();
-    //     }
-    // }
-    return this;
-}
-function getBinds() {
-    return {
-        start: start.bind(this),
-        setup: setup.bind(this),
-        get: get.bind(this),
-        setUser: setUser.bind(this),
-        getUser: getUser.bind(this),
-        pushDataToServiceWorker: pushDataToServiceWorker.bind(this),
-        pushUserToServiceWorker: pushUserToServiceWorker.bind(this)
-    };
-}
-exports["default"] = getBinds;
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/client/hotReload.ts"
-/*!*********************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/client/hotReload.ts ***!
-  \*********************************************************************/
-(__unused_webpack_module, exports) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports._DEFAULT_HR_PORT = void 0;
-exports._DEFAULT_HR_PORT = 1030;
-async function hotReloadSetup(config = {}) {
-    return this;
-}
-function getBinds() {
-    return {
-        hotReloadSetup: hotReloadSetup.bind(this)
-    };
-}
-exports["default"] = getBinds;
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/client/services.ts"
-/*!********************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/client/services.ts ***!
-  \********************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const RWSWindow_1 = __webpack_require__(/*! ../types/RWSWindow */ "../node_modules/@rws-framework/client/src/types/RWSWindow.ts");
-async function loadServices() {
-    const richWindow = (0, RWSWindow_1.loadRWSRichWindow)();
-    for (const serviceKey of Object.keys(richWindow.RWS._registered)) {
-        const currentService = this._container.get(richWindow.RWS._registered[serviceKey]);
-        if (currentService.isInClient() && !Object.keys(this.customServices).includes(serviceKey)) {
-            this.customServices[serviceKey] = currentService;
-        }
-        if (currentService.isDefault() && !Object.keys(this.defaultServices).includes(serviceKey)) {
-            this.defaultServices[serviceKey] = currentService;
-        }
-    }
-}
-function getBinds() {
-    return {
-        loadServices: loadServices.bind(this),
-    };
-}
-exports["default"] = getBinds;
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/components/_attrs/_default_observable_accessor.ts"
-/*!***************************************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/components/_attrs/_default_observable_accessor.ts ***!
-  \***************************************************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.DefaultObservableAccessor = void 0;
-const _extended_accessor_1 = __webpack_require__(/*! ./_extended_accessor */ "../node_modules/@rws-framework/client/src/components/_attrs/_extended_accessor.ts");
-class DefaultObservableAccessor extends _extended_accessor_1.ExtendedObservableAccessor {
-    constructor(name, customGet = null, customSet = null, watcher = void 0, suffix = 'Changed') {
-        super(name, customGet, customSet, watcher, suffix);
-        this.name = name;
-        this.customGet = customGet;
-        this.customSet = customSet;
-        this.watcher = watcher;
-    }
-}
-exports.DefaultObservableAccessor = DefaultObservableAccessor;
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/components/_attrs/_extended_accessor.ts"
-/*!*****************************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/components/_attrs/_extended_accessor.ts ***!
-  \*****************************************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ExtendedObservableAccessor = void 0;
+exports.LineSplitter = void 0;
+const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+__webpack_require__(/*! ./template.html */ "../node_modules/@rws-framework/components/src/components/rws/line-splitter/template.html");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
 const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
-class ExtendedObservableAccessor {
-    constructor(name, customGet = null, customSet = null, watcher = void 0, suffix = 'Changed') {
-        this.name = name;
-        this.customGet = customGet;
-        this.customSet = customSet;
-        this.watcher = watcher;
-        this.field = `_${name}`;
-        this.callback = `${name}${suffix}`;
-    }
-    getValue(source) {
-        fast_element_1.Observable.track(source, this.name);
-        return this.customGet ? this.customGet(source, this.field) : source[this.field];
-    }
-    setValue(source, newValue) {
-        if (this.customSet) {
-            if (this.customSet(source, this.field, newValue) === false) {
-                return;
-            }
-            ;
-        }
-        const field = this.field;
-        const oldValue = source[field];
-        if (oldValue !== newValue) {
-            source[field] = newValue;
-            const callback = source[this.callback];
-            if (typeof callback === 'function') {
-                callback.call(source, oldValue, newValue);
-            }
-            fast_element_1.Observable.getNotifier(source).notify(this.name);
-        }
-    }
+//@ts-ignore                
+let rwsTemplate = T.html `<div class="text-splitter-area ${x => x.addClass}" :innerHTML="${(x) => x.content}"></div>`;
+__webpack_require__(/*! ./styles/layout.scss */ "../node_modules/@rws-framework/components/src/components/rws/line-splitter/styles/layout.scss");
+const styles = T.css `blockquote {
+  position: relative;
+  font-family: "Barlow Condensed", sans-serif;
+  max-width: 620px;
+  margin: 0 auto 80px auto;
+  align-self: center;
+  display: inline-block;
+  width: 100%;
 }
-exports.ExtendedObservableAccessor = ExtendedObservableAccessor;
+blockquote .quote-cnt {
+  font-family: "Abril Fatface", cursive;
+  position: relative;
+  color: var(--line-splitter-maincolor, #333);
+  font-size: 1.4rem;
+  line-height: 1;
+  margin: 0;
+  border: 2px solid #fff;
+  border: solid 2px;
+  border-radius: 20px;
+  padding: 25px;
+  font-weight: bold;
+}
+blockquote .quote-cnt .native {
+  font-weight: bold;
+}
+blockquote .quote-cnt .native + .pronounciation {
+  color: #fff;
+  font-weight: normal;
+  font-size: 0.9rem;
+  margin-left: 15px;
+}
+blockquote .quote-cnt:after {
+  content: "";
+  position: absolute;
+  border: 2px solid var(--line-splitter-maincolor, #333);
+  border-radius: 0 50px 0 0;
+  width: 60px;
+  height: 60px;
+  bottom: -62px;
+  left: 50px;
+  border-bottom: none;
+  border-left: none;
+  z-index: 3;
+}
+blockquote .quote-cnt:before {
+  content: "";
+  position: absolute;
+  width: 80px;
+  border: 6px solid var(--line-splitter-bgcolor, #CCC);
+  bottom: -3px;
+  left: 50px;
+  z-index: 2;
+}
+
+dl {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+dl dt {
+  text-align: right;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 0 15px;
+  margin-bottom: 80px;
+  flex: 0 0 50%;
+  max-width: 50%;
+}
+@media screen and (max-width: var(--rws-md-width, 1200px)) {
+  dl dt {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+@media screen and (max-width: var(--rws-sm-width, 992px)) {
+  dl dt {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+@media screen and (max-width: var(--rws-xs-width, 768px)) {
+  dl dt {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+dl dt:after {
+  content: ":";
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+dl dd {
+  margin-left: 0;
+  flex: 0 0 50%;
+  max-width: 50%;
+}
+@media screen and (max-width: var(--rws-md-width, 1200px)) {
+  dl dd {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+@media screen and (max-width: var(--rws-sm-width, 992px)) {
+  dl dd {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+@media screen and (max-width: var(--rws-xs-width, 768px)) {
+  dl dd {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+p {
+  margin: 0 0 15px 0;
+}
+
+h1, h2, h3 {
+  margin: 10px 0 15px 0;
+}
+
+ul, ol {
+  margin: 0;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+.spacer {
+  margin-right: 10px;
+}
+
+.text-splitter-area .dots {
+  font-weight: 700;
+}
+.text-splitter-area.loading p:last-child:after {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 1rem;
+  height: 1.2rem;
+  background: rgb(114, 106, 106);
+  animation: 0.7s ease 0s infinite normal none running blink;
+  transform: translateY(5px);
+  margin-left: 5px;
+}
+
+.tagged {
+  background-color: yellow;
+}`;
+const shadowOptions = { "mode": "open" };
+let LineSplitter = class LineSplitter extends client_1.RWSViewComponent {
+    constructor() {
+        super(...arguments);
+        this.text = '';
+        this.content = '<span class="dots">.</span>';
+        this.query = '';
+        this.dots = false;
+        this.allowedTags = '';
+        this.addClass = '';
+        this.stopAnimation = () => { };
+        this.allowedHTMLTags = ['dl', 'dt', 'dd', 'br', 'blockquote', 'span', 'p', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'strong', 'i', 'small', 'u'];
+    }
+    connectedCallback() {
+        super.connectedCallback();
+        if (this.dots) {
+            this.stopAnimation = this.animateLoadingDots();
+        }
+        if (this.text) {
+            this.splitLines();
+        }
+    }
+    parseTags(line) {
+        const componentAllowedTags = this.allowedHTMLTags.concat(this.allowedTags.split(','));
+        let output = this.domService.sanitizeHTML(line, { ADD_TAGS: [], ALLOWED_TAGS: componentAllowedTags });
+        output = output.replace(/<.*>([\s\S]*?)<\/.*>/g, (match) => {
+            return match.replace(/\n/g, '');
+        });
+        output = output.replace(/\n\n/g, '\n');
+        output = output.replace(/\n/g, '<br/>');
+        output = output.replace(/<\/p><br\/>/g, '</p>');
+        output = output
+            .replace(/<br\/><h([1-3])>/g, '<h$1>')
+            .replace(/<\/h([1-3])><br\/>/g, '</h$1>');
+        if (this.query !== null || this.query !== '') {
+            const query = this.query ? this.query.split(',').map(word => word.trim()) : [];
+            query.forEach(word => {
+                // Create a regex for the word, ensuring it's case-insensitive and doesn't affect existing HTML tags
+                const regex = new RegExp(`(${word})(?![^<]*>)`, 'gi');
+                output = output.replace(regex, '<span class="tagged">$1</span>');
+            });
+        }
+        return output;
+    }
+    splitLines() {
+        if ([". ", ". . ", ". . . "].includes(this.text)) {
+            this.content = `<span class="dots">${this.text}</span>`;
+        }
+        else {
+            this.stopAnimation();
+            this.content = this.parseTags(this.text);
+        }
+    }
+    textChanged(oldVal, newVal) {
+        if (newVal) {
+            this.text = newVal;
+            this.splitLines();
+        }
+    }
+    contentChanged() {
+        if (this.callback) {
+            this.callback();
+        }
+    }
+    animateLoadingDots() {
+        let counter = 1;
+        const interval = setInterval(() => {
+            counter = counter % 3 + 1;
+            this.text = '. '.repeat(counter);
+        }, 800);
+        // Zwracamy funkcję do zatrzymania animacji
+        return () => clearInterval(interval);
+    }
+    addClassChanged(oldVal, newVal) {
+        if (newVal) {
+            this.addClass = newVal;
+        }
+    }
+    queryChanged(oldVal, newVal) {
+        if (newVal) {
+            this.splitLines();
+        }
+    }
+};
+exports.LineSplitter = LineSplitter;
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", String)
+], LineSplitter.prototype, "text", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Object)
+], LineSplitter.prototype, "content", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", String)
+], LineSplitter.prototype, "query", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Function)
+], LineSplitter.prototype, "callback", void 0);
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", Object)
+], LineSplitter.prototype, "dots", void 0);
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", Object)
+], LineSplitter.prototype, "allowedTags", void 0);
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", Object)
+], LineSplitter.prototype, "addClass", void 0);
+exports.LineSplitter = LineSplitter = __decorate([
+    (0, client_1.RWSView)('line-splitter', null, { template: rwsTemplate, styles, options: { shadowOptions } })
+], LineSplitter);
+LineSplitter.defineComponent();
 
 
 /***/ },
 
-/***/ "../node_modules/@rws-framework/client/src/components/_attrs/_external_handler.ts"
+/***/ "../node_modules/@rws-framework/components/src/components/rws/line-splitter/styles/layout.scss"
+/*!*****************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/line-splitter/styles/layout.scss ***!
+  \*****************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/line-splitter/template.html"
+/*!************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/line-splitter/template.html ***!
+  \************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/loader/component.ts"
 /*!****************************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/components/_attrs/_external_handler.ts ***!
+  !*** ../node_modules/@rws-framework/components/src/components/rws/loader/component.ts ***!
   \****************************************************************************************/
-(__unused_webpack_module, exports) {
+(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.handleExternalChange = handleExternalChange;
-function handleExternalChange(_target, $prop) {
-    if (!!_target['externalChanged']) {
-        _target['externalChanged'].call(_target, $prop, null, _target[$prop]);
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
     }
-}
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/components/_attrs/_external_observable_accessor.ts"
-/*!****************************************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/components/_attrs/_external_observable_accessor.ts ***!
-  \****************************************************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ExternalObservableAccessor = void 0;
-const _extended_accessor_1 = __webpack_require__(/*! ./_extended_accessor */ "../node_modules/@rws-framework/client/src/components/_attrs/_extended_accessor.ts");
-class ExternalObservableAccessor extends _extended_accessor_1.ExtendedObservableAccessor {
-    constructor(name, customGet = null, customSet = null, watcher = void 0) {
-        super(name, customGet, customSet, watcher, '');
-        this.name = name;
-        this.customGet = customGet;
-        this.customSet = customSet;
-        this.watcher = watcher;
-    }
-}
-exports.ExternalObservableAccessor = ExternalObservableAccessor;
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/components/_attrs/angular-attr.ts"
-/*!***********************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/components/_attrs/angular-attr.ts ***!
-  \***********************************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ngAttr = ngAttr;
-const external_attr_1 = __webpack_require__(/*! ./external-attr */ "../node_modules/@rws-framework/client/src/components/_attrs/external-attr.ts");
-function ngAttr(configOrTarget, prop) {
-    return (0, external_attr_1.externalAttr)(configOrTarget, prop, {
-        converter: (val) => {
-            if (val && val.indexOf('{{') > -1) {
-                return undefined;
-            }
-            return val;
-        }
-    });
-}
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/components/_attrs/external-attr.ts"
-/*!************************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/components/_attrs/external-attr.ts ***!
-  \************************************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.externalAttr = externalAttr;
-const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
-const _component_1 = __importDefault(__webpack_require__(/*! ../_component */ "../node_modules/@rws-framework/client/src/components/_component.ts"));
-const _default_opts = {
-    converter: (val) => {
-        return val;
+exports.RWSLoader = void 0;
+const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+__webpack_require__(/*! ./template.html */ "../node_modules/@rws-framework/components/src/components/rws/loader/template.html");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
+//@ts-ignore                
+let rwsTemplate = T.html `<div><div class="loader"></div></div>`;
+__webpack_require__(/*! ./styles/layout.scss */ "../node_modules/@rws-framework/components/src/components/rws/loader/styles/layout.scss");
+const styles = T.css `.loader {
+  width: 26px;
+  height: 26px;
+  border: 8px solid transparent;
+  border-radius: 50%;
+  position: relative;
+}
+.loader::before {
+  content: "";
+  border: 8px solid rgba(var(--rws-loader-color, #eb7b13), 0.5);
+  border-radius: 50%;
+  width: 31.2px;
+  height: 31.2px;
+  position: absolute;
+  top: -10.6px;
+  left: -10.6px;
+  animation: loader-scale 1s ease-out infinite;
+  animation-delay: 1s;
+  opacity: 0;
+}
+.loader::after {
+  content: "";
+  border: 8px solid var(--rws-loader-color, #eb7b13);
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  animation: loader-scale 1s ease-out infinite;
+  animation-delay: 0.5s;
+}
+@keyframes loader-scale {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}`;
+const shadowOptions = { "mode": "open" };
+let RWSLoader = class RWSLoader extends client_1.RWSViewComponent {
+    connectedCallback() {
+        super.connectedCallback();
     }
 };
-function externalAttr(configOrTarget, property, opts = _default_opts) {
-    let config;
-    function decorator($target, $prop) {
-        if (arguments.length > 1) {
-            // Non invocation:
-            // - @attr
-            // Invocation with or w/o opts:
-            // - @attr()
-            // - @attr({...opts})
-            config.property = $prop;
-        }
-        config.mode = 'fromView';
-        config.converter = { fromView: opts.converter, toView: null };
-        const attrs = fast_element_1.AttributeConfiguration.locate($target.constructor);
-        _component_1.default.setExternalAttr($target.constructor.name, $prop);
-        attrs.push(config);
-    }
-    if (arguments.length > 1) {
-        // Non invocation:
-        // - @attr
-        config = {};
-        decorator(configOrTarget, property);
-        return;
-    }
-    // Invocation with or w/o opts:
-    // - @attr()
-    // - @attr({...opts})
-    config = configOrTarget === void 0 ? {} : configOrTarget;
-    return decorator;
-}
+exports.RWSLoader = RWSLoader;
+exports.RWSLoader = RWSLoader = __decorate([
+    (0, client_1.RWSView)('rws-loader', null, { template: rwsTemplate, styles, options: { shadowOptions } })
+], RWSLoader);
+RWSLoader.defineComponent();
 
 
 /***/ },
 
-/***/ "../node_modules/@rws-framework/client/src/components/_attrs/external-observable.ts"
+/***/ "../node_modules/@rws-framework/components/src/components/rws/loader/styles/layout.scss"
+/*!**********************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/loader/styles/layout.scss ***!
+  \**********************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/loader/template.html"
+/*!*****************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/loader/template.html ***!
+  \*****************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/progress/component.ts"
 /*!******************************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/components/_attrs/external-observable.ts ***!
+  !*** ../node_modules/@rws-framework/components/src/components/rws/progress/component.ts ***!
   \******************************************************************************************/
 (__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.externalObservable = externalObservable;
+exports.RWSProgress = void 0;
+const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+__webpack_require__(/*! ./template.html */ "../node_modules/@rws-framework/components/src/components/rws/progress/template.html");
 const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
-const _default_observable_accessor_1 = __webpack_require__(/*! ./_default_observable_accessor */ "../node_modules/@rws-framework/client/src/components/_attrs/_default_observable_accessor.ts");
-const _external_observable_accessor_1 = __webpack_require__(/*! ./_external_observable_accessor */ "../node_modules/@rws-framework/client/src/components/_attrs/_external_observable_accessor.ts");
-function isString(test) {
-    return typeof test === 'string';
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
+//@ts-ignore                
+let rwsTemplate = T.html `<template
+            role="progressbar"
+            aria-valuenow="${x => x.value}"
+            aria-valuemin="${x => x.min}"
+            aria-valuemax="${x => x.max}"
+        >
+            ${T.when(x => typeof x.value === "number", T.html `
+                    <div class="progress rws-progress" part="progress" slot="determinate">
+                        <div
+                            class="determinate"
+                            part="determinate"
+                            style="width: ${x => x.percentComplete}%"
+                        ></div>
+                    </div>
+                `, T.html `
+                    <div class="progress rws-progress" part="progress" slot="indeterminate">
+                        <slot name="indeterminate">                           
+                        </slot>
+                    </div>
+                `)}
+</template>`;
+__webpack_require__(/*! ./styles/layout.scss */ "../node_modules/@rws-framework/components/src/components/rws/progress/styles/layout.scss");
+const styles = T.css `:host {
+  align-items: center;
+  display: flex;
+  contain: content;
+  outline: none;
+  height: calc(var(--design-unit) * 1px);
+  margin: calc(var(--design-unit) * 1px) 0;
 }
-function externalObservable(targetComponent, nameOrAccessor, opts = null) {
-    const target = targetComponent;
-    const propName = typeof nameOrAccessor === 'string' ? nameOrAccessor : nameOrAccessor.name;
-    if (isString(nameOrAccessor)) {
-        nameOrAccessor = new _default_observable_accessor_1.DefaultObservableAccessor(propName);
-    }
-    const defaultAccessor = nameOrAccessor;
-    const extendedAccessor = new _external_observable_accessor_1.ExternalObservableAccessor(propName);
-    const accessors = [
-        defaultAccessor,
-        extendedAccessor
-    ];
-    for (const accessor of accessors) {
-        fast_element_1.Observable.getAccessors(target).push(accessor);
-        Reflect.defineProperty(target, accessor.name, {
-            enumerable: true,
-            get() {
-                return accessor.getValue(this);
-            },
-            set(newValue) {
-                const oldVal = accessor.getValue(this);
-                accessor.setValue(this, newValue);
-                if (!!this['externalChanged']) {
-                    this['externalChanged'].call(accessor.name, oldVal, newValue);
-                }
-            },
-        });
-    }
+
+.progress {
+  background-color: var(--neutral-fill-rest);
+  border-radius: calc(var(--design-unit) * 1px);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
+
+.determinate {
+  background-color: var(--accent-foreground-rest);
+  border-radius: calc(var(--design-unit) * 1px);
+  height: 100%;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+}
+
+.indeterminate {
+  border-radius: calc(var(--design-unit) * 1px);
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.indeterminate-indicator-1 {
+  animation: indeterminate-1 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background-color: var(--accent-foreground-rest);
+  border-radius: calc(var(--design-unit) * 1px);
+  height: 100%;
+  opacity: 0;
+  position: absolute;
+  width: 40%;
+}
+
+.indeterminate-indicator-2 {
+  position: absolute;
+  opacity: 0;
+  height: 100%;
+  background-color: var(--accent-foreground-rest);
+  border-radius: calc(var(--design-unit) * 1px);
+  width: 60%;
+  animation: indeterminate-2 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes indeterminate-1 {
+  0% {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
+  70% {
+    opacity: 1;
+    transform: translateX(300%);
+  }
+  70.01% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(300%);
+  }
+}
+@keyframes indeterminate-2 {
+  0% {
+    opacity: 0;
+    transform: translateX(-150%);
+  }
+  29.99% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+    transform: translateX(-150%);
+  }
+  100% {
+    transform: translateX(166.66%);
+    opacity: 1;
+  }
+}`;
+const shadowOptions = { "mode": "open" };
+let RWSProgress = class RWSProgress extends client_1.RWSViewComponent {
+    constructor() {
+        super(...arguments);
+        this.percentComplete = 0;
+    }
+    valueChanged() {
+        this.updatePercentComplete();
+    }
+    minChanged() {
+        if (this.$fastController.isConnected) {
+            this.updatePercentComplete();
+        }
+    }
+    maxChanged() {
+        if (this.$fastController.isConnected) {
+            this.updatePercentComplete();
+        }
+    }
+    connectedCallback() {
+        super.connectedCallback();
+        this.updatePercentComplete();
+    }
+    updatePercentComplete() {
+        const min = typeof this.min === 'number' ? this.min : 0;
+        const max = typeof this.max === 'number' ? this.max : 100;
+        const value = typeof this.value === 'number' ? this.value : 0;
+        const range = max - min;
+        this.percentComplete =
+            range === 0 ? 0 : Math.fround(((value - min) / range) * 100);
+    }
+};
+exports.RWSProgress = RWSProgress;
+__decorate([
+    (0, fast_element_1.attr)({ converter: fast_element_1.nullableNumberConverter }),
+    __metadata("design:type", Number)
+], RWSProgress.prototype, "value", void 0);
+__decorate([
+    (0, fast_element_1.attr)({ converter: fast_element_1.nullableNumberConverter }),
+    __metadata("design:type", Number)
+], RWSProgress.prototype, "min", void 0);
+__decorate([
+    (0, fast_element_1.attr)({ converter: fast_element_1.nullableNumberConverter }),
+    __metadata("design:type", Number)
+], RWSProgress.prototype, "max", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Number)
+], RWSProgress.prototype, "percentComplete", void 0);
+exports.RWSProgress = RWSProgress = __decorate([
+    (0, client_1.RWSView)('rws-progress', null, { template: rwsTemplate, styles, options: { shadowOptions } })
+], RWSProgress);
+RWSProgress.defineComponent();
 
 
 /***/ },
 
-/***/ "../node_modules/@rws-framework/client/src/components/_attrs/json-attr.ts"
-/*!********************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/components/_attrs/json-attr.ts ***!
-  \********************************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
+/***/ "../node_modules/@rws-framework/components/src/components/rws/progress/styles/layout.scss"
+/*!************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/progress/styles/layout.scss ***!
+  \************************************************************************************************/
+() {
 
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.jsonAttr = jsonAttr;
-const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
-const _component_1 = __importDefault(__webpack_require__(/*! ../_component */ "../node_modules/@rws-framework/client/src/components/_component.ts"));
-const _default_opts = {
-    converter: (val) => {
-        try {
-            return JSON.parse(val);
-        }
-        catch (e) {
-            console.error(e);
-            return undefined;
-        }
-    }
-};
-function jsonAttr(configOrTarget, property, opts = _default_opts) {
-    let config;
-    function decorator($target, $prop) {
-        if (arguments.length > 1) {
-            config.property = $prop;
-        }
-        config.mode = 'fromView';
-        config.converter = { fromView: opts.converter, toView: null };
-        const attrs = fast_element_1.AttributeConfiguration.locate($target.constructor);
-        _component_1.default.setExternalAttr($target.constructor.name, $prop);
-        attrs.push(config);
-    }
-    if (arguments.length > 1) {
-        // Non invocation:
-        // - @attr
-        config = {};
-        decorator(configOrTarget, property);
-        return;
-    }
-    // Invocation with or w/o opts:
-    // - @attr()
-    // - @attr({...opts})
-    config = configOrTarget === void 0 ? {} : configOrTarget;
-    return decorator;
-}
 
 
 /***/ },
 
-/***/ "../node_modules/@rws-framework/client/src/components/_component.ts"
-/*!**************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/components/_component.ts ***!
-  \**************************************************************************/
+/***/ "../node_modules/@rws-framework/components/src/components/rws/progress/template.html"
+/*!*******************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/progress/template.html ***!
+  \*******************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/reformer/component.ts"
+/*!******************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/reformer/component.ts ***!
+  \******************************************************************************************/
 (__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -17391,1708 +20081,3524 @@ var __importStar = (this && this.__importStar) || (function () {
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-var _a, _b, _c, _d, _e, _f, _g;
+var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RWSViewComponent = void 0;
+exports.ReFormer = void 0;
+const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+__webpack_require__(/*! ./template.html */ "../node_modules/@rws-framework/components/src/components/rws/reformer/template.html");
 const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
-const rws_foundation_1 = __webpack_require__(/*! ../../foundation/rws-foundation */ "../node_modules/@rws-framework/client/foundation/rws-foundation.js");
-const ConfigService_1 = __importStar(__webpack_require__(/*! ../services/ConfigService */ "../node_modules/@rws-framework/client/src/services/ConfigService.ts"));
-const UtilsService_1 = __importStar(__webpack_require__(/*! ../services/UtilsService */ "../node_modules/@rws-framework/client/src/services/UtilsService.ts"));
-const DOMService_1 = __importStar(__webpack_require__(/*! ../services/DOMService */ "../node_modules/@rws-framework/client/src/services/DOMService.ts"));
-const ApiService_1 = __importStar(__webpack_require__(/*! ../services/ApiService */ "../node_modules/@rws-framework/client/src/services/ApiService.ts"));
-const NotifyService_1 = __importStar(__webpack_require__(/*! ../services/NotifyService */ "../node_modules/@rws-framework/client/src/services/NotifyService.ts"));
-const IndexedDBService_1 = __importStar(__webpack_require__(/*! ../services/IndexedDBService */ "../node_modules/@rws-framework/client/src/services/IndexedDBService.ts"));
-const _decorator_1 = __webpack_require__(/*! ./_decorator */ "../node_modules/@rws-framework/client/src/components/_decorator.ts");
-const _definitions_1 = __webpack_require__(/*! ./_definitions */ "../node_modules/@rws-framework/client/src/components/_definitions.ts");
-const _event_handling_1 = __webpack_require__(/*! ./_event_handling */ "../node_modules/@rws-framework/client/src/components/_event_handling.ts");
-const _css_injection_1 = __importDefault(__webpack_require__(/*! ./_css_injection */ "../node_modules/@rws-framework/client/src/components/_css_injection.ts"));
-const _DEFAULT_INJECT_CSS_CACHE_LIMIT_DAYS = 1;
-class RWSViewComponent extends rws_foundation_1.FoundationElement {
+const IBackendCore_1 = __webpack_require__(/*! ../../../types/IBackendCore */ "../node_modules/@rws-framework/components/src/types/IBackendCore.ts");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
+const component_1 = __webpack_require__(/*! ./fields/text/component */ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/text/component.ts");
+const component_2 = __webpack_require__(/*! ./fields/date/component */ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/date/component.ts");
+const component_3 = __webpack_require__(/*! ./fields/number/component */ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/number/component.ts");
+const component_4 = __webpack_require__(/*! ./fields/boolean/component */ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/boolean/component.ts");
+component_4.ReFormerBoolean;
+component_3.ReFormerNumber;
+component_1.ReFormerText;
+component_2.ReFormerDate;
+//@ts-ignore                
+let rwsTemplate = T.html `<form class="re-former-container">
+    ${T.repeat(x => x.formFields, T.html `<div class="form-field">
+        <label for="re-former-field-${x => x.fieldName}">${(x, c) => c.parent.paintLabel(x.fieldName)}</label>
+        ${T.when(x => x.type === 'String', T.html `
+            <reformer-text class="reformer-field-input" :value="${(x, c) => !!c.parent.payload[x.fieldName] ? c.parent.payload[x.fieldName] : null}" :setForm="${(x, c) => c.parent.setForm}" name="${x => x.fieldName}"></re-former-text>
+        `)}
+        ${T.when(x => x.type === 'Date', T.html `
+            <reformer-date class="reformer-field-input" :value="${(x, c) => !!c.parent.payload[x.fieldName] ? c.parent.payload[x.fieldName] : null}" :setForm="${(x, c) => c.parent.setForm}" name="${x => x.fieldName}"></re-former-date>
+        `)}
+        ${T.when(x => x.type === 'Number', T.html `
+            <reformer-number class="reformer-field-input" :value="${(x, c) => !!c.parent.payload[x.fieldName] ? c.parent.payload[x.fieldName] : null}" :setForm="${(x, c) => c.parent.setForm}" name="${x => x.fieldName}"></re-former-number>
+        `)}
+        ${T.when(x => x.type === 'Boolean', T.html `
+            <reformer-boolean class="reformer-field-input" :value="${(x, c) => !!c.parent.payload[x.fieldName] ? c.parent.payload[x.fieldName] : null}" :setForm="${(x, c) => c.parent.setForm}" name="${x => x.fieldName}"></re-former-boolean>
+        `)}
+    </div>`)}   
+    
+    <sl-button @click="${(x, c) => x.sendForm()}" variant="primary" >Save</sl-button>
+</div>
+`;
+__webpack_require__(/*! ./styles/layout.scss */ "../node_modules/@rws-framework/components/src/components/rws/reformer/styles/layout.scss");
+const styles = T.css `.re-former-container {
+  display: flex;
+  flex-direction: column;
+}
+.re-former-container .form-field {
+  max-width: 30%;
+  margin-bottom: 15px;
+}
+.re-former-container .form-field label {
+  font-weight: bold;
+  text-transform: capitalize;
+}`;
+const shadowOptions = { "mode": "open" };
+let ReFormer = class ReFormer extends client_1.RWSViewComponent {
     constructor() {
-        super();
-        this.__isLoading = true;
-        this.__exAttrLoaded = [];
-        this.routeParams = {};
-        this.trashIterator = 0;
-        this.fileAssets = {};
-        (0, _decorator_1.applyConstructor)(this);
+        super(...arguments);
+        this.fields = null;
+        this.setForm = this.setFormField.bind(this);
+        this.afterForm = null;
+        this.payload = {};
+    }
+    modelTypesChanged(oldVal, newVal) {
+        if (newVal) {
+            this.formFields = newVal.data.types.filter((item) => !['id', 'created_at', 'updated_at'].includes(item.fieldName));
+        }
+    }
+    setFormField(key, val) {
+        this.payload[key] = val.value;
+    }
+    paintLabel(input) {
+        return input;
+    }
+    async sendForm() {
+        const resource = await this.apiService.back.post(`${this.resource}:create`, this.payload);
+        this.payload = {};
+        if (this.afterForm) {
+            this.afterForm(resource);
+        }
+    }
+};
+exports.ReFormer = ReFormer;
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", String)
+], ReFormer.prototype, "resource", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Array)
+], ReFormer.prototype, "fields", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Array)
+], ReFormer.prototype, "formFields", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", typeof (_a = typeof IBackendCore_1.ITypesResponse !== "undefined" && IBackendCore_1.ITypesResponse) === "function" ? _a : Object)
+], ReFormer.prototype, "modelTypes", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Function)
+], ReFormer.prototype, "setForm", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Function)
+], ReFormer.prototype, "afterForm", void 0);
+exports.ReFormer = ReFormer = __decorate([
+    (0, client_1.RWSView)('rws-reformer', null, { template: rwsTemplate, styles, options: { shadowOptions } })
+], ReFormer);
+ReFormer.defineComponent();
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/boolean/component.ts"
+/*!*********************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/reformer/fields/boolean/component.ts ***!
+  \*********************************************************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ReFormerBoolean = void 0;
+const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+__webpack_require__(/*! ./template.html */ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/boolean/template.html");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+//@ts-ignore                
+let rwsTemplate = T.html `<sl-switch     
+    name="${x => x.name}"
+    id="re-former-field-${x => x.name}" 
+    :value="${x => x.value}"     
+    @change="${(x, c) => x.setForm(x.name, c.event.target)}"
+></sl-switch>`;
+__webpack_require__(/*! ./styles/layout.scss */ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/boolean/styles/layout.scss");
+const styles = T.css `.re-former-boolean-input {
+  display: flex;
+}`;
+const shadowOptions = { "mode": "open" };
+let ReFormerBoolean = class ReFormerBoolean extends client_1.RWSViewComponent {
+    constructor() {
+        super(...arguments);
+        this.defaultValue = null;
+        this.value = null;
     }
     connectedCallback() {
         super.connectedCallback();
-        (0, _decorator_1.applyConstructor)(this);
-        if (!this.constructor.definition && this.constructor.autoLoadFastElement) {
-            throw new Error('RWS component is not named. Add `static definition = {name, template};`');
-        }
-        this.applyFileList();
-        if (RWSViewComponent.FORCE_INJECT_STYLES) {
-            this.injectStyles(RWSViewComponent.FORCE_INJECT_STYLES, RWSViewComponent.FORCE_INJECT_MODE);
-        }
-        RWSViewComponent.instances.push(this);
+        this.value = this.defaultValue;
     }
-    passRouteParams(routeParams = null) {
-        if (routeParams) {
-            this.routeParams = routeParams;
-        }
-    }
-    showAsset(assetName, options = {}) {
-        if (!this.fileAssets[assetName]) {
-            return (0, fast_element_1.html) `<span></span>`;
-            // removed by dead control flow
-
-        }
-        return this.fileAssets[assetName];
-    }
-    on(type, listener) {
-        return _event_handling_1.on.bind(this)(type, listener);
-    }
-    $emitDown(eventName, payload) {
-        return _event_handling_1.$emitDown.bind(this)(eventName, payload);
-    }
-    observe(callback, condition = null, observeRemoved = false) {
-        return _event_handling_1.observe.bind(this)(callback, condition, observeRemoved);
-    }
-    parse$(input, directReturn = false) {
-        return this.domService.parse$(input, directReturn);
-    }
-    $(selectors, directReturn = false) {
-        return this.domService.$(this.getShadowRoot(), selectors, directReturn);
-    }
-    async loadingString(item, addContent, shouldStop) {
-        let dots = 1;
-        const maxDots = 3; // Maximum number of dots
-        const interval = setInterval(async () => {
-            const dotsString = '. '.repeat(dots);
-            const doesItStop = await shouldStop(item, addContent);
-            if (doesItStop) {
-                addContent({ output: '' }, true);
-                clearInterval(interval);
-            }
-            else {
-                addContent({ output: `${dotsString}` }, true);
-                dots = (dots % (maxDots)) + 1;
-            }
-        }, 500);
-    }
-    async onDOMLoad() {
-        return new Promise((resolve) => {
-            if (this.getShadowRoot() !== null && this.getShadowRoot() !== undefined) {
-                resolve();
-            }
-            else {
-                // If shadowRoot is not yet available, use MutationObserver to wait for it
-                const observer = new MutationObserver(() => {
-                    if (this.getShadowRoot() !== null && this.getShadowRoot() !== undefined) {
-                        observer.disconnect();
-                        resolve();
-                    }
-                });
-                observer.observe(this, { childList: true, subtree: true });
-            }
-        });
-    }
-    getShadowRoot() {
-        const shRoot = this.shadowRoot;
-        if (!shRoot) {
-            throw new Error(`Component ${this.constructor.definition.name} lacks shadow root. If you wish to have component without shadow root extend your class with FASTElement`);
-        }
-        return shRoot;
-    }
-    forceReload() {
-        this.trashIterator += 1;
-    }
-    hotReplacedCallback() {
-        this.forceReload();
-    }
-    sendEventToOutside(eventName, data) {
-        (0, _event_handling_1.sendEventToOutside)(eventName, data);
-    }
-    static sendEventToOutside(eventName, data) {
-        (0, _event_handling_1.sendEventToOutside)(eventName, data);
-    }
-    static injectStyles(linkedStyles, mode) {
-        if (mode) {
-            RWSViewComponent.FORCE_INJECT_MODE = mode;
-        }
-        RWSViewComponent.FORCE_INJECT_STYLES = linkedStyles;
-    }
-    applyFileList() {
-        try {
-            this.constructor.fileList.forEach((file) => {
-                if (this.fileAssets[file]) {
-                    return;
-                }
-                this.apiService.pureGet(this.config.get('pubUrlFilePrefix') + file).then((response) => {
-                    this.fileAssets = { ...this.fileAssets, [file]: (0, fast_element_1.html) `${response}` };
-                });
-            });
-        }
-        catch (e) {
-            console.error('Error loading file content:', e.message);
-            console.error(e.stack);
-        }
-    }
-    static setExternalAttr(componentName, key) {
-        if (!Object.keys(RWSViewComponent._externalAttrs).includes(componentName)) {
-            RWSViewComponent._externalAttrs[componentName] = [];
-        }
-        RWSViewComponent._externalAttrs[componentName].push(key);
-    }
-    static hotReplacedCallback() {
-        this.getInstances().forEach(instance => instance.forceReload());
-    }
-    static isDefined() {
-        return (0, _definitions_1.isDefined)(this);
-    }
-    static defineComponent() {
-        return (0, _definitions_1.defineComponent)(this);
-    }
-    static getDefinition(tagName, htmlTemplate, styles = null) {
-        return (0, _definitions_1.getDefinition)(tagName, htmlTemplate, styles);
-    }
-    static getInstances() {
-        return RWSViewComponent.instances;
-    }
-    static getCachedStyles(styleLinks) {
-        return _css_injection_1.default.getCachedStyles(styleLinks);
-    }
-    static hasCachedStyles(styleLinks) {
-        return _css_injection_1.default.hasCachedStyles(styleLinks);
-    }
-    static getStylesOwnerComponent() {
-        return _css_injection_1.default.getStylesOwnerComponent();
-    }
-    static clearCachedStyles() {
-        _css_injection_1.default.clearCachedStyles();
-    }
-    async injectStyles(styleLinks, mode = 'adopted', maxDaysExp) {
-        // Create a bridge object that exposes the necessary properties
-        const componentBridge = {
-            shadowRoot: this.shadowRoot,
-            indexedDBService: this.indexedDBService,
-            $emit: this.$emit.bind(this)
-        };
-        return _css_injection_1.default.injectStyles(componentBridge, styleLinks, { mode, maxDaysExp });
-    }
-    getInjectedStyles(styleLinks) {
-        return _css_injection_1.default.getCachedStyles(styleLinks);
-    }
-    hasInjectedStyles(styleLinks) {
-        return _css_injection_1.default.hasCachedStyles(styleLinks);
-    }
-}
-exports.RWSViewComponent = RWSViewComponent;
-RWSViewComponent.instances = [];
-RWSViewComponent.fileList = [];
-RWSViewComponent.autoLoadFastElement = true;
-RWSViewComponent._defined = {};
-RWSViewComponent._toInject = {};
-RWSViewComponent._depKeys = { _all: [] };
-RWSViewComponent._externalAttrs = {};
-RWSViewComponent._verbose = false;
-RWSViewComponent.FORCE_INJECT_STYLES = [];
-RWSViewComponent.FORCE_INJECT_MODE = 'adopted';
-RWSViewComponent._EVENTS = {
-    component_define: 'rws:lifecycle:defineComponent',
-    component_parted_load: 'rws:lifecycle:loadPartedComponents',
 };
+exports.ReFormerBoolean = ReFormerBoolean;
 __decorate([
     fast_element_1.attr,
-    __metadata("design:type", typeof (_a = typeof Record !== "undefined" && Record) === "function" ? _a : Object)
-], RWSViewComponent.prototype, "routeParams", void 0);
+    __metadata("design:type", String)
+], ReFormerBoolean.prototype, "name", void 0);
 __decorate([
-    (0, _decorator_1.RWSInject)(IndexedDBService_1.default, true),
-    __metadata("design:type", typeof (_b = typeof IndexedDBService_1.IndexedDBServiceInstance !== "undefined" && IndexedDBService_1.IndexedDBServiceInstance) === "function" ? _b : Object)
-], RWSViewComponent.prototype, "indexedDBService", void 0);
+    fast_element_1.observable,
+    __metadata("design:type", Boolean)
+], ReFormerBoolean.prototype, "defaultValue", void 0);
 __decorate([
-    (0, _decorator_1.RWSInject)(ConfigService_1.default, true),
-    __metadata("design:type", typeof (_c = typeof ConfigService_1.ConfigServiceInstance !== "undefined" && ConfigService_1.ConfigServiceInstance) === "function" ? _c : Object)
-], RWSViewComponent.prototype, "config", void 0);
+    fast_element_1.observable,
+    __metadata("design:type", Boolean)
+], ReFormerBoolean.prototype, "value", void 0);
 __decorate([
-    (0, _decorator_1.RWSInject)(DOMService_1.default, true),
-    __metadata("design:type", typeof (_d = typeof DOMService_1.DOMServiceInstance !== "undefined" && DOMService_1.DOMServiceInstance) === "function" ? _d : Object)
-], RWSViewComponent.prototype, "domService", void 0);
+    fast_element_1.observable,
+    __metadata("design:type", Function)
+], ReFormerBoolean.prototype, "setForm", void 0);
+exports.ReFormerBoolean = ReFormerBoolean = __decorate([
+    (0, client_1.RWSView)('reformer-boolean', null, { template: rwsTemplate, styles, options: { shadowOptions } })
+], ReFormerBoolean);
+ReFormerBoolean.defineComponent();
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/boolean/styles/layout.scss"
+/*!***************************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/reformer/fields/boolean/styles/layout.scss ***!
+  \***************************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/boolean/template.html"
+/*!**********************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/reformer/fields/boolean/template.html ***!
+  \**********************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/date/component.ts"
+/*!******************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/reformer/fields/date/component.ts ***!
+  \******************************************************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a, _b;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ReFormerDate = void 0;
+const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+__webpack_require__(/*! ./template.html */ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/date/template.html");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+//@ts-ignore                
+let rwsTemplate = T.html `<sl-input 
+    type="date" 
+    name="${x => x.name}"
+    id="re-former-field-${x => x.name}" 
+    :value="${x => x.value}"     
+    @change="${(x, c) => x.setForm(x.name, c.event.target)}"
+></sl-input>
+`;
+__webpack_require__(/*! ./styles/layout.scss */ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/date/styles/layout.scss");
+const styles = T.css `.re-former-date-input {
+  display: flex;
+}`;
+const shadowOptions = { "mode": "open" };
+let ReFormerDate = class ReFormerDate extends client_1.RWSViewComponent {
+    constructor() {
+        super(...arguments);
+        this.defaultValue = null;
+        this.value = null;
+    }
+    connectedCallback() {
+        super.connectedCallback();
+        this.value = this.defaultValue;
+    }
+};
+exports.ReFormerDate = ReFormerDate;
 __decorate([
-    (0, _decorator_1.RWSInject)(UtilsService_1.default, true),
-    __metadata("design:type", typeof (_e = typeof UtilsService_1.UtilsServiceInstance !== "undefined" && UtilsService_1.UtilsServiceInstance) === "function" ? _e : Object)
-], RWSViewComponent.prototype, "utilsService", void 0);
+    fast_element_1.attr,
+    __metadata("design:type", String)
+], ReFormerDate.prototype, "name", void 0);
 __decorate([
-    (0, _decorator_1.RWSInject)(ApiService_1.default, true),
-    __metadata("design:type", typeof (_f = typeof ApiService_1.ApiServiceInstance !== "undefined" && ApiService_1.ApiServiceInstance) === "function" ? _f : Object)
-], RWSViewComponent.prototype, "apiService", void 0);
+    fast_element_1.observable,
+    __metadata("design:type", typeof (_a = typeof Date !== "undefined" && Date) === "function" ? _a : Object)
+], ReFormerDate.prototype, "defaultValue", void 0);
 __decorate([
-    (0, _decorator_1.RWSInject)(NotifyService_1.default, true),
-    __metadata("design:type", typeof (_g = typeof NotifyService_1.NotifyServiceInstance !== "undefined" && NotifyService_1.NotifyServiceInstance) === "function" ? _g : Object)
-], RWSViewComponent.prototype, "notifyService", void 0);
+    fast_element_1.observable,
+    __metadata("design:type", typeof (_b = typeof Date !== "undefined" && Date) === "function" ? _b : Object)
+], ReFormerDate.prototype, "value", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Function)
+], ReFormerDate.prototype, "setForm", void 0);
+exports.ReFormerDate = ReFormerDate = __decorate([
+    (0, client_1.RWSView)('reformer-date', null, { template: rwsTemplate, styles, options: { shadowOptions } })
+], ReFormerDate);
+ReFormerDate.defineComponent();
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/date/styles/layout.scss"
+/*!************************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/reformer/fields/date/styles/layout.scss ***!
+  \************************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/date/template.html"
+/*!*******************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/reformer/fields/date/template.html ***!
+  \*******************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/number/component.ts"
+/*!********************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/reformer/fields/number/component.ts ***!
+  \********************************************************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ReFormerNumber = void 0;
+const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+__webpack_require__(/*! ./template.html */ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/number/template.html");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+//@ts-ignore                
+let rwsTemplate = T.html `<sl-input 
+    type="number" 
+    name="${x => x.name}"
+    id="re-former-field-${x => x.name}" 
+    :value="${x => x.value}"     
+    @change="${(x, c) => x.setForm(x.name, c.event.target)}"
+></sl-input>
+`;
+__webpack_require__(/*! ./styles/layout.scss */ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/number/styles/layout.scss");
+const styles = T.css `.re-former-number-input {
+  display: flex;
+}`;
+const shadowOptions = { "mode": "open" };
+let ReFormerNumber = class ReFormerNumber extends client_1.RWSViewComponent {
+    constructor() {
+        super(...arguments);
+        this.defaultValue = null;
+        this.value = null;
+    }
+    connectedCallback() {
+        super.connectedCallback();
+        this.value = this.defaultValue;
+    }
+};
+exports.ReFormerNumber = ReFormerNumber;
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", String)
+], ReFormerNumber.prototype, "name", void 0);
 __decorate([
     fast_element_1.observable,
     __metadata("design:type", Number)
-], RWSViewComponent.prototype, "trashIterator", void 0);
+], ReFormerNumber.prototype, "defaultValue", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Number)
+], ReFormerNumber.prototype, "value", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Function)
+], ReFormerNumber.prototype, "setForm", void 0);
+exports.ReFormerNumber = ReFormerNumber = __decorate([
+    (0, client_1.RWSView)('reformer-number', null, { template: rwsTemplate, styles, options: { shadowOptions } })
+], ReFormerNumber);
+ReFormerNumber.defineComponent();
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/number/styles/layout.scss"
+/*!**************************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/reformer/fields/number/styles/layout.scss ***!
+  \**************************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/number/template.html"
+/*!*********************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/reformer/fields/number/template.html ***!
+  \*********************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/text/component.ts"
+/*!******************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/reformer/fields/text/component.ts ***!
+  \******************************************************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ReFormerText = void 0;
+const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+__webpack_require__(/*! ./template.html */ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/text/template.html");
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
+//@ts-ignore                
+let rwsTemplate = T.html `<sl-input 
+    type="text" 
+    name="${x => x.name}"
+    id="re-former-field-${x => x.name}" 
+    :value="${x => x.value}"     
+    @sl-change="${(x, c) => x.setForm(x.name, c.event.target)}"
+></sl-input>`;
+__webpack_require__(/*! ./styles/layout.scss */ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/text/styles/layout.scss");
+const styles = T.css `.re-former-text-input {
+  display: flex;
+}`;
+const shadowOptions = { "mode": "open" };
+let ReFormerText = class ReFormerText extends client_1.RWSViewComponent {
+    constructor() {
+        super(...arguments);
+        this.defaultValue = null;
+        this.value = null;
+    }
+    connectedCallback() {
+        super.connectedCallback();
+        this.value = this.defaultValue;
+    }
+};
+exports.ReFormerText = ReFormerText;
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", String)
+], ReFormerText.prototype, "name", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", String)
+], ReFormerText.prototype, "defaultValue", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", String)
+], ReFormerText.prototype, "value", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Function)
+], ReFormerText.prototype, "setForm", void 0);
+exports.ReFormerText = ReFormerText = __decorate([
+    (0, client_1.RWSView)('reformer-text', null, { template: rwsTemplate, styles, options: { shadowOptions } })
+], ReFormerText);
+ReFormerText.defineComponent();
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/text/styles/layout.scss"
+/*!************************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/reformer/fields/text/styles/layout.scss ***!
+  \************************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/reformer/fields/text/template.html"
+/*!*******************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/reformer/fields/text/template.html ***!
+  \*******************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/reformer/styles/layout.scss"
+/*!************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/reformer/styles/layout.scss ***!
+  \************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/reformer/template.html"
+/*!*******************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/reformer/template.html ***!
+  \*******************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/reformer/types/IReFormerTypes.ts"
+/*!*****************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/reformer/types/IReFormerTypes.ts ***!
+  \*****************************************************************************************************/
+(__unused_webpack_module, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/component.ts"
+/*!**************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/component.ts ***!
+  \**************************************************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RWSApiResource = void 0;
+const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+__webpack_require__(/*! ./template.html */ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/template.html");
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
+const component_1 = __webpack_require__(/*! ./variants/list/component */ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/list/component.ts");
+const component_2 = __webpack_require__(/*! ./variants/form/component */ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/form/component.ts");
+component_1.RWSResourceListComponent;
+component_2.RWSResourceFormComponent;
+//@ts-ignore                
+let rwsTemplate = T.html `<div class="rws-api-container">
+    ${T.when(x => x.resourceLabel, T.html `<h3>${x => x.resourceLabel}</h3>`)}
+
+    <div class="rws-api-controls">
+        ${T.when(x => x.createEnabled === 'true', T.html `<sl-button @click="${(x, c) => x.toggleForm()}" variant="secondary" >
+            ${T.when(x => x.viewType === 'list', T.html `<span>${x => x.createEntryLabel}</span>`)}
+            ${T.when(x => x.viewType === 'form', T.html `<span>${x => x.listEntryLabel}</span>`)}
+        </sl-button>`)}  
+    </div>
+
+    <div class="rws-api-content">
+        ${T.when(x => x.dbModelData && x.viewType === 'list', T.html `<rws-resource-list 
+            resource="${x => x.resource}"
+            emptyLabel="${x => x.emptyLabel}"
+            :dbModelData="${x => x.dbModelData}"                
+            :fields="${x => x.fields}"
+            :actions="${x => x.listActions}" 
+            :extraFormatters="${x => x.extraFormatters}"
+            :headerTranslations="${x => x.headerTranslations}"
+            >
+        </rws-resource-list>`)}
+
+        ${T.when(x => x.viewType === 'form', T.html `<rws-resource-form
+            resource="${x => x.resource}"
+            :dbModelData="${x => x.dbModelData}"
+            :back="${x => x.back}"
+        ></rws-resource-form> `)}
+    </div>
+</div>`;
+__webpack_require__(/*! ./styles/layout.scss */ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/styles/layout.scss");
+const styles = T.css `.rws-api-container .rws-api-controls {
+  margin-bottom: 15px;
+}`;
+const shadowOptions = { "mode": "open" };
+let RWSApiResource = class RWSApiResource extends client_1.RWSViewComponent {
+    constructor() {
+        super(...arguments);
+        this.resourceLabel = null;
+        this.createEntryLabel = 'Create entry';
+        this.listEntryLabel = 'Entries list';
+        this.createEnabled = 'true';
+        this.emptyLabel = 'No records';
+        this.dbModelData = null;
+        this.viewType = 'list';
+        this.fields = [];
+        this.extraFormatters = {};
+        this.headerTranslations = {};
+        this.listActions = [];
+        this.back = async (resource) => {
+            this.viewType = 'list';
+        };
+    }
+    async connectedCallback() {
+        super.connectedCallback();
+        this.dbModelData = await this.apiService.getResource(this.resource);
+    }
+    toggleForm() {
+        this.viewType = this.viewType === 'form' ? 'list' : 'form';
+    }
+};
+exports.RWSApiResource = RWSApiResource;
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", String)
+], RWSApiResource.prototype, "resource", void 0);
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", String)
+], RWSApiResource.prototype, "resourceLabel", void 0);
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", Object)
+], RWSApiResource.prototype, "createEntryLabel", void 0);
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", Object)
+], RWSApiResource.prototype, "listEntryLabel", void 0);
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", Object)
+], RWSApiResource.prototype, "createEnabled", void 0);
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", String)
+], RWSApiResource.prototype, "emptyLabel", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", typeof (_a = typeof IKDBTypesResponse !== "undefined" && IKDBTypesResponse) === "function" ? _a : Object)
+], RWSApiResource.prototype, "dbModelData", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", String)
+], RWSApiResource.prototype, "viewType", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Array)
+], RWSApiResource.prototype, "fields", void 0);
 __decorate([
     fast_element_1.observable,
     __metadata("design:type", Object)
-], RWSViewComponent.prototype, "fileAssets", void 0);
-exports["default"] = RWSViewComponent;
+], RWSApiResource.prototype, "extraFormatters", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Object)
+], RWSApiResource.prototype, "headerTranslations", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Array)
+], RWSApiResource.prototype, "listActions", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Function)
+], RWSApiResource.prototype, "back", void 0);
+exports.RWSApiResource = RWSApiResource = __decorate([
+    (0, client_1.RWSView)('rws-resource', null, { template: rwsTemplate, styles, options: { shadowOptions } })
+], RWSApiResource);
+RWSApiResource.defineComponent();
 
 
 /***/ },
 
-/***/ "../node_modules/@rws-framework/client/src/components/_container.ts"
-/*!**************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/components/_container.ts ***!
-  \**************************************************************************/
+/***/ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/styles/layout.scss"
+/*!********************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/styles/layout.scss ***!
+  \********************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/template.html"
+/*!***************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/template.html ***!
+  \***************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/form/component.ts"
+/*!****************************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/form/component.ts ***!
+  \****************************************************************************************************************/
 (__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Key = exports.InterfaceSymbol = exports.Registration = exports.Container = exports.DI = void 0;
-const rws_foundation_1 = __webpack_require__(/*! ../../foundation/rws-foundation */ "../node_modules/@rws-framework/client/foundation/rws-foundation.js");
-Object.defineProperty(exports, "DI", ({ enumerable: true, get: function () { return rws_foundation_1.DI; } }));
-Object.defineProperty(exports, "Container", ({ enumerable: true, get: function () { return rws_foundation_1.Container; } }));
-Object.defineProperty(exports, "Registration", ({ enumerable: true, get: function () { return rws_foundation_1.Registration; } }));
-Object.defineProperty(exports, "InterfaceSymbol", ({ enumerable: true, get: function () { return rws_foundation_1.InterfaceSymbol; } }));
-Object.defineProperty(exports, "Key", ({ enumerable: true, get: function () { return rws_foundation_1.Key; } }));
-const RWSWindow_1 = __webpack_require__(/*! ../types/RWSWindow */ "../node_modules/@rws-framework/client/src/types/RWSWindow.ts");
-exports["default"] = () => {
-    const richWindow = (0, RWSWindow_1.loadRWSRichWindow)();
-    if (richWindow.RWS.container) {
-        return richWindow.RWS.container;
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
     }
-    richWindow.RWS.container = rws_foundation_1.DI.getOrCreateDOMContainer(richWindow.RWS.container_node);
-    return richWindow.RWS.container;
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a, _b;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RWSResourceFormComponent = void 0;
+const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+__webpack_require__(/*! ./template.html */ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/form/template.html");
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+const IBackendCore_1 = __webpack_require__(/*! ../../../../../types/IBackendCore */ "../node_modules/@rws-framework/components/src/types/IBackendCore.ts");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
+const IReFormerTypes_1 = __webpack_require__(/*! ../../../reformer/types/IReFormerTypes */ "../node_modules/@rws-framework/components/src/components/rws/reformer/types/IReFormerTypes.ts");
+//@ts-ignore                
+let rwsTemplate = T.html `<div id="resource-form">
+    <rws-reformer :modelTypes="${x => x.dbModelData}" resource="${x => x.resource}" :afterForm="${x => x.back}"></rws-reformer>
+</div>
+`;
+__webpack_require__(/*! ./styles/layout.scss */ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/form/styles/layout.scss");
+const styles = T.css ``;
+const shadowOptions = { "mode": "open" };
+let RWSResourceFormComponent = class RWSResourceFormComponent extends client_1.RWSViewComponent {
+    constructor() {
+        super(...arguments);
+        this.dbModelData = null;
+        this.formOrdering = [];
+    }
+    connectedCallback() {
+        super.connectedCallback();
+        this.createOrdering();
+    }
+    setForm() {
+    }
+    createOrdering() {
+        for (const type of this.dbModelData.data.types) {
+            this.formOrdering.push(type);
+        }
+    }
+};
+exports.RWSResourceFormComponent = RWSResourceFormComponent;
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", String)
+], RWSResourceFormComponent.prototype, "resource", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", typeof (_a = typeof IBackendCore_1.ITypesResponse !== "undefined" && IBackendCore_1.ITypesResponse) === "function" ? _a : Object)
+], RWSResourceFormComponent.prototype, "dbModelData", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", typeof (_b = typeof IReFormerTypes_1.IReFormerMassOrdering !== "undefined" && IReFormerTypes_1.IReFormerMassOrdering) === "function" ? _b : Object)
+], RWSResourceFormComponent.prototype, "formOrdering", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Function)
+], RWSResourceFormComponent.prototype, "back", void 0);
+exports.RWSResourceFormComponent = RWSResourceFormComponent = __decorate([
+    (0, client_1.RWSView)('rws-resource-form', null, { template: rwsTemplate, styles, options: { shadowOptions } })
+], RWSResourceFormComponent);
+RWSResourceFormComponent.defineComponent();
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/form/styles/layout.scss"
+/*!**********************************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/form/styles/layout.scss ***!
+  \**********************************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/form/template.html"
+/*!*****************************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/form/template.html ***!
+  \*****************************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/list/component.ts"
+/*!****************************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/list/component.ts ***!
+  \****************************************************************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RWSResourceListComponent = void 0;
+const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+__webpack_require__(/*! ./template.html */ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/list/template.html");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+const IBackendCore_1 = __webpack_require__(/*! ../../../../../types/IBackendCore */ "../node_modules/@rws-framework/components/src/types/IBackendCore.ts");
+//@ts-ignore                
+let rwsTemplate = T.html `<div class="resource-list">
+    ${T.when(x => x.columns.length, T.html `<rws-table 
+        emptyLabel="${x => x.emptyLabel}"
+        :columns="${x => x.columns}" 
+        :data="${x => x.resourceList}" 
+        :fields="${x => x.fields}" 
+        :actions="${x => x.actions}" 
+        :extraFormatters="${x => x.extraFormatters}"
+        :headerTranslations="${x => x.headerTranslations}">
+    </rws-table>`)}
+</div>`;
+__webpack_require__(/*! ./styles/layout.scss */ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/list/styles/layout.scss");
+const styles = T.css ``;
+const shadowOptions = { "mode": "open" };
+let RWSResourceListComponent = class RWSResourceListComponent extends client_1.RWSViewComponent {
+    constructor() {
+        super(...arguments);
+        this.emptyLabel = 'No records';
+        this.dbModelData = null;
+        this.resourceList = [];
+        this.columns = [];
+        this.fields = [];
+        this.extraFormatters = {};
+        this.headerTranslations = {};
+        this.actions = [];
+    }
+    async connectedCallback() {
+        super.connectedCallback();
+        const makeColumns = [];
+        for (const key in Object.keys(this.dbModelData.data.types)) {
+            const responseObject = this.dbModelData.data.types[key];
+            makeColumns.push({
+                key: responseObject.fieldName,
+                header: responseObject.fieldName,
+            });
+        }
+        this.columns = makeColumns;
+        this.resourceList = await this.apiService.back.get(`${this.resource}:list`);
+    }
+};
+exports.RWSResourceListComponent = RWSResourceListComponent;
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", String)
+], RWSResourceListComponent.prototype, "resource", void 0);
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", String)
+], RWSResourceListComponent.prototype, "emptyLabel", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", typeof (_a = typeof IBackendCore_1.ITypesResponse !== "undefined" && IBackendCore_1.ITypesResponse) === "function" ? _a : Object)
+], RWSResourceListComponent.prototype, "dbModelData", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Array)
+], RWSResourceListComponent.prototype, "resourceList", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Array)
+], RWSResourceListComponent.prototype, "columns", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Array)
+], RWSResourceListComponent.prototype, "fields", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Object)
+], RWSResourceListComponent.prototype, "extraFormatters", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Object)
+], RWSResourceListComponent.prototype, "headerTranslations", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Array)
+], RWSResourceListComponent.prototype, "actions", void 0);
+exports.RWSResourceListComponent = RWSResourceListComponent = __decorate([
+    (0, client_1.RWSView)('rws-resource-list', null, { template: rwsTemplate, styles, options: { shadowOptions } })
+], RWSResourceListComponent);
+RWSResourceListComponent.defineComponent();
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/list/styles/layout.scss"
+/*!**********************************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/list/styles/layout.scss ***!
+  \**********************************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/list/template.html"
+/*!*****************************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/rws-api-resource/variants/list/template.html ***!
+  \*****************************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/rws-modal/component.ts"
+/*!*******************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/rws-modal/component.ts ***!
+  \*******************************************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RWSModal = void 0;
+const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+__webpack_require__(/*! ./template.html */ "../node_modules/@rws-framework/components/src/components/rws/rws-modal/template.html");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
+//@ts-ignore                
+let rwsTemplate = T.html `<div class="rws-modal" style="--modal-max-width: ${x => x.maxWidth};">
+    <div @click="${(x, c) => x.close()}" class="backdrop"></div>
+    <div class="rws-modal-wrapper${x => x.centerTop === 'true' ? ' center-top' : ''}${x => x.centerLeft === 'true' ? ' center-left' : ''}">
+      <div class="rws-modal-header">
+        ${(0, fast_element_1.when)(x => x.header, (0, fast_element_1.html) `<h2 class="modal-title">${x => { var _a; return (_a = x.header) === null || _a === void 0 ? void 0 : _a.t(); }}</h2>`)}
+        ${(0, fast_element_1.when)(x => x.showCloseBtn, (0, fast_element_1.html) `<button class="btn btn-danger" @click="${(x, c) => x.close()}" variant="secondary" >Close</button>`)}  
+      </div>
+      <div class="rws-modal-body">
+        <slot></slot>
+      </div>
+  </div>
+</div>`;
+__webpack_require__(/*! ./styles/layout.scss */ "../node_modules/@rws-framework/components/src/components/rws/rws-modal/styles/layout.scss");
+const styles = T.css `.backdrop {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.rws-modal {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+.rws-modal .rws-modal-wrapper {
+  background: #FFF;
+  border-radius: 20px;
+  padding: 0 20px 20px 20px;
+  max-width: var(--modal-max-width, 70vw);
+  max-height: 80vh;
+  min-height: 40vh;
+  margin-left: 30px;
+  color: #000;
+  position: relative;
+  z-index: 1002;
+  overflow-y: auto;
+  margin-top: 30px;
+}
+.rws-modal .rws-modal-wrapper::-webkit-scrollbar {
+  width: 10px;
+}
+.rws-modal .rws-modal-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.rws-modal .rws-modal-wrapper::-webkit-scrollbar-thumb {
+  background: #888;
+}
+.rws-modal .rws-modal-wrapper::-moz-scrollbar {
+  width: 10px;
+}
+.rws-modal .rws-modal-wrapper::-moz-scrollbar-track {
+  background: #f1f1f1;
+}
+.rws-modal .rws-modal-wrapper::-moz-scrollbar-thumb {
+  background: #888;
+}
+.rws-modal .rws-modal-wrapper::-ms-scrollbar {
+  width: 10px;
+}
+.rws-modal .rws-modal-wrapper::-ms-scrollbar-track {
+  background: #f1f1f1;
+}
+.rws-modal .rws-modal-wrapper::-ms-scrollbar-thumb {
+  background: #888;
+}
+.rws-modal .rws-modal-wrapper.center-top {
+  margin-top: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.rws-modal .rws-modal-wrapper.center-left {
+  left: 50%;
+  transform: translateX(-50%);
+}
+.rws-modal .rws-modal-wrapper.center-top.center-left {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.rws-modal .rws-modal-wrapper .rws-modal-header {
+  position: sticky;
+  top: 0px;
+  background: #ffffff;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-top: 15px;
+}
+.rws-modal .rws-modal-wrapper .rws-modal-header .modal-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1e293b;
+  flex: 1;
+}
+.rws-modal .rws-modal-wrapper .rws-modal-body {
+  position: relative;
+}`;
+const shadowOptions = { "mode": "open" };
+let RWSModal = class RWSModal extends client_1.RWSViewComponent {
+    constructor() {
+        super(...arguments);
+        this.centerTop = 'true';
+        this.centerLeft = 'true';
+        this.maxWidth = '70vw';
+        this.showCloseBtn = true;
+        this.handleEscKey = (event) => {
+            if (event.key === 'Escape') {
+                this.close();
+            }
+        };
+    }
+    connectedCallback() {
+        super.connectedCallback();
+        this.shadowRoot.ownerDocument.querySelector('body').classList.add('has-backdrop');
+        // Add ESC key listener
+        document.addEventListener('keydown', this.handleEscKey);
+        const ev = new CustomEvent(`rws_modal${this.name ? (':' + this.name) : ''}:open`, {
+            detail: true,
+            bubbles: true,
+            composed: true
+        });
+        this.dispatchEvent(ev);
+        if (this.onShowModal) {
+            this.onShowModal(this.shadowRoot);
+        }
+        this.on('rws_modal:force_close', () => {
+            this.close();
+        });
+    }
+    close() {
+        const ev = new CustomEvent(`rws_modal${this.name ? (':' + this.name) : ''}:close`, {
+            detail: true,
+            bubbles: true,
+            composed: true
+        });
+        this.dispatchEvent(ev);
+        if (this.closeModal) {
+            this.closeModal();
+        }
+    }
+    disconnectedCallback() {
+        this.shadowRoot.ownerDocument.querySelector('body').classList.remove('has-backdrop');
+        // Remove ESC key listener
+        document.removeEventListener('keydown', this.handleEscKey);
+        super.disconnectedCallback();
+    }
+    centerTopChanged(oldValue, newValue) {
+        this.centerTop = newValue;
+        console.log('centerTop changed:', newValue);
+    }
+    centerLeftChanged(oldValue, newValue) {
+        this.centerLeft = newValue;
+        console.log('centerLeft changed:', newValue);
+    }
+};
+exports.RWSModal = RWSModal;
+__decorate([
+    client_1.observable,
+    __metadata("design:type", Function)
+], RWSModal.prototype, "closeModal", void 0);
+__decorate([
+    client_1.observable,
+    __metadata("design:type", Function)
+], RWSModal.prototype, "onShowModal", void 0);
+__decorate([
+    client_1.attr,
+    __metadata("design:type", String)
+], RWSModal.prototype, "centerTop", void 0);
+__decorate([
+    client_1.attr,
+    __metadata("design:type", String)
+], RWSModal.prototype, "centerLeft", void 0);
+__decorate([
+    client_1.attr,
+    __metadata("design:type", String)
+], RWSModal.prototype, "maxWidth", void 0);
+__decorate([
+    (0, client_1.attr)({ attribute: 'showCloseBtn', mode: 'boolean' }),
+    __metadata("design:type", Boolean)
+], RWSModal.prototype, "showCloseBtn", void 0);
+__decorate([
+    client_1.attr,
+    __metadata("design:type", String)
+], RWSModal.prototype, "name", void 0);
+__decorate([
+    client_1.attr,
+    __metadata("design:type", String)
+], RWSModal.prototype, "header", void 0);
+exports.RWSModal = RWSModal = __decorate([
+    (0, client_1.RWSView)('rws-modal', null, { template: rwsTemplate, styles, options: { shadowOptions } })
+], RWSModal);
+RWSModal.defineComponent();
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/rws-modal/styles/layout.scss"
+/*!*************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/rws-modal/styles/layout.scss ***!
+  \*************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/rws-modal/template.html"
+/*!********************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/rws-modal/template.html ***!
+  \********************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/rws-table/component.ts"
+/*!*******************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/rws-table/component.ts ***!
+  \*******************************************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var RWSTable_1;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RWSTable = void 0;
+const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+__webpack_require__(/*! ./template.html */ "../node_modules/@rws-framework/components/src/components/rws/rws-table/template.html");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
+const displayManager_1 = __webpack_require__(/*! ./display/displayManager */ "../node_modules/@rws-framework/components/src/components/rws/rws-table/display/displayManager.ts");
+const events_1 = __webpack_require__(/*! ../table-controls/events */ "../node_modules/@rws-framework/components/src/components/rws/table-controls/events.ts");
+//@ts-ignore                
+let rwsTemplate = T.html `<div class="card">
+  <div class="card-body">
+    <table-controls :columnsLabel="${x => x.columnsLabel}" :columnsIcon="${x => x.columnsIcon}"
+      :exportLabel="${x => x.exportLabel}" :exportIcon="${x => x.exportIcon}" :availableColumns="${x => x.columns}"
+      :visibleColumns="${x => x.fields || []}" :data="${x => x.data}"
+      @column-visibility-changed="${(x, c) => x.handleColumnVisibilityChanged(c.event)}">
+    </table-controls>
+    <div class="table-responsive">
+      <table class="${x => x.displayClass('table')}">
+        <thead class="${x => x.displayClass('thead')}">
+          <tr class="${x => x.displayClass('tr')}">
+            ${(0, fast_element_1.repeat)(x => x.dataColumns, (0, fast_element_1.html) `<th class="${(x, c) => c.parent.displayClass('th')}">${x => x.header}
+            </th>`)}
+            <th class="${x => x.displayClass('actionsTh')}${(x, c) => x.actions.length ? '' : ' hidden'}">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="${x => x.displayClass('tbody')}">
+          ${(0, fast_element_1.repeat)((x, dataContext) => x.data, (0, fast_element_1.html) `
+          <tr class="${(x, c) => c.parent.displayClass('tr')}">
+            ${(0, fast_element_1.repeat)((x, columnContext) => columnContext.parent.dataColumns, (0, fast_element_1.html) `
+            <td class="${(x, c) => c.parentContext.parent.displayClass('td')}" data-field="${x => x.key}">
+              <slot name="cell-${x => x.key}" data-row="${(column, ctx) => ctx.parent.id}">
+                <span :innerHTML="${(column, ctx) => {
+    const value = ctx.parent[column.key];
+    return column.formatter ? column.formatter(value, ctx.parent) : (value ? value : '-');
+}}"></span>
+              </slot>
+            </td>`)}
+            <td
+              class="rws-table-actions ${(x, c) => c.parent.displayClass('actionsTd')}${(x, c) => c.parent.actions.length ? '' : ' hidden'}">
+              ${(0, fast_element_1.repeat)((x, c) => c.parent.actions.filter(a => c.parent.actionFilter(a, x)), (0, fast_element_1.html) `
+              ${(0, fast_element_1.when)((x, c) => x.filter === undefined || (x.filter !== undefined && x.filter(c.parent)), (0, fast_element_1.html) `
+                ${(0, fast_element_1.when)(x => x.tooltip, (0, fast_element_1.html) `
+                  <rws-tooltip side="${x => x.tooltipDirection || 'top'}" text="${x => x.tooltip}">
+                    <button
+                      @click="${(x, c) => x.handler(c.parent.id)}"
+                      class="${(x, c) => `${c.parentContext.parent.displayClass('button')} btn-${x.variant || 'primary'} ${(c.index === 0 ? '' : 'mr-1')}`}">
+                      ${(0, fast_element_1.when)(x => x.icon, (0, fast_element_1.html) `<i class="${(x, c) => x.icon}"></i>`)}
+                      ${x => x.label}
+                    </button>
+                  </rws-tooltip>
+                `, (0, fast_element_1.html) `
+                  <button
+                    @click="${(x, c) => x.handler(c.parent.id)}"
+                    class="${(x, c) => `${c.parentContext.parent.displayClass('button')} btn-${x.variant || 'primary'} ${(c.index === 0 ? '' : 'mr-1')}`}">
+                    ${(0, fast_element_1.when)(x => x.icon, (0, fast_element_1.html) `<i class="${(x, c) => x.icon}"></i>`)}
+                    ${x => x.label}
+                  </button>
+                `)}
+              `)}
+              `)}
+            </td>
+          </tr>`)}
+        </tbody>
+      </table>
+    </div>
+    ${(0, fast_element_1.when)(x => !x.data.length, (0, fast_element_1.html) `<div class="${x => x.displayClass('alert')}"><strong>${x => x.emptyLabel}</strong></div>`)}
+  </div>
+</div>`;
+__webpack_require__(/*! ./styles/layout.scss */ "../node_modules/@rws-framework/components/src/components/rws/rws-table/styles/layout.scss");
+const styles = T.css `.flex-table {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+.flex-table .flex-table-row {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+.flex-table .flex-table-row:last-child {
+  border-bottom: none;
+}
+.flex-table .flex-table-row.table-header {
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #475569;
+  text-transform: capitalize;
+}
+.flex-table .flex-table-row.table-body:hover {
+  background-color: #f1f5f9;
+}
+.flex-table .flex-table-row.flex-table-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100px;
+  background-color: #f8fafc;
+}
+.flex-table .flex-table-cell {
+  flex: 1;
+  padding: 12px 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.flex-table .flex-table-cell sl-button {
+  margin: 0 4px;
+}
+.flex-table .flex-table-cell sl-button:first-child {
+  margin-left: 0;
+}
+.flex-table .flex-table-cell sl-button:last-child {
+  margin-right: 0;
+}
+.flex-table .flex-table-cell.full-row {
+  flex: 1 1 100%;
+  text-align: center;
+  color: #64748b;
+  padding: 24px 16px;
+}
+.flex-table .flex-table-cell.full-row strong {
+  font-weight: 600;
+}
+
+th.hidden, td.hidden {
+  display: none;
+}
+
+td.action-cell {
+  text-align: center;
+}
+td.action-cell button {
+  margin-bottom: 10px;
+}`;
+const shadowOptions = { "mode": "open" };
+let RWSTable = RWSTable_1 = class RWSTable extends client_1.RWSViewComponent {
+    constructor() {
+        super(...arguments);
+        this.emptyLabel = 'No records';
+        this.exportName = 'data_export';
+        this.columns = [];
+        this.dataColumns = [];
+        this.data = [];
+        this.fields = [];
+        this.actions = [];
+        this.actionFilter = (action, row) => true;
+        this.extraFormatters = {};
+        this.headerTranslations = {};
+        this.exportLabel = 'Export';
+        this.exportIcon = 'simple-icon-cloud-download';
+        this.columnsLabel = 'Columns';
+        this.columnsIcon = 'simple-icon-settings';
+    }
+    static display() {
+        return this.displayManager;
+    }
+    connectedCallback() {
+        super.connectedCallback();
+        if (!this.fields || !this.fields.length) {
+            this.fields = this.columns.map(col => col.key);
+        }
+        this.on(events_1.TableControlsEvents.TABLE_EXPORT, () => {
+            this.exportToCSV();
+        });
+        this.orderFields();
+    }
+    dataChanged() {
+        if (this.data.length) {
+            this.$emit('rwstable.data.loaded', this.data);
+        }
+    }
+    displayClass(key) {
+        return this.constructor.display().getClass(key);
+    }
+    headerTranslationsChanged(oldValue, newValue) {
+        this.orderFields();
+    }
+    fieldsChanged(oldValue, newValue) {
+        this.orderFields();
+    }
+    columnsChanged(oldValue, newValue) {
+        this.orderFields();
+    }
+    exportToCSV() {
+        const headers = this.columns.map(col => col.header);
+        let csvContent = headers.join(',') + '\n';
+        this.data.forEach(item => {
+            const row = this.columns.map(col => {
+                const value = item[col.key];
+                if (col.formatter && typeof col.formatter === 'function') {
+                    // Strip HTML tags from formatted content for CSV
+                    const formatted = col.formatter(value, item);
+                    return `"${formatted.replace(/<[^>]*>/g, '').replace(/"/g, '""')}"`;
+                }
+                return `"${(value || '').toString().replace(/"/g, '""')}"`;
+            });
+            csvContent += row.join(',') + '\n';
+        });
+        // Create and download CSV file
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `${this.exportName}_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+    orderFields() {
+        if (this.columns && this.columns.length) {
+            const orderedColumns = [];
+            for (const fieldKey of this.fields) {
+                const found = this.columns.find(item => item.key === fieldKey);
+                if (found) {
+                    if (Object.keys(this.extraFormatters).includes(fieldKey)) {
+                        found.formatter = this.extraFormatters[fieldKey];
+                    }
+                    if (this.headerTranslations && Object.keys(this.headerTranslations).includes(fieldKey)) {
+                        found.header = this.headerTranslations[fieldKey];
+                    }
+                    orderedColumns.push(found);
+                }
+            }
+            this.dataColumns = orderedColumns;
+        }
+    }
+    handleColumnVisibilityChanged(event) {
+        const { visibleColumns } = event.detail;
+        if (visibleColumns && Array.isArray(visibleColumns)) {
+            // Preserve original column order by filtering columns array instead of using visibleColumns directly
+            const orderedVisibleFields = this.columns
+                .map(col => col.key)
+                .filter(key => visibleColumns.includes(key));
+            this.fields = orderedVisibleFields;
+            this.$emit('column-visibility-changed', event.detail);
+        }
+    }
+};
+exports.RWSTable = RWSTable;
+RWSTable.displayManager = new displayManager_1.DisplayManager(RWSTable_1);
+__decorate([
+    client_1.attr,
+    __metadata("design:type", String)
+], RWSTable.prototype, "emptyLabel", void 0);
+__decorate([
+    client_1.attr,
+    __metadata("design:type", String)
+], RWSTable.prototype, "exportName", void 0);
+__decorate([
+    client_1.observable,
+    __metadata("design:type", Array)
+], RWSTable.prototype, "columns", void 0);
+__decorate([
+    client_1.observable,
+    __metadata("design:type", Array)
+], RWSTable.prototype, "dataColumns", void 0);
+__decorate([
+    client_1.observable,
+    __metadata("design:type", Array)
+], RWSTable.prototype, "data", void 0);
+__decorate([
+    client_1.observable,
+    __metadata("design:type", Array)
+], RWSTable.prototype, "fields", void 0);
+__decorate([
+    client_1.observable,
+    __metadata("design:type", Array)
+], RWSTable.prototype, "actions", void 0);
+__decorate([
+    client_1.observable,
+    __metadata("design:type", Function)
+], RWSTable.prototype, "actionFilter", void 0);
+__decorate([
+    client_1.observable,
+    __metadata("design:type", Object)
+], RWSTable.prototype, "extraFormatters", void 0);
+__decorate([
+    client_1.observable,
+    __metadata("design:type", Object)
+], RWSTable.prototype, "headerTranslations", void 0);
+__decorate([
+    client_1.attr,
+    __metadata("design:type", String)
+], RWSTable.prototype, "exportLabel", void 0);
+__decorate([
+    client_1.attr,
+    __metadata("design:type", String)
+], RWSTable.prototype, "exportIcon", void 0);
+__decorate([
+    client_1.attr,
+    __metadata("design:type", String)
+], RWSTable.prototype, "columnsLabel", void 0);
+__decorate([
+    client_1.attr,
+    __metadata("design:type", String)
+], RWSTable.prototype, "columnsIcon", void 0);
+exports.RWSTable = RWSTable = RWSTable_1 = __decorate([
+    (0, client_1.RWSView)('rws-table', null, { template: rwsTemplate, styles, options: { shadowOptions } })
+], RWSTable);
+RWSTable.defineComponent();
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/rws-table/display/displayManager.ts"
+/*!********************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/rws-table/display/displayManager.ts ***!
+  \********************************************************************************************************/
+(__unused_webpack_module, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DisplayManager = void 0;
+class DisplayManager {
+    constructor(componentClass) {
+        this.componentClass = componentClass;
+    }
+    getClass(key) {
+        const classes = DisplayManager.classes[key];
+        return classes ? classes.join(" ") : "";
+    }
+}
+exports.DisplayManager = DisplayManager;
+DisplayManager.classes = {
+    table: ["table", "table-bordered", "responsive"],
+    thead: ["thead-light"],
+    tbody: [],
+    tr: [],
+    th: [],
+    td: [],
+    actionsTh: [],
+    actionsTd: ["action-cell"],
+    card: ["card", "card-body"],
+    alert: ["alert", "alert-info"],
+    button: ["btn", "btn-sm"],
 };
 
 
 /***/ },
 
-/***/ "../node_modules/@rws-framework/client/src/components/_css_injection.ts"
-/*!******************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/components/_css_injection.ts ***!
-  \******************************************************************************/
+/***/ "../node_modules/@rws-framework/components/src/components/rws/rws-table/styles/layout.scss"
+/*!*************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/rws-table/styles/layout.scss ***!
+  \*************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/rws-table/template.html"
+/*!********************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/rws-table/template.html ***!
+  \********************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/table-controls/component.ts"
+/*!************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/table-controls/component.ts ***!
+  \************************************************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TableControls = void 0;
+const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+__webpack_require__(/*! ./template.html */ "../node_modules/@rws-framework/components/src/components/rws/table-controls/template.html");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
+const events_1 = __webpack_require__(/*! ./events */ "../node_modules/@rws-framework/components/src/components/rws/table-controls/events.ts");
+//@ts-ignore                
+let rwsTemplate = T.html `<div class="table-controls">
+  <div class="controls-wrapper">
+    
+    
+    <div class="quick-actions">
+      ${T.repeat(x => x.actions.filter(a => a.key !== 'settings'), T.html `
+        <button 
+          @click="${(action, ctx) => action.action()}"
+          class="btn btn-sm btn-${action => action.variant} mr-2"
+          title="${action => action.label}">
+          ${T.when(action => action.icon, T.html `<i class="${action => action.icon}"></i>`)}
+          ${action => action.label}
+        </button>
+      `)}
+    </div>
+
+    
+    ${T.when(x => x.showColumnToggle && x.availableColumns.length > 0, T.html `
+      <div class="table-settings-dropdown position-relative">
+        <button 
+          @click="${x => x.toggleColumnsDropdown()}"
+          class="btn btn-sm btn-secondary dropdown-toggle"
+          type="button">
+          <i class="simple-icon-settings"></i>
+          ${x => x.columnsLabel}
+        </button>
+        
+        ${T.when(x => x.showColumnsDropdown, T.html `
+          <div class="dropdown-menu show position-absolute" style="right: 0; top: 100%; z-index: 1050;">
+            <h6 class="dropdown-header">Show/Hide Columns</h6>
+            ${T.repeat(x => x.availableColumns, T.html `
+              <div class="dropdown-item">
+                <div class="form-check">
+                  <input 
+                    type="checkbox" 
+                    class="form-check-input"
+                    ?checked="${(column, ctx) => ctx.parent.isColumnVisible(column.key)}"
+                    @change="${(column, ctx) => ctx.parent.toggleColumn(column.key)}"
+                    id="col-${column => column.key}">
+                  <label class="form-check-label" for="col-${column => column.key}">
+                    ${column => column.header}
+                  </label>
+                </div>
+              </div>
+            `)}
+            <div class="dropdown-divider"></div>
+            <button 
+              @click="${x => x.closeDropdowns()}"
+              class="dropdown-item">
+              Close
+            </button>
+          </div>
+        `)}
+      </div>
+    `)}
+
+    
+    ${T.when(x => x.actions.length > 3, T.html `
+      <div class="actions-dropdown position-relative">
+        <button 
+          @click="${x => x.toggleActionsDropdown()}"
+          class="btn btn-sm btn-outline-secondary dropdown-toggle ml-2"
+          type="button">
+          More Actions
+        </button>
+        
+        ${T.when(x => x.showActionsDropdown, T.html `
+          <div class="dropdown-menu show position-absolute" style="right: 0; top: 100%; z-index: 1050;">
+            ${T.repeat(x => x.actions.filter(a => a.key === 'settings' || x.actions.indexOf(a) >= 3), T.html `
+              <button 
+                @click="${(action, ctx) => { action.action(); ctx.parent.closeDropdowns(); }}"
+                class="dropdown-item">
+                ${T.when(action => action.icon, T.html `<i class="${action => action.icon} mr-2"></i>`)}
+                ${action => action.label}
+              </button>
+            `)}
+          </div>
+        `)}
+      </div>
+    `)}
+  </div>
+</div>
+`;
+__webpack_require__(/*! ./styles/layout.scss */ "../node_modules/@rws-framework/components/src/components/rws/table-controls/styles/layout.scss");
+const styles = T.css `:host {
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.table-controls .controls-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  margin-bottom: 0.5rem;
+}
+.table-controls .controls-wrapper .quick-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.table-controls .controls-wrapper .quick-actions .btn {
+  white-space: nowrap;
+}
+.table-controls .controls-wrapper .quick-actions .btn i {
+  margin-right: 0.25rem;
+}
+.table-controls .controls-wrapper .table-settings-dropdown,
+.table-controls .controls-wrapper .actions-dropdown {
+  position: relative;
+}
+.table-controls .controls-wrapper .table-settings-dropdown .dropdown-menu,
+.table-controls .controls-wrapper .actions-dropdown .dropdown-menu {
+  min-width: 200px;
+  padding: 0.5rem 0;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+.table-controls .controls-wrapper .table-settings-dropdown .dropdown-menu .dropdown-header,
+.table-controls .controls-wrapper .actions-dropdown .dropdown-menu .dropdown-header {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6c757d;
+  margin-bottom: 0;
+}
+.table-controls .controls-wrapper .table-settings-dropdown .dropdown-menu .dropdown-item,
+.table-controls .controls-wrapper .actions-dropdown .dropdown-menu .dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  clear: both;
+  font-weight: 400;
+  color: #212529;
+  text-align: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.table-controls .controls-wrapper .table-settings-dropdown .dropdown-menu .dropdown-item:hover,
+.table-controls .controls-wrapper .actions-dropdown .dropdown-menu .dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+.table-controls .controls-wrapper .table-settings-dropdown .dropdown-menu .dropdown-item .form-check,
+.table-controls .controls-wrapper .actions-dropdown .dropdown-menu .dropdown-item .form-check {
+  margin-bottom: 0;
+}
+.table-controls .controls-wrapper .table-settings-dropdown .dropdown-menu .dropdown-item .form-check .form-check-input,
+.table-controls .controls-wrapper .actions-dropdown .dropdown-menu .dropdown-item .form-check .form-check-input {
+  margin-top: 0.125rem;
+}
+.table-controls .controls-wrapper .table-settings-dropdown .dropdown-menu .dropdown-item .form-check .form-check-label,
+.table-controls .controls-wrapper .actions-dropdown .dropdown-menu .dropdown-item .form-check .form-check-label {
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+.table-controls .controls-wrapper .table-settings-dropdown .dropdown-menu .dropdown-divider,
+.table-controls .controls-wrapper .actions-dropdown .dropdown-menu .dropdown-divider {
+  height: 0;
+  margin: 0.5rem 0;
+  overflow: hidden;
+  border-top: 1px solid #dee2e6;
+}
+
+@media (max-width: 768px) {
+  .table-controls .controls-wrapper {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .table-controls .controls-wrapper .quick-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .table-controls .controls-wrapper {
+    background-color: #343a40;
+    border-color: #495057;
+    color: #fff;
+  }
+  .table-controls .dropdown-menu {
+    background-color: #343a40;
+    border-color: #495057;
+    color: #fff;
+  }
+  .table-controls .dropdown-menu .dropdown-item {
+    color: #fff;
+  }
+  .table-controls .dropdown-menu .dropdown-item:hover {
+    background-color: #495057;
+  }
+  .table-controls .dropdown-menu .dropdown-header {
+    color: #adb5bd;
+  }
+  .table-controls .dropdown-menu .dropdown-divider {
+    border-top-color: #495057;
+  }
+}`;
+const shadowOptions = { "mode": "open" };
+let TableControls = class TableControls extends client_1.RWSViewComponent {
+    constructor() {
+        super(...arguments);
+        this.actions = [];
+        this.showColumnToggle = true;
+        this.availableColumns = [];
+        this.visibleColumns = [];
+        this.data = [];
+        // State for dropdown visibility
+        this.showActionsDropdown = false;
+        this.showColumnsDropdown = false;
+        this.showRefresh = 'false';
+        this.exportLabel = 'Export';
+        this.exportIcon = 'simple-icon-cloud-download';
+        this.columnsLabel = 'Columns';
+        this.columnsIcon = 'simple-icon-settings';
+    }
+    connectedCallback() {
+        super.connectedCallback();
+        // Add default actions
+        this.setupDefaultActions();
+        // Enable column toggle by default
+        this.showColumnToggle = true;
+        // Try to connect with parent crud-table
+        this.connectWithParentTable();
+    }
+    availableColumnsChanged(oldValue, newValue) {
+        if (newValue && Array.isArray(newValue)) {
+            // Initialize visible columns if not set
+            if (this.visibleColumns && this.visibleColumns.length === 0 && newValue.length > 0) {
+                this.visibleColumns = newValue.map(col => col.key);
+            }
+        }
+    }
+    visibleColumnsChanged(oldValue, newValue) {
+        // Ensure we have an array
+        if (!Array.isArray(newValue)) {
+            this.visibleColumns = [];
+        }
+    }
+    connectWithParentTable() {
+        // Look for parent crud-table component
+        const parentTable = this.closest('crud-table');
+        if (parentTable) {
+            // Sync with parent table's columns and visibility
+            if (parentTable.columns) {
+                this.setAvailableColumns(parentTable.columns);
+            }
+            if (parentTable.visibleColumns) {
+                this.setVisibleColumns(parentTable.visibleColumns);
+            }
+        }
+    }
+    setupDefaultActions() {
+        const actions = [];
+        if (this.showRefresh === 'true') {
+            actions.push({
+                key: 'refresh',
+                label: 'Refresh',
+                icon: 'simple-icon-refresh',
+                variant: 'secondary',
+                action: () => this.handleRefresh()
+            });
+        }
+        actions.push({
+            key: 'export',
+            label: this.exportLabel,
+            icon: this.exportIcon,
+            variant: 'primary',
+            action: () => this.handleExport()
+        });
+        actions.push({
+            key: 'settings',
+            label: 'Table Settings',
+            icon: 'simple-icon-settings',
+            variant: 'secondary',
+            action: () => this.toggleColumnsDropdown()
+        });
+        this.actions = actions;
+    }
+    handleRefresh() {
+        this.$emit(events_1.TableControlsEvents.TABLE_REFRESH);
+    }
+    handleExport() {
+        this.$emit(events_1.TableControlsEvents.TABLE_EXPORT);
+    }
+    toggleActionsDropdown() {
+        this.showActionsDropdown = !this.showActionsDropdown;
+        this.showColumnsDropdown = false;
+    }
+    toggleColumnsDropdown() {
+        this.showColumnsDropdown = !this.showColumnsDropdown;
+        this.showActionsDropdown = false;
+    }
+    closeDropdowns() {
+        this.showActionsDropdown = false;
+        this.showColumnsDropdown = false;
+    }
+    toggleColumn(columnKey) {
+        const index = this.visibleColumns.indexOf(columnKey);
+        if (index > -1) {
+            this.visibleColumns = this.visibleColumns.filter(key => key !== columnKey);
+        }
+        else {
+            this.visibleColumns = [...this.visibleColumns, columnKey];
+        }
+        // Emit the change event
+        const eventDetail = {
+            visibleColumns: [...this.visibleColumns]
+        };
+        this.$emit(events_1.TableControlsEvents.COLUMN_VISIBILITY_CHANGED, eventDetail);
+        // Also update any connected table directly
+        this.updateConnectedTable();
+    }
+    updateConnectedTable() {
+        // Find parent crud-table and update it directly
+        const parentTable = this.closest('crud-table');
+        if (parentTable && parentTable.setVisibleColumns) {
+            parentTable.setVisibleColumns(this.visibleColumns);
+        }
+    }
+    // Enhanced sync method for parent table
+    syncWithParentTable() {
+        const parentTable = this.closest('crud-table');
+        if (parentTable) {
+            if (parentTable.columns) {
+                this.setAvailableColumns(parentTable.columns);
+            }
+            if (parentTable.visibleColumns) {
+                this.setVisibleColumns(parentTable.visibleColumns);
+            }
+        }
+    }
+    isColumnVisible(columnKey) {
+        return this.visibleColumns.includes(columnKey);
+    }
+    addCustomAction(action) {
+        this.actions.push(action);
+    }
+    removeAction(actionKey) {
+        this.actions = this.actions.filter(action => action.key !== actionKey);
+    }
+    setAvailableColumns(columns) {
+        this.availableColumns = Array.isArray(columns) ? columns : [];
+        // By default, show all columns
+        if (this.visibleColumns.length === 0) {
+            this.visibleColumns = this.availableColumns.map(col => col.key);
+        }
+    }
+    setVisibleColumns(columnKeys) {
+        this.visibleColumns = Array.isArray(columnKeys) ? columnKeys : [];
+    }
+    // Method to sync with crud-table component
+    syncWithTable(crudTable) {
+        if (crudTable && crudTable.columns) {
+            this.setAvailableColumns(crudTable.columns);
+            if (crudTable.visibleColumns) {
+                this.setVisibleColumns(crudTable.visibleColumns);
+            }
+        }
+    }
+    // Method to update connected crud-table when columns change
+    updateTable(crudTable) {
+        if (crudTable && crudTable.setVisibleColumns) {
+            crudTable.setVisibleColumns(this.visibleColumns);
+        }
+    }
+};
+exports.TableControls = TableControls;
+__decorate([
+    client_1.observable,
+    __metadata("design:type", Array)
+], TableControls.prototype, "actions", void 0);
+__decorate([
+    client_1.observable,
+    __metadata("design:type", Boolean)
+], TableControls.prototype, "showColumnToggle", void 0);
+__decorate([
+    client_1.observable,
+    __metadata("design:type", Array)
+], TableControls.prototype, "availableColumns", void 0);
+__decorate([
+    client_1.observable,
+    __metadata("design:type", Array)
+], TableControls.prototype, "visibleColumns", void 0);
+__decorate([
+    client_1.observable,
+    __metadata("design:type", Array)
+], TableControls.prototype, "data", void 0);
+__decorate([
+    client_1.observable,
+    __metadata("design:type", Boolean)
+], TableControls.prototype, "showActionsDropdown", void 0);
+__decorate([
+    client_1.observable,
+    __metadata("design:type", Boolean)
+], TableControls.prototype, "showColumnsDropdown", void 0);
+__decorate([
+    client_1.attr,
+    __metadata("design:type", String)
+], TableControls.prototype, "showRefresh", void 0);
+__decorate([
+    client_1.attr,
+    __metadata("design:type", String)
+], TableControls.prototype, "exportLabel", void 0);
+__decorate([
+    client_1.attr,
+    __metadata("design:type", String)
+], TableControls.prototype, "exportIcon", void 0);
+__decorate([
+    client_1.attr,
+    __metadata("design:type", String)
+], TableControls.prototype, "columnsLabel", void 0);
+__decorate([
+    client_1.attr,
+    __metadata("design:type", String)
+], TableControls.prototype, "columnsIcon", void 0);
+exports.TableControls = TableControls = __decorate([
+    (0, client_1.RWSView)('table-controls', null, { template: rwsTemplate, styles, options: { shadowOptions } })
+], TableControls);
+TableControls.defineComponent();
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/table-controls/events.ts"
+/*!*********************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/table-controls/events.ts ***!
+  \*********************************************************************************************/
+(__unused_webpack_module, exports) {
+
+"use strict";
+
+/**
+ * Table Controls Events
+ *
+ * This module defines all the events that can be emitted by the table-controls component.
+ * These events are used for communication between table-controls and parent table components.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TableControlsEvents = void 0;
+exports.createTableControlsEvent = createTableControlsEvent;
+/**
+ * Table Controls Events Object
+ * Contains all event names and their corresponding event details interfaces
+ */
+exports.TableControlsEvents = {
+    /**
+     * Emitted when the refresh button is clicked
+     * Event detail: TableRefreshEventDetail
+     */
+    TABLE_REFRESH: 'table-refresh',
+    /**
+     * Emitted when the export button is clicked
+     * Event detail: TableExportEventDetail
+     */
+    TABLE_EXPORT: 'table-export',
+    /**
+     * Emitted when column visibility is changed
+     * Event detail: ColumnVisibilityChangedEventDetail
+     */
+    COLUMN_VISIBILITY_CHANGED: 'column-visibility-changed'
+};
+/**
+ * Helper function to create strongly typed event emitters
+ */
+function createTableControlsEvent(eventName, detail) {
+    return new CustomEvent(eventName, { detail, bubbles: true, composed: true });
+}
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/table-controls/styles/layout.scss"
+/*!******************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/table-controls/styles/layout.scss ***!
+  \******************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/table-controls/template.html"
+/*!*************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/table-controls/template.html ***!
+  \*************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/uploader/component.ts"
+/*!******************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/uploader/component.ts ***!
+  \******************************************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a, _b;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RWSUploader = void 0;
+const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+__webpack_require__(/*! ./template.html */ "../node_modules/@rws-framework/components/src/components/rws/uploader/template.html");
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
+//@ts-ignore                
+let rwsTemplate = T.html `<div class="upload_area">
+    <section>
+        <h3>Upload file</h3>
+        <rws-progress :value="${x => x.uploadProgress}" min="1" max="100"></rws-progress>
+        <article>
+            <div class="drag-and-drop"> 
+                <div @click="${x => !x.chosenFile ? x.onChoose() : (() => { })()}" class="upl-background"></div>
+                ${T.when(x => !x.chosenFile, T.html `<p @click="${x => !x.chosenFile ? x.onChoose() : (() => { })()}" class="dropinfo">Drag and drop here to upload</p>`)}
+                ${T.when(x => x.chosenFile, T.html `<div class="file-block">${x => x.chosenFile.name} <span @click="${x => x.removeFile()}" class="close-btn">X</span></div>`)}
+            </div>
+            <div class="upl-controls">
+                <button @click="${x => x.onChoose()}" class="outline">Choose file</button>                
+            </div>
+        </article>
+        <button @click="${x => x.onUploadStart()}" :disabled="${x => x.chosenFile ? false : true}" appearance="accent" class="next">Upload</button>
+    </section>
+</div>`;
+__webpack_require__(/*! ./styles/layout.scss */ "../node_modules/@rws-framework/components/src/components/rws/uploader/styles/layout.scss");
+const styles = T.css `rws-progress {
+  --accent-foreground-rest: $upl_primary;
+}
+
+.upload_area {
+  color: var(--rws-uploader-text, #000);
+  padding: 25px;
+}
+.upload_area * {
+  box-sizing: border-box;
+}
+.upload_area section::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.upload_area section {
+  display: block;
+  contain: content;
+  box-sizing: border-box;
+  background: var(--rws-uploader-bg, #424242);
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+}
+.upload_area section .drag-and-drop {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  border: 4px dashed var(--rws-uploader-border, #FFF);
+  width: 100%;
+  height: 100%;
+  padding: 30px;
+  margin-bottom: 30px;
+  text-align: center;
+  cursor: pointer;
+}
+.upload_area section .drag-and-drop .file-block {
+  border: 1px solid var(--rws-uploader-border, #FFF);
+  font-size: 10px;
+  padding: 15px;
+  border-radius: 15px;
+}
+.upload_area section .drag-and-drop .file-block .close-btn {
+  border: 1px solid var(--rws-uploader-border, #FFF);
+  padding: 5px;
+  font-weight: bold;
+  margin-left: 10px;
+  border-radius: 15px;
+}
+.upload_area section .drag-and-drop.hover {
+  position: relative;
+}
+.upload_area section .drag-and-drop.hover:before {
+  content: "";
+  background: var(--rws-uploader-secondary, #CCC);
+  opacity: 0.4;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.upload_area section .drag-and-drop.hover p {
+  font-weight: bold;
+}
+.upload_area section h3 {
+  padding: 0 15px;
+  color: var(--rws-uploader-text, #000);
+}
+.upload_area section article {
+  padding: 15px;
+}
+.upload_area section button {
+  background: var(--rws-uploader-btn-bg, #CCC);
+  color: var(--rws-uploader-btn-text, #000);
+  font-size: 14px;
+  padding: 10px;
+  box-shadow: none;
+  border-radius: 5px;
+  border-style: solid;
+  border-color: var(--rws-uploader-btn-border, #000);
+  border-width: 1px;
+  fill: currentcolor;
+  cursor: pointer;
+}
+.upload_area section button.outline {
+  background: none;
+}
+.upload_area section button.next {
+  float: right;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}`;
+const shadowOptions = { "mode": "open" };
+let RWSUploader = class RWSUploader extends client_1.RWSViewComponent {
+    constructor() {
+        super(...arguments);
+        this.uploadedFile = null;
+        this.chosenFile = null;
+        this.onStart = async (chosenFile) => chosenFile;
+        this.onProgress = (progress) => null;
+    }
+    async onUploadStart() {
+        if (!this.uploadProgress) {
+            this.uploadProgress = 0;
+        }
+        const response = await this.onStart(this.chosenFile, this);
+        if (response === null) {
+            return;
+        }
+        this.onFinish(response);
+        this.uploadedFile = this.chosenFile;
+        this.chosenFile = null;
+    }
+    onChoose() {
+        const _self = this;
+        const fileInput = this.createFileInput();
+        this.triggerUpload(fileInput);
+        fileInput.addEventListener('change', () => {
+            var _a;
+            if ((_a = fileInput.files) === null || _a === void 0 ? void 0 : _a.length) {
+                _self.chosenFile = fileInput.files[0];
+                _self.uploadedFile = null;
+                _self.removeFileInput(fileInput);
+            }
+        });
+    }
+    removeFile() {
+        this.chosenFile = null;
+    }
+    createFileInput() {
+        var _a;
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.style.display = 'none';
+        (_a = this.shadowRoot) === null || _a === void 0 ? void 0 : _a.appendChild(fileInput);
+        return fileInput;
+    }
+    triggerUpload(fileInput) {
+        fileInput.click();
+    }
+    removeFileInput(fileInput) {
+        var _a;
+        (_a = this.shadowRoot) === null || _a === void 0 ? void 0 : _a.removeChild(fileInput);
+    }
+    uploadProgressChanged(oldV, newV) {
+    }
+};
+exports.RWSUploader = RWSUploader;
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Number)
+], RWSUploader.prototype, "uploadProgress", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", typeof (_a = typeof File !== "undefined" && File) === "function" ? _a : Object)
+], RWSUploader.prototype, "uploadedFile", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", typeof (_b = typeof File !== "undefined" && File) === "function" ? _b : Object)
+], RWSUploader.prototype, "chosenFile", void 0);
+__decorate([
+    fast_element_1.observable,
+    __metadata("design:type", Object)
+], RWSUploader.prototype, "uploadParams", void 0);
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", Function)
+], RWSUploader.prototype, "onFinish", void 0);
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", Function)
+], RWSUploader.prototype, "onStart", void 0);
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", Function)
+], RWSUploader.prototype, "onProgress", void 0);
+exports.RWSUploader = RWSUploader = __decorate([
+    (0, client_1.RWSView)('rws-uploader', null, { template: rwsTemplate, styles, options: { shadowOptions } })
+], RWSUploader);
+RWSUploader.defineComponent();
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/uploader/styles/layout.scss"
+/*!************************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/uploader/styles/layout.scss ***!
+  \************************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/rws/uploader/template.html"
+/*!*******************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/rws/uploader/template.html ***!
+  \*******************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/tooltip/component.ts"
+/*!*************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/tooltip/component.ts ***!
+  \*************************************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var RWSTooltip_1;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RWSTooltip = void 0;
+const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+__webpack_require__(/*! ./template.html */ "../node_modules/@rws-framework/components/src/components/tooltip/template.html");
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
+//@ts-ignore                
+let rwsTemplate = T.html `<div class="tooltip-wrapper${x => x.disabled ? ' disabled' : ''}">
+    <div class="tooltip-trigger">
+        <slot></slot>
+    </div>
+    <div class="tooltip-bubble tooltip-${x => x.side}" role="tooltip" :innerHTML="${x => x.text}">
+       
+    </div>
+</div>`;
+__webpack_require__(/*! ./styles/layout.scss */ "../node_modules/@rws-framework/components/src/components/tooltip/styles/layout.scss");
+const styles = T.css `:host {
+  display: inline-block;
+  position: relative;
+  --tooltip-bg-color: var(--color-neutral-900, #1a1a1a);
+  --tooltip-text-color: var(--color-neutral-50, #ffffff);
+  --tooltip-border-radius: var(--border-radius-sm, 4px);
+  --tooltip-font-size: var(--font-size-xs, 12px);
+  --tooltip-padding: var(--spacing-xs, 6px) var(--spacing-sm, 8px);
+  --tooltip-offset: var(--spacing-sm, 8px);
+  --tooltip-arrow-size: var(--spacing-xs, 6px);
+  --tooltip-z-index: var(--z-index-tooltip, 1000);
+  --tooltip-transition-duration: var(--transition-duration-fast, 0.2s);
+}
+
+.tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+}
+.tooltip-wrapper.disabled .tooltip-bubble {
+  display: none !important;
+}
+
+.tooltip-trigger {
+  display: inline-block;
+}
+
+.tooltip-bubble {
+  position: absolute;
+  background-color: var(--tooltip-bg-color);
+  color: var(--tooltip-text-color);
+  padding: var(--tooltip-padding);
+  border-radius: var(--tooltip-border-radius);
+  font-size: var(--tooltip-font-size);
+  white-space: pre-wrap;
+  z-index: var(--tooltip-z-index);
+  display: none;
+  transition: opacity var(--tooltip-transition-duration), visibility var(--tooltip-transition-duration);
+  pointer-events: none;
+  z-index: 10000;
+  max-width: 250px;
+  width: max-content;
+}
+.tooltip-bubble::before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+.tooltip-bubble.tooltip-top {
+  bottom: calc(100% + var(--tooltip-offset));
+  left: 50%;
+  transform: translateX(-50%);
+}
+.tooltip-bubble.tooltip-top::before {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: var(--tooltip-arrow-size) var(--tooltip-arrow-size) 0 var(--tooltip-arrow-size);
+  border-color: var(--tooltip-bg-color) transparent transparent transparent;
+}
+.tooltip-bubble.tooltip-bottom {
+  top: calc(100% + var(--tooltip-offset));
+  left: 50%;
+  transform: translateX(-50%);
+}
+.tooltip-bubble.tooltip-bottom::before {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 var(--tooltip-arrow-size) var(--tooltip-arrow-size) var(--tooltip-arrow-size);
+  border-color: transparent transparent var(--tooltip-bg-color) transparent;
+}
+.tooltip-bubble.tooltip-left {
+  top: 50%;
+  right: calc(100% + var(--tooltip-offset));
+  transform: translateY(-50%);
+}
+.tooltip-bubble.tooltip-left::before {
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  border-width: var(--tooltip-arrow-size) 0 var(--tooltip-arrow-size) var(--tooltip-arrow-size);
+  border-color: transparent transparent transparent var(--tooltip-bg-color);
+}
+.tooltip-bubble.tooltip-right {
+  top: 50%;
+  left: calc(100% + var(--tooltip-offset));
+  transform: translateY(-50%);
+}
+.tooltip-bubble.tooltip-right::before {
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
+  border-width: var(--tooltip-arrow-size) var(--tooltip-arrow-size) var(--tooltip-arrow-size) 0;
+  border-color: transparent var(--tooltip-bg-color) transparent transparent;
+}
+
+.tooltip-wrapper:hover .tooltip-bubble {
+  display: block;
+}
+
+.tooltip-trigger:focus-within + .tooltip-bubble,
+.tooltip-trigger:focus + .tooltip-bubble {
+  display: block;
+}`;
+const shadowOptions = { "mode": "open" };
+let RWSTooltip = RWSTooltip_1 = class RWSTooltip extends client_1.RWSViewComponent {
+    constructor() {
+        super(...arguments);
+        this.side = 'top';
+        this.disabled = false;
+        this.text = '';
+    }
+    connectedCallback() {
+        super.connectedCallback();
+    }
+    static addTooltips() {
+        const tooltipHolders = this.$(`[data-${RWSTooltip_1.DATA_TAGS.tooltip}]`);
+        for (const holder of Array.from(tooltipHolders)) {
+            const side = holder.getAttribute(`data-${RWSTooltip_1.DATA_TAGS.side}`) || 'top';
+            const tooltip = document.createElement('rws-tooltip');
+            tooltip.setAttribute('side', side);
+            tooltip.setAttribute('text', holder.getAttribute(`data-${RWSTooltip_1.DATA_TAGS.tooltip}`) || '');
+            tooltip.append(holder.cloneNode(true));
+            holder.replaceWith(tooltip);
+        }
+    }
+};
+exports.RWSTooltip = RWSTooltip;
+RWSTooltip.DATA_TAGS = {
+    tooltip: 'rws-ttip',
+    side: 'rws-ttip-side',
+};
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", String)
+], RWSTooltip.prototype, "side", void 0);
+__decorate([
+    (0, fast_element_1.attr)({ mode: 'boolean' }),
+    __metadata("design:type", Boolean)
+], RWSTooltip.prototype, "disabled", void 0);
+__decorate([
+    fast_element_1.attr,
+    __metadata("design:type", String)
+], RWSTooltip.prototype, "text", void 0);
+exports.RWSTooltip = RWSTooltip = RWSTooltip_1 = __decorate([
+    (0, client_1.RWSView)('rws-tooltip', null, { template: rwsTemplate, styles, options: { shadowOptions } })
+], RWSTooltip);
+RWSTooltip.defineComponent();
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/tooltip/styles/layout.scss"
+/*!*******************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/tooltip/styles/layout.scss ***!
+  \*******************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/components/tooltip/template.html"
+/*!**************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/components/tooltip/template.html ***!
+  \**************************************************************************************/
+() {
+
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/index.ts"
+/*!**************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/index.ts ***!
+  \**************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(/*! ./components */ "../node_modules/@rws-framework/components/src/components/index.ts"), exports);
+__exportStar(__webpack_require__(/*! ./services */ "../node_modules/@rws-framework/components/src/services/index.ts"), exports);
+
+
+/***/ },
+
+/***/ "../node_modules/@rws-framework/components/src/services/drag-drop/DragDropService.ts"
+/*!*******************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/services/drag-drop/DragDropService.ts ***!
+  \*******************************************************************************************/
 (__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CSSInjectionManager = void 0;
-const events_1 = __webpack_require__(/*! ../events */ "../node_modules/@rws-framework/client/src/events.ts");
-const _DEFAULT_INJECT_CSS_CACHE_LIMIT_DAYS = 1;
-class CSSInjectionManager {
-    static getCachedStyles(styleLinks) {
-        return styleLinks
-            .filter(link => CSSInjectionManager.CACHED_STYLES.has(link))
-            .map(link => CSSInjectionManager.CACHED_STYLES.get(link));
+exports.DragDropServiceInstance = void 0;
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
+const EventManager_1 = __webpack_require__(/*! ./EventManager */ "../node_modules/@rws-framework/components/src/services/drag-drop/EventManager.ts");
+const HandlerManager_1 = __webpack_require__(/*! ./HandlerManager */ "../node_modules/@rws-framework/components/src/services/drag-drop/HandlerManager.ts");
+class DragDropService extends client_1.RWSService {
+    constructor() {
+        super(...arguments);
+        this.currentDrag = null;
+        this.dropZones = new Map();
+        this.handlerManager = new HandlerManager_1.HandlerManager();
+        this.successfulDrop = false;
+        this.originalPosition = -1;
+        this.originalNextSibling = null;
     }
-    static hasCachedStyles(styleLinks) {
-        return styleLinks.every(link => CSSInjectionManager.CACHED_STYLES.has(link));
-    }
-    static getStylesOwnerComponent() {
-        return CSSInjectionManager.STYLES_OWNER_COMPONENT;
-    }
-    static clearCachedStyles() {
-        CSSInjectionManager.CACHED_STYLES.clear();
-        CSSInjectionManager.STYLES_OWNER_COMPONENT = null;
-    }
-    static async injectStyles(component, styleLinks, options = {}) {
-        const { mode = 'adopted', maxDaysExp } = options;
-        if (!component.shadowRoot) {
-            throw new Error('Component must have a shadow root for CSS injection');
-        }
-        // Add initial transition styles to host element
-        const transitionSheet = new CSSStyleSheet();
-        await transitionSheet.replace(`
-            :host {
-                opacity: 0;
-                transition: opacity 0.3s ease-in-out;
+    /**
+     * Initialize drag functionality for an element
+     */
+    drag(draggedElement, component, dragOptions = {}) {
+        EventManager_1.EventManager.validateComponent(component);
+        draggedElement.draggable = true;
+        const dragStartHandler = (event) => {
+            if (!dragOptions.getDragElementData) {
+                throw new Error('DragDropService.drag: getDragElementData function must be provided in dragOptions');
             }
-        `);
-        component.shadowRoot.adoptedStyleSheets = [
-            transitionSheet,
-            ...component.shadowRoot.adoptedStyleSheets,
-        ];
-        let adoptedSheets = [];
-        let doneAdded = false;
-        // Check if we already have cached styles from the owner component
-        const cachedSheets = [];
-        const uncachedLinks = [];
-        for (const styleLink of styleLinks) {
-            if (CSSInjectionManager.CACHED_STYLES.has(styleLink)) {
-                cachedSheets.push(CSSInjectionManager.CACHED_STYLES.get(styleLink));
+            const data = dragOptions.getDragElementData(draggedElement).data;
+            const type = dragOptions.dragElementType || 'tab';
+            // For sortable items, ensure data-order attribute exists
+            if (dragOptions.sortable || type === 'sortable-item') {
+                const dataOrderAttr = draggedElement.getAttribute('data-order');
+                if (!dataOrderAttr) {
+                    throw new Error('DragDropService: data-order attribute is required on draggable elements for sortable functionality');
+                }
+            }
+            // Reset successful drop flag for new drag operation
+            this.successfulDrop = false;
+            // Store original position for sortable behavior
+            if (draggedElement.parentElement) {
+                const siblings = Array.from(draggedElement.parentElement.children);
+                this.originalPosition = siblings.indexOf(draggedElement);
+                this.originalNextSibling = draggedElement.nextElementSibling;
+            }
+            // Store original order from DOM attribute
+            const originalOrderAttr = draggedElement.getAttribute('data-order');
+            const originalOrder = originalOrderAttr ? parseFloat(originalOrderAttr) : 0;
+            this.currentDrag = {
+                element: draggedElement,
+                data: data,
+                type,
+                originalPosition: this.originalPosition,
+                originalOrder: originalOrder
+            };
+            if (dragOptions.onDropOut) {
+                this.currentDrag.onDropOut = dragOptions.onDropOut;
+            }
+            if (event.dataTransfer) {
+                event.dataTransfer.effectAllowed = 'move';
+                event.dataTransfer.setData('text/plain', JSON.stringify({ type, data }));
+            }
+            // Add visual feedback via dragstate attribute
+            draggedElement.setAttribute('dragstate', 'dragging');
+            // Emit drag start event
+            EventManager_1.EventManager.emitEvent(component, 'drag-start', {
+                element: draggedElement,
+                data: data,
+                type: type
+            });
+        };
+        const dragEndHandler = async (event) => {
+            var _a, _b, _c;
+            // Remove visual feedback via dragstate attribute
+            draggedElement.removeAttribute('dragstate');
+            // Clear sortstate attributes from all items
+            if (draggedElement.parentElement) {
+                this.clearSortStateAttributes(draggedElement.parentElement);
+            }
+            // Check if element was dropped outside of any drop zone
+            if (!this.successfulDrop && ((_a = this.currentDrag) === null || _a === void 0 ? void 0 : _a.onDropOut)) {
+                try {
+                    await this.currentDrag.onDropOut(this.currentDrag);
+                }
+                catch (error) {
+                    console.error('Error executing onDropOut callback:', error);
+                }
+            }
+            // Emit drag end event
+            EventManager_1.EventManager.emitEvent(component, 'drag-end', {
+                element: draggedElement,
+                data: (_b = this.currentDrag) === null || _b === void 0 ? void 0 : _b.data,
+                type: (_c = this.currentDrag) === null || _c === void 0 ? void 0 : _c.type
+            });
+            this.currentDrag = null;
+        };
+        // Remove existing handlers if any
+        this.handlerManager.removeDragHandlers(draggedElement);
+        // Add new handlers
+        draggedElement.addEventListener('dragstart', dragStartHandler);
+        draggedElement.addEventListener('dragend', dragEndHandler);
+        // Store handlers for cleanup
+        this.handlerManager.storeDragHandlers(draggedElement, {
+            dragStart: dragStartHandler,
+            dragEnd: dragEndHandler
+        });
+    }
+    /**
+     * Initialize drop functionality for an element
+     */
+    drop(targetArea, acceptedTypes = ['default'], onDropCallback, component, options) {
+        const dropZone = {
+            element: targetArea,
+            accepts: acceptedTypes,
+            onDrop: onDropCallback,
+            sortable: (options === null || options === void 0 ? void 0 : options.sortable) || false
+        };
+        const dragOverHandler = (event) => {
+            event.preventDefault();
+            if (this.currentDrag && this.canAcceptDrop(dropZone, this.currentDrag)) {
+                if (event.dataTransfer) {
+                    event.dataTransfer.dropEffect = 'move';
+                }
+                targetArea.setAttribute('dragstate', 'drag-over');
+                // Handle sortable behavior - just visual feedback, no DOM manipulation
+                if (dropZone.sortable && this.currentDrag.element !== event.target) {
+                    // Store intended drop position for later calculation, but don't manipulate DOM
+                    // DOM manipulation conflicts with RWS template system
+                    this.storeIntendedDropPosition(event, dropZone);
+                }
             }
             else {
-                uncachedLinks.push(styleLink);
-            }
-        }
-        // If we have cached styles, use them immediately
-        if (cachedSheets.length > 0) {
-            adoptedSheets.push(...cachedSheets);
-            doneAdded = true;
-        }
-        // Only process uncached styles
-        if (uncachedLinks.length > 0) {
-            // Set this component as the owner if no owner exists yet
-            if (!CSSInjectionManager.STYLES_OWNER_COMPONENT) {
-                CSSInjectionManager.STYLES_OWNER_COMPONENT = component;
-            }
-            const dbName = 'css-cache';
-            const storeName = 'styles';
-            const db = await component.indexedDBService.openDB(dbName, storeName);
-            const maxAgeMs = 1000 * 60 * 60 * 24; // 24h
-            const maxDaysAge = maxDaysExp ? maxDaysExp : _DEFAULT_INJECT_CSS_CACHE_LIMIT_DAYS;
-            const maxAgeDays = maxAgeMs * maxDaysAge;
-            for (const styleLink of uncachedLinks) {
-                const loadPromise = new Promise(async (resolve, reject) => {
-                    if (mode === 'legacy' || mode === 'both') {
-                        const link = document.createElement('link');
-                        link.rel = 'stylesheet';
-                        link.href = styleLink;
-                        component.shadowRoot.appendChild(link);
-                        link.onload = () => {
-                            doneAdded = true;
-                            if (mode === 'legacy') {
-                                resolve();
-                            }
-                        };
-                    }
-                    if (mode === 'adopted' || mode === 'both') {
-                        const entry = await component.indexedDBService.getFromDB(db, storeName, styleLink);
-                        let cssText = null;
-                        if (entry && typeof entry === 'object' && 'css' in entry && 'timestamp' in entry) {
-                            const expired = Date.now() - entry.timestamp > maxAgeDays;
-                            if (!expired) {
-                                cssText = entry.css;
-                            }
-                        }
-                        if (!cssText) {
-                            cssText = await fetch(styleLink).then(res => res.text());
-                            await component.indexedDBService.saveToDB(db, storeName, styleLink, {
-                                css: cssText,
-                                timestamp: Date.now()
-                            });
-                            console.log(`System saved stylesheet: ${styleLink} to IndexedDB`);
-                        }
-                        const sheet = new CSSStyleSheet();
-                        await sheet.replace(cssText);
-                        // Cache the stylesheet for future use
-                        CSSInjectionManager.CACHED_STYLES.set(styleLink, sheet);
-                        adoptedSheets.push(sheet);
-                        if (mode === 'adopted' || mode === 'both') {
-                            resolve();
-                        }
-                    }
-                });
-                await loadPromise;
-            }
-            doneAdded = true;
-        }
-        if (adoptedSheets.length) {
-            component.shadowRoot.adoptedStyleSheets = [
-                ...adoptedSheets,
-                ...component.shadowRoot.adoptedStyleSheets,
-            ];
-            doneAdded = true;
-        }
-        if (doneAdded) {
-            // Set opacity to 1 to fade in the component
-            const opacitySheet = new CSSStyleSheet();
-            await opacitySheet.replace(`
-                :host {
-                    opacity: 1 !important;
+                if (event.dataTransfer) {
+                    event.dataTransfer.dropEffect = 'none';
                 }
-            `);
-            component.shadowRoot.adoptedStyleSheets = [
-                opacitySheet,
-                ...component.shadowRoot.adoptedStyleSheets,
-            ];
-            component.$emit(events_1.domEvents.loadedLinkedStyles);
+            }
+        };
+        const dragLeaveHandler = (event) => {
+            targetArea.removeAttribute('dragstate');
+        };
+        const dropHandler = (event) => {
+            event.preventDefault();
+            targetArea.removeAttribute('dragstate');
+            if (this.currentDrag && this.canAcceptDrop(dropZone, this.currentDrag)) {
+                // Mark as successful drop
+                this.successfulDrop = true;
+                // Handle sortable drop
+                if (dropZone.sortable) {
+                    this.handleSortableDrop(event, dropZone, this.currentDrag);
+                }
+                // Execute callback if provided - now with event information
+                if (dropZone.onDrop) {
+                    dropZone.onDrop(this.currentDrag, dropZone, event);
+                }
+                // Emit drop event using component's $emit if available
+                if (component && typeof component.$emit === 'function') {
+                    EventManager_1.EventManager.emitEvent(component, 'drop', {
+                        dragData: this.currentDrag,
+                        dropZone: dropZone,
+                        targetElement: targetArea,
+                        dropEvent: event
+                    });
+                }
+            }
+        };
+        // Remove existing handlers if any
+        this.handlerManager.removeDropHandlers(targetArea);
+        // Add new handlers
+        targetArea.addEventListener('dragover', dragOverHandler);
+        targetArea.addEventListener('dragleave', dragLeaveHandler);
+        targetArea.addEventListener('drop', dropHandler);
+        // Store handlers and drop zone for cleanup
+        this.handlerManager.storeDropHandlers(targetArea, {
+            dragOver: dragOverHandler,
+            dragLeave: dragLeaveHandler,
+            drop: dropHandler
+        });
+        this.dropZones.set(targetArea, dropZone);
+    }
+    /**
+     * Remove drag functionality from an element
+     */
+    removeDrag(element) {
+        this.handlerManager.removeDragHandlers(element);
+        element.draggable = false;
+        element.removeAttribute('dragstate');
+    }
+    /**
+     * Remove drop functionality from an element
+     */
+    removeDrop(element) {
+        this.handlerManager.removeDropHandlers(element);
+        this.dropZones.delete(element);
+        element.removeAttribute('dragstate');
+    }
+    /**
+     * Get current drag data
+     */
+    getCurrentDrag() {
+        return this.currentDrag;
+    }
+    /**
+     * Check if a drop zone can accept the current drag
+     */
+    canAcceptDrop(dropZone, dragData) {
+        return dropZone.accepts.includes(dragData.type) || dropZone.accepts.includes('*');
+    }
+    /**
+     * Handle sortable dragover behavior - store intended position without DOM manipulation
+     */
+    storeIntendedDropPosition(event, dropZone) {
+        // Just store the intended drop position for later calculation
+        // Don't manipulate DOM to avoid conflicts with RWS template system
+        const container = dropZone.element;
+        const afterElement = this.getDragAfterElement(container, event.clientY);
+        // Clear previous sortstate attributes
+        this.clearSortStateAttributes(container);
+        // Add sortstate attributes for visual feedback
+        this.applySortStateAttributes(container, afterElement, event.clientY);
+        // Store intended position in currentDrag for later use in calculateSortingOrder
+        if (this.currentDrag) {
+            this.currentDrag.intendedAfterElement = afterElement;
+            this.currentDrag.lastDropY = event.clientY;
         }
     }
+    /**
+     * Get all items order from container - calculate new order based on drag operation
+     */
+    getAllItemsOrder(container, dragData) {
+        const allItems = Array.from(container.children);
+        // If no drag data, just return current DOM order
+        if (!dragData || dragData.sortingOrder === undefined) {
+            return allItems.map((item, index) => {
+                const id = item.getAttribute('data-id') || '';
+                return { id, order: index };
+            }).filter(item => item.id);
+        }
+        // Calculate new order based on drag operation
+        const draggedId = dragData.element.getAttribute('data-id') || '';
+        const newPosition = dragData.sortingOrder;
+        // Create new order array
+        const itemsWithIds = allItems.map((item, index) => ({
+            id: item.getAttribute('data-id') || '',
+            originalIndex: index,
+            element: item
+        })).filter(item => item.id);
+        // Find dragged item
+        const draggedItem = itemsWithIds.find(item => item.id === draggedId);
+        if (!draggedItem) {
+            // Fallback to original order if dragged item not found
+            return itemsWithIds.map((item, index) => ({
+                id: item.id,
+                order: index
+            }));
+        }
+        // Remove dragged item from its current position
+        const otherItems = itemsWithIds.filter(item => item.id !== draggedId);
+        // Insert dragged item at new position
+        const newOrderItems = [...otherItems];
+        newOrderItems.splice(newPosition, 0, draggedItem);
+        // Return with new 0-based ordering
+        return newOrderItems.map((item, index) => ({
+            id: item.id,
+            order: index
+        }));
+    }
+    /**
+     * Handle sortable drop behavior
+     */
+    handleSortableDrop(event, dropZone, dragData) {
+        // Calculate the new order based on DOM position and data-order attributes
+        const newSortingOrder = this.calculateSortingOrder(event, dropZone.element, dragData);
+        // Set the new sorting order (this will be different from originalOrder)
+        dragData.sortingOrder = newSortingOrder;
+        // The originalOrder should already be set from dragstart, but ensure it's there
+        if (dragData.originalOrder === undefined) {
+            const originalOrderAttr = dragData.element.getAttribute('data-order');
+            dragData.originalOrder = originalOrderAttr ? parseFloat(originalOrderAttr) : 0;
+        }
+        // Store original position index if not already set
+        if (dragData.originalPosition === undefined) {
+            dragData.originalPosition = this.originalPosition;
+        }
+        // Get all items order for component to use - pass dragData to calculate new order
+        dragData.allItemsOrder = this.getAllItemsOrder(dropZone.element, dragData);
+    }
+    /**
+     * Clear sortstate attributes from all items in container
+     */
+    clearSortStateAttributes(container) {
+        const allItems = Array.from(container.children);
+        allItems.forEach(item => {
+            item.removeAttribute('sortstate');
+        });
+    }
+    /**
+     * Apply sortstate attributes to provide visual feedback
+     */
+    applySortStateAttributes(container, afterElement, dropY) {
+        if (!this.currentDrag)
+            return;
+        const allItems = Array.from(container.children);
+        const draggedElement = this.currentDrag.element;
+        const draggedIndex = allItems.indexOf(draggedElement);
+        // Calculate where the item will be inserted
+        let insertIndex;
+        if (afterElement === null) {
+            insertIndex = allItems.length - 1; // Insert at end
+        }
+        else {
+            insertIndex = allItems.indexOf(afterElement);
+        }
+        allItems.forEach((item, index) => {
+            if (item === draggedElement)
+                return; // Skip the dragged item
+            if (draggedIndex < insertIndex) {
+                // Moving item down - items between current and target move up
+                if (index > draggedIndex && index <= insertIndex) {
+                    item.setAttribute('sortstate', 'move-up');
+                    // Show gap above the target position
+                    if (index === insertIndex) {
+                        item.setAttribute('sortstate', 'gap-above');
+                    }
+                }
+            }
+            else if (draggedIndex > insertIndex) {
+                // Moving item up - items between target and current move down
+                if (index >= insertIndex && index < draggedIndex) {
+                    item.setAttribute('sortstate', 'move-down');
+                    // Show gap above the target position
+                    if (index === insertIndex) {
+                        item.setAttribute('sortstate', 'gap-above');
+                    }
+                }
+            }
+            // Special case: if inserting at the very end, show gap below last item
+            if (afterElement === null && index === allItems.length - 2) {
+                item.setAttribute('sortstate', 'gap-below');
+            }
+        });
+    }
+    /**
+     * Get the element that should come after the dragged element
+     */
+    getDragAfterElement(container, y) {
+        const draggableElements = Array.from(container.children).filter((child) => { var _a; return child !== ((_a = this.currentDrag) === null || _a === void 0 ? void 0 : _a.element); });
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            }
+            else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+    /**
+     * Calculate sorting order based on drop position
+     */
+    calculateSortingOrder(event, container, dragData) {
+        const allItems = Array.from(container.children);
+        const draggedElement = dragData.element;
+        // Use intended drop position if available, otherwise calculate from mouse position
+        let newIndex;
+        if (dragData.intendedAfterElement !== undefined) {
+            if (dragData.intendedAfterElement === null) {
+                // Intended to be at the end
+                newIndex = allItems.length - 1;
+            }
+            else {
+                // Intended to be before a specific element
+                const afterIndex = allItems.indexOf(dragData.intendedAfterElement);
+                newIndex = afterIndex > 0 ? afterIndex - 1 : 0;
+            }
+        }
+        else {
+            // Calculate based on mouse position
+            const dropY = dragData.lastDropY || event.clientY;
+            newIndex = 0;
+            for (let i = 0; i < allItems.length; i++) {
+                const item = allItems[i];
+                if (item === draggedElement)
+                    continue;
+                const rect = item.getBoundingClientRect();
+                const itemCenterY = rect.top + (rect.height / 2);
+                if (dropY < itemCenterY) {
+                    newIndex = i;
+                    break;
+                }
+                else {
+                    newIndex = i + 1;
+                }
+            }
+            // Adjust if we're moving the dragged element
+            const currentIndex = allItems.indexOf(draggedElement);
+            if (currentIndex < newIndex) {
+                newIndex--;
+            }
+        }
+        // Ensure index is within bounds
+        newIndex = Math.max(0, Math.min(newIndex, allItems.length - 1));
+        return newIndex;
+    }
+    /**
+     * Cleanup all drag and drop handlers
+     */
+    cleanup() {
+        // Clean up all handlers using handler manager
+        this.handlerManager.clearAll();
+        // Clear drop zones
+        this.dropZones.clear();
+        this.currentDrag = null;
+    }
 }
-exports.CSSInjectionManager = CSSInjectionManager;
-CSSInjectionManager.CACHED_STYLES = new Map();
-CSSInjectionManager.STYLES_OWNER_COMPONENT = null;
-exports["default"] = CSSInjectionManager;
+exports.DragDropServiceInstance = DragDropService;
+exports["default"] = DragDropService.getSingleton();
 
 
 /***/ },
 
-/***/ "../node_modules/@rws-framework/client/src/components/_decorator.ts"
-/*!**************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/components/_decorator.ts ***!
-  \**************************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.applyConstructor = exports.RWSInject = void 0;
-exports.RWSView = RWSView;
-exports.RWSIgnore = RWSIgnore;
-const _container_1 = __importDefault(__webpack_require__(/*! ./_container */ "../node_modules/@rws-framework/client/src/components/_container.ts"));
-const ConfigService_1 = __importDefault(__webpack_require__(/*! ../services/ConfigService */ "../node_modules/@rws-framework/client/src/services/ConfigService.ts"));
-const RWSWindow_1 = __webpack_require__(/*! ../types/RWSWindow */ "../node_modules/@rws-framework/client/src/types/RWSWindow.ts");
-const _component_1 = __importDefault(__webpack_require__(/*! ./_component */ "../node_modules/@rws-framework/client/src/components/_component.ts"));
-const RWSInject_1 = __webpack_require__(/*! ./_decorators/RWSInject */ "../node_modules/@rws-framework/client/src/components/_decorators/RWSInject.ts");
-Object.defineProperty(exports, "RWSInject", ({ enumerable: true, get: function () { return RWSInject_1.RWSInject; } }));
-const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
-const _external_handler_1 = __webpack_require__(/*! ./_attrs/_external_handler */ "../node_modules/@rws-framework/client/src/components/_attrs/_external_handler.ts");
-function RWSView(name, data, override) {
-    return (theComponent, args) => {
-        theComponent.definition = { name, template: null };
-        if (override) {
-            if (override.styles) {
-                theComponent.definition.styles = override.styles;
-            }
-            if (override.template) {
-                theComponent.definition.template = override.template;
-            }
-            if (override.options) {
-                theComponent.definition.options = override.options;
-            }
-        }
-    };
-}
-function RWSIgnore(params = null) {
-    return () => { };
-}
-function getParentConstructor(instance) {
-    const proto = Object.getPrototypeOf(instance.constructor.prototype);
-    if (proto && proto.constructor) {
-        return proto.constructor;
-    }
-    return null;
-}
-const applyConstructor = (component, x = false) => {
-    const mainConstructor = component.constructor;
-    const parent = getParentConstructor(component);
-    if (parent.name !== 'RWSViewComponent') {
-        return;
-    }
-    const existingInjectedDependencies = mainConstructor._toInject;
-    const regServices = (0, RWSWindow_1.loadRWSRichWindow)().RWS._registered;
-    const depsToInject = mainConstructor._depKeys[mainConstructor.name] || [];
-    const depsInInjector = Object.keys(existingInjectedDependencies);
-    const toInject = [...depsToInject];
-    const _target = component;
-    function inject(services) {
-        for (const prop in services) {
-            const service = (typeof services[prop] === 'string' ? existingInjectedDependencies[prop] : services[prop]);
-            _target[prop] = service;
-        }
-    }
-    inject(toInject.reduce((acc, cur) => {
-        acc[cur] = cur;
-        return acc;
-    }, {}));
-    const defaultDeps = Object.keys(existingInjectedDependencies)
-        .filter((depKey) => existingInjectedDependencies[depKey].isDefault()).map((depKey => [depKey, existingInjectedDependencies[depKey]]));
-    inject(defaultDeps.reduce((acc, cur) => {
-        acc[cur[0]] = cur[1];
-        return acc;
-    }, {}));
-    inject({
-        config: (0, _container_1.default)().get(ConfigService_1.default)
-    });
-    if (Object.keys(_component_1.default._externalAttrs).includes(_target.constructor.name)) {
-        for (const exAttrKey in _component_1.default._externalAttrs[_target.constructor.name]) {
-            const exAttr = _component_1.default._externalAttrs[_target.constructor.name][exAttrKey];
-            const notifier = fast_element_1.Observable.getNotifier(_target);
-            notifier.subscribe({
-                handleChange(source, key) {
-                    if (key === exAttr && !_target.__exAttrLoaded.includes(exAttr)) {
-                        (0, _external_handler_1.handleExternalChange)(source, key);
-                        _target.__exAttrLoaded.push(key);
-                    }
-                }
-            }, exAttr);
-        }
-    }
-};
-exports.applyConstructor = applyConstructor;
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/components/_decorators/RWSFillBuild.ts"
+/***/ "../node_modules/@rws-framework/components/src/services/drag-drop/EventManager.ts"
 /*!****************************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/components/_decorators/RWSFillBuild.ts ***!
+  !*** ../node_modules/@rws-framework/components/src/services/drag-drop/EventManager.ts ***!
   \****************************************************************************************/
 (__unused_webpack_module, exports) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RWSFillBuild = RWSFillBuild;
-function extractEnvVar(envVar) {
-    const extractedVars = JSON.parse(JSON.stringify(envVar));
-    const { backendUrl, wsUrl, partedDirUrlPrefix, partedPrefix, pubUrlFilePrefix, transports, parted } = extractedVars;
-    const extractedFrontendVars = {
-        backendUrl,
-        wsUrl,
-        partedDirUrlPrefix,
-        partedPrefix,
-        pubUrlFilePrefix,
-        transports,
-        parted
-    };
-    return {
-        extractedVars,
-        extractedFrontendVars
-    };
-}
-function RWSFillBuild(config = {}) {
-    return function (constructor) {
-        return class extends constructor {
-            constructor(...args) {
-                super(...args);
-                const extractedFrontendDefaults = extractEnvVar({"dev":true,"hot":false,"report":false,"publicDir":"../public","publicIndex":"index.html","outputFileName":"poke.rws.js","outputDir":"../public/js","tsConfigPath":"./tsconfig.json","backendUrl":null,"wsUrl":null,"partedPrefix":"rws","pubUrlFilePrefix":"/","transports":["websocket"],"devRouteProxy":"/api","devApiPort":3002,"plugins":[],"environment":"node","devtools":"source-map","entrypoint":"./src/index.ts","executionDir":"/var/www/pokedex/code","cssDir":"../public/css","hotReload":true}).extractedFrontendVars;
-                this._DEFAULTS = {
-                    ...config,
-                    ...extractedFrontendDefaults
-                };
-                const extractedFrontendBuildVars = extractEnvVar({"dev":true,"hot":false,"report":false,"publicDir":"../public","publicIndex":"index.html","outputFileName":"poke.rws.js","outputDir":"../public/js","tsConfigPath":"./tsconfig.json","backendUrl":null,"wsUrl":null,"partedPrefix":"rws","pubUrlFilePrefix":"/","transports":["websocket"],"devRouteProxy":"/api","devApiPort":3002,"plugins":[],"environment":"node","devtools":"source-map","entrypoint":"./src/index.ts","executionDir":"/var/www/pokedex/code","cssDir":"../public/css","hotReload":true}).extractedFrontendVars;
-                this._BUILD_OVERRIDE = extractedFrontendBuildVars;
-            }
-        };
-    };
-}
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/components/_decorators/RWSInject.ts"
-/*!*************************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/components/_decorators/RWSInject.ts ***!
-  \*************************************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RWSInject = RWSInject;
-const _di_1 = __webpack_require__(/*! ./_di */ "../node_modules/@rws-framework/client/src/components/_decorators/_di.ts");
-function addToComponentInjection(targetComponentName, constructor, depKey, dependencyClass, isDefaultService = false) {
-    if (isDefaultService) {
-        targetComponentName = '_all';
-    }
-    if (!Object.keys(constructor._depKeys).includes(targetComponentName)) {
-        constructor._depKeys = { [targetComponentName]: [] };
-    }
-    if (!constructor._depKeys[targetComponentName].includes(depKey)) {
-        constructor._depKeys[targetComponentName].push(depKey);
-    }
-    if (!Object.keys(constructor._toInject).includes(depKey)) {
-        const loadedDependency = (0, _di_1.loadDep)(dependencyClass);
-        constructor._toInject[depKey] = loadedDependency;
-    }
-}
-function RWSInject(dependencyClass, defaultService = false) {
-    return (target, key, parameterIndex) => {
-        if (key) {
-            const targetConstructor = typeof target === 'function' ? target : target.constructor;
-            addToComponentInjection(targetConstructor.name, targetConstructor, key, dependencyClass, defaultService);
+exports.EventManager = void 0;
+class EventManager {
+    /**
+     * Emit custom event on component
+     */
+    static emitEvent(component, eventName, detail) {
+        if (!component || typeof component.$emit !== 'function') {
+            throw new Error('No RWS view component detected');
         }
-        else {
-            const targetConstructor = target.prototype.constructor;
-            const paramNames = (0, _di_1.getFunctionParamNames)(targetConstructor);
-            const depKey = paramNames[parameterIndex];
-            addToComponentInjection(targetConstructor.name, targetConstructor, depKey, dependencyClass, defaultService);
+        component.$emit(eventName, detail);
+    }
+    /**
+     * Validate component for event emission
+     */
+    static validateComponent(component) {
+        if (!component || typeof component.$emit !== 'function') {
+            throw new Error('No RWS view component detected');
         }
-    };
+    }
 }
+exports.EventManager = EventManager;
 
 
 /***/ },
 
-/***/ "../node_modules/@rws-framework/client/src/components/_decorators/_di.ts"
-/*!*******************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/components/_decorators/_di.ts ***!
-  \*******************************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.loadDep = loadDep;
-exports.getFunctionParamNames = getFunctionParamNames;
-const _container_1 = __importDefault(__webpack_require__(/*! ../_container */ "../node_modules/@rws-framework/client/src/components/_container.ts"));
-function getFunctionParamNames(func) {
-    const constructorMatch = func.toString().match(/constructor\s*\(([^)]*)\)/);
-    if (!constructorMatch)
-        return null;
-    return constructorMatch[1].split(',').map(param => param.trim());
-}
-function loadDep(dependencyKeyClass) {
-    return (0, _container_1.default)().get(dependencyKeyClass);
-}
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/components/_definitions.ts"
-/*!****************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/components/_definitions.ts ***!
-  \****************************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.isDefined = isDefined;
-exports.defineComponent = defineComponent;
-exports.getDefinition = getDefinition;
-const RWSWindow_1 = __webpack_require__(/*! ../types/RWSWindow */ "../node_modules/@rws-framework/client/src/types/RWSWindow.ts");
-function isDefined(element) {
-    const richWindow = (0, RWSWindow_1.loadRWSRichWindow)();
-    if (!element.definition) {
-        return false;
-    }
-    return Object.keys(richWindow.RWS.components).includes(element.definition.name);
-}
-function defineComponent(element) {
-    if (element.isDefined()) {
-        if (element._verbose) {
-            console.warn(`Component ${element.name} is already declared`);
-        }
-        return;
-    }
-    const richWindow = (0, RWSWindow_1.loadRWSRichWindow)();
-    if (!element.definition) {
-        throw new Error('RWS component is not named. Add `static definition = {name, template};`');
-    }
-    const composedComp = element.compose({
-        baseName: element.definition.name,
-        template: element.definition.template,
-        styles: element.definition.styles
-    });
-    if (!richWindow.RWS) {
-        throw new Error('RWS client not initialized');
-    }
-    element.sendEventToOutside(element._EVENTS.component_define, element.definition.name);
-    richWindow.RWS.components[element.definition.name] = {
-        interface: composedComp,
-        component: element
-    };
-}
-function getDefinition(tagName, htmlTemplate, styles = null) {
-    const def = {
-        name: tagName,
-        template: htmlTemplate
-    };
-    if (styles) {
-        def.styles = styles;
-    }
-    return def;
-}
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/components/_event_handling.ts"
-/*!*******************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/components/_event_handling.ts ***!
-  \*******************************************************************************/
+/***/ "../node_modules/@rws-framework/components/src/services/drag-drop/HandlerManager.ts"
+/*!******************************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/services/drag-drop/HandlerManager.ts ***!
+  \******************************************************************************************/
 (__unused_webpack_module, exports) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.on = on;
-exports.$emitDown = $emitDown;
-exports.observe = observe;
-exports.sendEventToOutside = sendEventToOutside;
-function on(type, listener) {
-    this.addEventListener(type, (baseEvent) => {
-        listener(baseEvent);
-    });
-}
-function $emitDown(eventName, payload) {
-    this.$emit(eventName, payload, {
-        bubbles: true,
-        composed: true
-    });
-}
-function observe(callback, condition = null, observeRemoved = false) {
-    const observer = new MutationObserver((mutationsList, observer) => {
-        for (const mutation of mutationsList) {
-            if (mutation.type === 'childList') {
-                const mutationObserveType = observeRemoved ? mutation.removedNodes : mutation.addedNodes;
-                mutationObserveType.forEach(node => {
-                    if ((condition !== null && condition(this, node))) {
-                        callback(this, node, observer);
-                    }
-                    else if (condition === null) {
-                        callback(this, node, observer);
-                    }
-                });
-            }
-        }
-    });
-    observer.observe(this.getShadowRoot(), { childList: true, subtree: true });
-}
-function sendEventToOutside(eventName, data) {
-    document.dispatchEvent(new CustomEvent(eventName, {
-        detail: data,
-    }));
-}
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/events.ts"
-/*!***********************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/events.ts ***!
-  \***********************************************************/
-(__unused_webpack_module, exports) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.domEvents = void 0;
-exports.domEvents = {
-    loadedLinkedStyles: 'loaded:linked'
-};
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/index.ts"
-/*!**********************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/index.ts ***!
-  \**********************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RWSEvents = exports.RWSContainer = exports.RWSViewComponent = exports.RWSService = exports.ngAttr = exports.attr = exports.jsonAttr = exports.externalAttr = exports.externalObservable = exports.observable = exports.RWSInject = exports.RWSIgnore = exports.RWSView = exports.ServiceWorkerService = exports.ServiceWorkerServiceInstance = exports.ConfigService = exports.ConfigServiceInstance = exports.NotifyService = exports.NotifyServiceInstance = exports.DOMService = exports.DOMServiceInstance = exports.UtilsService = exports.UtilsServiceInstance = exports.ApiService = exports.ApiServiceInstance = exports.RWSPlugin = exports.RWSClientInstance = exports.RWSClient = void 0;
-const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
-Object.defineProperty(exports, "observable", ({ enumerable: true, get: function () { return fast_element_1.observable; } }));
-Object.defineProperty(exports, "attr", ({ enumerable: true, get: function () { return fast_element_1.attr; } }));
-const _service_1 = __importDefault(__webpack_require__(/*! ./services/_service */ "../node_modules/@rws-framework/client/src/services/_service.ts"));
-exports.RWSService = _service_1.default;
-const ConfigService_1 = __importStar(__webpack_require__(/*! ./services/ConfigService */ "../node_modules/@rws-framework/client/src/services/ConfigService.ts"));
-exports.ConfigService = ConfigService_1.default;
-Object.defineProperty(exports, "ConfigServiceInstance", ({ enumerable: true, get: function () { return ConfigService_1.ConfigServiceInstance; } }));
-const NotifyService_1 = __importStar(__webpack_require__(/*! ./services/NotifyService */ "../node_modules/@rws-framework/client/src/services/NotifyService.ts"));
-exports.NotifyService = NotifyService_1.default;
-Object.defineProperty(exports, "NotifyServiceInstance", ({ enumerable: true, get: function () { return NotifyService_1.NotifyServiceInstance; } }));
-const DOMService_1 = __importStar(__webpack_require__(/*! ./services/DOMService */ "../node_modules/@rws-framework/client/src/services/DOMService.ts"));
-exports.DOMService = DOMService_1.default;
-Object.defineProperty(exports, "DOMServiceInstance", ({ enumerable: true, get: function () { return DOMService_1.DOMServiceInstance; } }));
-const ApiService_1 = __importStar(__webpack_require__(/*! ./services/ApiService */ "../node_modules/@rws-framework/client/src/services/ApiService.ts"));
-exports.ApiService = ApiService_1.default;
-Object.defineProperty(exports, "ApiServiceInstance", ({ enumerable: true, get: function () { return ApiService_1.ApiServiceInstance; } }));
-const UtilsService_1 = __importStar(__webpack_require__(/*! ./services/UtilsService */ "../node_modules/@rws-framework/client/src/services/UtilsService.ts"));
-exports.UtilsService = UtilsService_1.default;
-Object.defineProperty(exports, "UtilsServiceInstance", ({ enumerable: true, get: function () { return UtilsService_1.UtilsServiceInstance; } }));
-const ServiceWorkerService_1 = __importStar(__webpack_require__(/*! ./services/ServiceWorkerService */ "../node_modules/@rws-framework/client/src/services/ServiceWorkerService.ts"));
-exports.ServiceWorkerService = ServiceWorkerService_1.default;
-Object.defineProperty(exports, "ServiceWorkerServiceInstance", ({ enumerable: true, get: function () { return ServiceWorkerService_1.ServiceWorkerServiceInstance; } }));
-const angular_attr_1 = __webpack_require__(/*! ./components/_attrs/angular-attr */ "../node_modules/@rws-framework/client/src/components/_attrs/angular-attr.ts");
-Object.defineProperty(exports, "ngAttr", ({ enumerable: true, get: function () { return angular_attr_1.ngAttr; } }));
-const external_observable_1 = __webpack_require__(/*! ./components/_attrs/external-observable */ "../node_modules/@rws-framework/client/src/components/_attrs/external-observable.ts");
-Object.defineProperty(exports, "externalObservable", ({ enumerable: true, get: function () { return external_observable_1.externalObservable; } }));
-const external_attr_1 = __webpack_require__(/*! ./components/_attrs/external-attr */ "../node_modules/@rws-framework/client/src/components/_attrs/external-attr.ts");
-Object.defineProperty(exports, "externalAttr", ({ enumerable: true, get: function () { return external_attr_1.externalAttr; } }));
-const json_attr_1 = __webpack_require__(/*! ./components/_attrs/json-attr */ "../node_modules/@rws-framework/client/src/components/_attrs/json-attr.ts");
-Object.defineProperty(exports, "jsonAttr", ({ enumerable: true, get: function () { return json_attr_1.jsonAttr; } }));
-const _plugin_1 = __webpack_require__(/*! ./plugins/_plugin */ "../node_modules/@rws-framework/client/src/plugins/_plugin.ts");
-Object.defineProperty(exports, "RWSPlugin", ({ enumerable: true, get: function () { return _plugin_1.RWSPlugin; } }));
-const client_1 = __importStar(__webpack_require__(/*! ./client */ "../node_modules/@rws-framework/client/src/client.ts"));
-exports.RWSClient = client_1.default;
-Object.defineProperty(exports, "RWSClientInstance", ({ enumerable: true, get: function () { return client_1.RWSClientInstance; } }));
-const _component_1 = __importDefault(__webpack_require__(/*! ./components/_component */ "../node_modules/@rws-framework/client/src/components/_component.ts"));
-exports.RWSViewComponent = _component_1.default;
-const _container_1 = __importDefault(__webpack_require__(/*! ./components/_container */ "../node_modules/@rws-framework/client/src/components/_container.ts"));
-exports.RWSContainer = _container_1.default;
-const _decorator_1 = __webpack_require__(/*! ./components/_decorator */ "../node_modules/@rws-framework/client/src/components/_decorator.ts");
-Object.defineProperty(exports, "RWSIgnore", ({ enumerable: true, get: function () { return _decorator_1.RWSIgnore; } }));
-Object.defineProperty(exports, "RWSInject", ({ enumerable: true, get: function () { return _decorator_1.RWSInject; } }));
-Object.defineProperty(exports, "RWSView", ({ enumerable: true, get: function () { return _decorator_1.RWSView; } }));
-const RWSEvents = __importStar(__webpack_require__(/*! ./events */ "../node_modules/@rws-framework/client/src/events.ts"));
-exports.RWSEvents = RWSEvents;
-exports["default"] = client_1.default;
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/plugins/_plugin.ts"
-/*!********************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/plugins/_plugin.ts ***!
-  \********************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RWSPlugin = void 0;
-const _container_1 = __importDefault(__webpack_require__(/*! ../components/_container */ "../node_modules/@rws-framework/client/src/components/_container.ts"));
-const RWSWindow_1 = __webpack_require__(/*! ../types/RWSWindow */ "../node_modules/@rws-framework/client/src/types/RWSWindow.ts");
-const IRWSPlugin_1 = __webpack_require__(/*! ../types/IRWSPlugin */ "../node_modules/@rws-framework/client/src/types/IRWSPlugin.ts");
-class RWSPlugin extends IRWSPlugin_1.IRWSPlugin {
-    constructor(options = { enabled: true }) {
-        super();
-        this.isLoaded = false;
-        this.isLoaded = true;
-        this.container = RWSPlugin.container;
-        this.window = RWSPlugin.window;
-        this.options = options;
-    }
-    async onClientStart() {
-        // Implementation
-    }
-    async onPartedComponentsLoad(componentParts) {
-        // Implementation
-    }
-    async onComponentsDeclare() {
-        // Implementation
-    }
-    async onSetUser(user) {
-        // Implementation
-    }
-    static getPlugin(pluginClass) {
-        const plugin = this.window.RWS.plugins[pluginClass.name];
-        return plugin ? plugin : null;
-    }
-    static getAllPlugins() {
-        return Object.keys(this.window.RWS.plugins)
-            .map((key) => this.window.RWS.plugins[key]);
-    }
-}
-exports.RWSPlugin = RWSPlugin;
-RWSPlugin.window = (0, RWSWindow_1.loadRWSRichWindow)();
-RWSPlugin.container = (0, _container_1.default)();
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/services/ApiService.ts"
-/*!************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/services/ApiService.ts ***!
-  \************************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ApiServiceInstance = void 0;
-const _service_1 = __importDefault(__webpack_require__(/*! ./_service */ "../node_modules/@rws-framework/client/src/services/_service.ts"));
-//@4DI
-const ConfigService_1 = __importStar(__webpack_require__(/*! ./ConfigService */ "../node_modules/@rws-framework/client/src/services/ConfigService.ts"));
-const upload_1 = __webpack_require__(/*! upload */ "../node_modules/upload/lib/index.js");
-const backend_1 = __webpack_require__(/*! ./_api/backend */ "../node_modules/@rws-framework/client/src/services/_api/backend.ts");
-const calls_1 = __webpack_require__(/*! ./_api/calls */ "../node_modules/@rws-framework/client/src/services/_api/calls.ts");
-let ApiService = class ApiService extends _service_1.default {
-    constructor(config) {
-        super();
-        this.config = config;
-        this.pureGet = calls_1.calls.pureGet;
-        this.get = calls_1.calls.get;
-        this.post = calls_1.calls.post;
-        this.put = calls_1.calls.put;
-        this.delete = calls_1.calls.delete;
-        this.back = {
-            get: async (routeName, options, token) => calls_1.calls.get.bind(this)(backend_1.backend.getBackendUrl.bind(this)(routeName, options === null || options === void 0 ? void 0 : options.routeParams, options === null || options === void 0 ? void 0 : options.queryParams), options),
-            post: async (routeName, payload, options) => calls_1.calls.post.bind(this)(backend_1.backend.getBackendUrl.bind(this)(routeName, options === null || options === void 0 ? void 0 : options.routeParams, options === null || options === void 0 ? void 0 : options.queryParams), payload, options),
-            put: async (routeName, payload, options) => calls_1.calls.put.bind(this)(backend_1.backend.getBackendUrl.bind(this)(routeName, options === null || options === void 0 ? void 0 : options.routeParams, options === null || options === void 0 ? void 0 : options.queryParams), payload, options),
-            delete: async (routeName, options) => calls_1.calls.delete.bind(this)(backend_1.backend.getBackendUrl.bind(this)(routeName, options === null || options === void 0 ? void 0 : options.routeParams, options === null || options === void 0 ? void 0 : options.queryParams), options),
-            uploadFile: async (routeName, file, onProgress, options = {}, payload = {}) => this.uploadFile(backend_1.backend.getBackendUrl.bind(this)(routeName, options === null || options === void 0 ? void 0 : options.routeParams), file, onProgress, payload),
-        };
-    }
-    setToken(token) {
-        this.token = token;
-    }
-    async isGetTargetReachable(url, options = {}) {
-        try {
-            return !!(await calls_1.calls.pureGet.bind(this)(url, options));
-        }
-        catch (error) {
-            return false;
-        }
-    }
-    async uploadFile(url, file, onProgress, payload = {}) {
-        return (0, upload_1.upload)(url, {
-            file,
-            ...payload
-        }, {
-            onProgress,
-            headers: this.token ? { Authorization: `Bearer ${this.token}` } : null,
-        });
-    }
-    async getResource(resourceName) {
-        return calls_1.calls.get.bind(this)(`${this.config.get('backendUrl')}${this.config.get('apiPrefix') || ''}/api/rws/resource/${resourceName}`);
-    }
-};
-exports.ApiServiceInstance = ApiService;
-ApiService._DEFAULT = true;
-exports.ApiServiceInstance = ApiService = __decorate([
-    __param(0, ConfigService_1.default),
-    __metadata("design:paramtypes", [typeof (_a = typeof ConfigService_1.ConfigServiceInstance !== "undefined" && ConfigService_1.ConfigServiceInstance) === "function" ? _a : Object])
-], ApiService);
-exports["default"] = ApiService.getSingleton();
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/services/ConfigService.ts"
-/*!***************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/services/ConfigService.ts ***!
-  \***************************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-var ConfigService_1;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ConfigServiceInstance = void 0;
-const _service_1 = __importDefault(__webpack_require__(/*! ./_service */ "../node_modules/@rws-framework/client/src/services/_service.ts"));
-const RWSFillBuild_1 = __webpack_require__(/*! ../components/_decorators/RWSFillBuild */ "../node_modules/@rws-framework/client/src/components/_decorators/RWSFillBuild.ts");
-const _event_handling_1 = __webpack_require__(/*! ../components/_event_handling */ "../node_modules/@rws-framework/client/src/components/_event_handling.ts");
-const __SENT_TO_COMPONENTS = [];
-let ConfigService = ConfigService_1 = class ConfigService extends _service_1.default {
+exports.HandlerManager = void 0;
+class HandlerManager {
     constructor() {
-        super();
-        this._DEFAULTS = {};
-        this._BUILD_OVERRIDE = {};
-        this.data = {};
+        this.dragStartHandlers = new Map();
+        this.dragEndHandlers = new Map();
+        this.dragOverHandlers = new Map();
+        this.dropHandlers = new Map();
+        this.dragLeaveHandlers = new Map();
     }
-    get(key) {
-        if (!this._DEFAULTS) {
-            throw new Error('No _DEFAULTS loaded!');
+    /**
+     * Store drag handlers for an element
+     */
+    storeDragHandlers(element, handlers) {
+        this.dragStartHandlers.set(element, handlers.dragStart);
+        this.dragEndHandlers.set(element, handlers.dragEnd);
+    }
+    /**
+     * Store drop handlers for an element
+     */
+    storeDropHandlers(element, handlers) {
+        this.dragOverHandlers.set(element, handlers.dragOver);
+        this.dragLeaveHandlers.set(element, handlers.dragLeave);
+        this.dropHandlers.set(element, handlers.drop);
+    }
+    /**
+     * Remove drag event handlers from element
+     */
+    removeDragHandlers(element) {
+        const dragStartHandler = this.dragStartHandlers.get(element);
+        const dragEndHandler = this.dragEndHandlers.get(element);
+        if (dragStartHandler) {
+            element.removeEventListener('dragstart', dragStartHandler);
+            this.dragStartHandlers.delete(element);
         }
-        const isInDefaults = Object.keys(this._DEFAULTS).includes(key);
-        const isInData = Object.keys(this.data).includes(key);
-        const isInBuildVars = Object.keys(this._BUILD_OVERRIDE).includes(key);
-        let isDev = false;
-        if ((Object.keys(this._BUILD_OVERRIDE).includes('dev'))) {
-            isDev = Object.keys(this._BUILD_OVERRIDE).includes('dev') && this._BUILD_OVERRIDE.dev;
-        }
-        if (!isInData) {
-            let defaultVal = null;
-            if (isInDefaults) {
-                defaultVal = this._DEFAULTS[key];
-            }
-            if (defaultVal && defaultVal[0] === '@') {
-                defaultVal = this.data[(defaultVal.slice(1))];
-            }
-            if (isInBuildVars && Object.keys(this._BUILD_OVERRIDE).includes(key)) {
-                if (isDev) {
-                    console.warn(`.rws.json override [${key}]:`), this._BUILD_OVERRIDE[key];
-                }
-                defaultVal = this._BUILD_OVERRIDE[key];
-            }
-            return defaultVal;
-        }
-        return this.data[key];
-    }
-    set(key, value) {
-        this.data[key] = value;
-    }
-    async waitForConfig(tagName) {
-        let t = null;
-        if (!this.data._noLoad || __SENT_TO_COMPONENTS.includes(tagName)) {
-            return;
-        }
-        __SENT_TO_COMPONENTS.push(tagName);
-        (0, _event_handling_1.sendEventToOutside)('rws_cfg_call', { tagName });
-        return new Promise((resolve) => {
-            const tick = () => {
-                if (ConfigService_1.isLoaded) {
-                    clearTimeout(t);
-                    resolve(true);
-                    return;
-                }
-                t = setTimeout(tick, 200);
-            };
-            t = setTimeout(tick, 200);
-        });
-    }
-    isLoaded() {
-        return ConfigService_1.isLoaded;
-    }
-    mergeConfig(config) {
-        const unloaded = ConfigService_1.isLoaded;
-        this.data.plugins = [];
-        this.data = Object.assign(this.data, config);
-        if (unloaded) {
-            ConfigService_1.isLoaded = true;
-        }
-        return this.data;
-    }
-    getData() {
-        return this.data;
-    }
-};
-exports.ConfigServiceInstance = ConfigService;
-ConfigService._DEFAULT = false;
-ConfigService.isLoaded = false;
-exports.ConfigServiceInstance = ConfigService = ConfigService_1 = __decorate([
-    (0, RWSFillBuild_1.RWSFillBuild)(),
-    __metadata("design:paramtypes", [])
-], ConfigService);
-exports["default"] = ConfigService.getSingleton('ConfigService');
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/services/DOMService.ts"
-/*!************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/services/DOMService.ts ***!
-  \************************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.DOMServiceInstance = exports.DOMService = void 0;
-const _service_1 = __importDefault(__webpack_require__(/*! ./_service */ "../node_modules/@rws-framework/client/src/services/_service.ts"));
-const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
-const dompurify_1 = __importDefault(__webpack_require__(/*! dompurify */ "../node_modules/dompurify/dist/purify.cjs.js"));
-class DOMService extends _service_1.default {
-    parse$(input, directReturn = false) {
-        if (input.length > 1 || directReturn) {
-            return input;
-        }
-        if (input.length === 1) {
-            return input[0];
-        }
-        return null;
-    }
-    $(shadowRoot, selectors, directReturn = false) {
-        const elements = shadowRoot.querySelectorAll(selectors);
-        return elements ? this.parse$(elements, directReturn) : null;
-    }
-    async scrollToBottom(scrollContainer, contentSelector = '.scroll-content') {
-        if (scrollContainer) {
-            const scrollContent = scrollContainer.querySelector(contentSelector);
-            if (scrollContent) {
-                scrollContainer.scrollTop = (scrollContent.scrollHeight - scrollContainer.clientHeight) + 150;
-            }
+        if (dragEndHandler) {
+            element.removeEventListener('dragend', dragEndHandler);
+            this.dragEndHandlers.delete(element);
         }
     }
-    setHTMLPolicy(policyName, policyImplementation) {
-        const myPolicy = trustedTypes.createPolicy(policyName, {
-            createHTML(html) {
-                return policyImplementation(html);
-            }
-        });
-        fast_element_1.DOM.setHTMLPolicy(myPolicy);
-    }
-    enforceAllowedTags(htmlText, allowedHTMLTags) {
-        // Create a regular expression pattern to match HTML tags
-        const tagPattern = /<\s*\/?\s*([^\s>/]+)(\s+[^>]*)?>/g;
-        // Replace any tags in the htmlText that are not in allowedHTMLTags array
-        const sanitizedText = htmlText.replace(tagPattern, (match, tag, attributes) => {
-            const lowerCaseTag = tag.toLowerCase();
-            if (allowedHTMLTags.includes(lowerCaseTag)) {
-                return match; // Return the original tag if it's allowed
-            }
-            else {
-                // Replace the disallowed tag with an empty string
-                return '';
-            }
-        });
-        return sanitizedText;
-    }
-    async onDOMLoad() {
-        return new Promise((resolve) => {
-            document.addEventListener('DOMContentLoaded', () => {
-                resolve();
-            });
-        });
-    }
-    sanitizeHTML(line, sanitizeOptions = {}) {
-        const output = line.trim();
-        const sanitized = dompurify_1.default.sanitize(output, { USE_PROFILES: { html: true }, ...sanitizeOptions });
-        return sanitized;
-    }
-}
-exports.DOMService = DOMService;
-exports.DOMServiceInstance = DOMService;
-DOMService._DEFAULT = true;
-exports["default"] = DOMService.getSingleton();
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/services/IndexedDBService.ts"
-/*!******************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/services/IndexedDBService.ts ***!
-  \******************************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.IndexedDBServiceInstance = void 0;
-const _service_1 = __importDefault(__webpack_require__(/*! ./_service */ "../node_modules/@rws-framework/client/src/services/_service.ts"));
-class IndexedDBService extends _service_1.default {
-    openDB(dbName, storeName) {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(dbName, 1);
-            request.onupgradeneeded = () => {
-                const db = request.result;
-                if (!db.objectStoreNames.contains(storeName)) {
-                    db.createObjectStore(storeName);
-                }
-            };
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
-    }
-    getFromDB(db, store, key) {
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(store, 'readonly');
-            const request = tx.objectStore(store).get(key);
-            request.onsuccess = () => { var _a; return resolve((_a = request.result) !== null && _a !== void 0 ? _a : null); };
-            request.onerror = () => reject(request.error);
-        });
-    }
-    saveToDB(db, store, key, value) {
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(store, 'readwrite');
-            const request = tx.objectStore(store).put(value, key);
-            request.onsuccess = () => resolve();
-            request.onerror = () => reject(request.error);
-        });
-    }
-}
-exports.IndexedDBServiceInstance = IndexedDBService;
-IndexedDBService._DEFAULT = true;
-exports["default"] = IndexedDBService.getSingleton();
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/services/NotifyService.ts"
-/*!***************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/services/NotifyService.ts ***!
-  \***************************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.NotifyServiceInstance = void 0;
-const _service_1 = __importDefault(__webpack_require__(/*! ./_service */ "../node_modules/@rws-framework/client/src/services/_service.ts"));
-/**
- * @class
- * @extends TheService
- */
-class NotifyService extends _service_1.default {
-    setNotifier(notifier) {
-        this.notifier = notifier;
-    }
-    alert(message, logType = 'info', onConfirm, alertOptions) {
-        if (!this.notifier) {
-            console.warn('No notifier added to RWS Client');
-            return;
+    /**
+     * Remove drop event handlers from element
+     */
+    removeDropHandlers(element) {
+        const dragOverHandler = this.dragOverHandlers.get(element);
+        const dragLeaveHandler = this.dragLeaveHandlers.get(element);
+        const dropHandler = this.dropHandlers.get(element);
+        if (dragOverHandler) {
+            element.removeEventListener('dragover', dragOverHandler);
+            this.dragOverHandlers.delete(element);
         }
-        return this.notifier(message, logType, 'alert', onConfirm, alertOptions);
-    }
-    notify(message, logType = 'info', onConfirm) {
-        if (!this.notifier) {
-            console.warn('No notifier added to RWS Client');
-            return;
+        if (dragLeaveHandler) {
+            element.removeEventListener('dragleave', dragLeaveHandler);
+            this.dragLeaveHandlers.delete(element);
         }
-        this.notifier(message, logType, 'notification', onConfirm);
-    }
-    silent(message, logType = 'info') {
-        if (!this.notifier) {
-            console.warn('No notifier added to RWS Client');
-            return;
-        }
-        this.notifier(message, logType, 'silent');
-    }
-}
-exports.NotifyServiceInstance = NotifyService;
-NotifyService._DEFAULT = true;
-exports["default"] = NotifyService.getSingleton();
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/services/ServiceWorkerService.ts"
-/*!**********************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/services/ServiceWorkerService.ts ***!
-  \**********************************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ServiceWorkerServiceInstance = void 0;
-const _service_1 = __importDefault(__webpack_require__(/*! ./_service */ "../node_modules/@rws-framework/client/src/services/_service.ts"));
-class ServiceWorkerService extends _service_1.default {
-    async registerServiceWorker() {
-        await ServiceWorkerService.registerServiceWorker();
-    }
-    static registerServiceWorker() {
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(registrations => {
-                if (registrations.length) {
-                    return;
-                }
-                try {
-                    return (navigator.serviceWorker.register('/service_worker.js', {
-                        scope: '/'
-                    }).then((registration) => {
-                        if (registration.installing) {
-                            console.log('Service worker installing');
-                        }
-                        else if (registration.waiting) {
-                            console.log('Service worker installed');
-                        }
-                        else if (registration.active) {
-                            console.log('Service worker active');
-                        }
-                    }));
-                }
-                catch (error) {
-                    console.error(`Registration failed with ${error}`);
-                }
-            });
-            return;
+        if (dropHandler) {
+            element.removeEventListener('drop', dropHandler);
+            this.dropHandlers.delete(element);
         }
     }
-    sendDataToServiceWorker(type, data, asset_type = 'data_push') {
-        if (navigator.serviceWorker.controller) {
-            navigator.serviceWorker.controller.postMessage({
-                command: type,
-                asset_type,
-                params: data
-            });
+    /**
+     * Get all elements with drag handlers
+     */
+    getDragElements() {
+        return Array.from(this.dragStartHandlers.keys());
+    }
+    /**
+     * Get all elements with drop handlers
+     */
+    getDropElements() {
+        return Array.from(this.dropHandlers.keys());
+    }
+    /**
+     * Clear all handlers
+     */
+    clearAll() {
+        // Remove all drag handlers
+        for (const element of this.getDragElements()) {
+            this.removeDragHandlers(element);
         }
-        else {
-            throw new Error('Service worker is not available');
+        // Remove all drop handlers
+        for (const element of this.getDropElements()) {
+            this.removeDropHandlers(element);
         }
     }
 }
-exports.ServiceWorkerServiceInstance = ServiceWorkerService;
-ServiceWorkerService._DEFAULT = true;
-exports["default"] = ServiceWorkerService.getSingleton();
+exports.HandlerManager = HandlerManager;
 
 
 /***/ },
 
-/***/ "../node_modules/@rws-framework/client/src/services/UtilsService.ts"
-/*!**************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/services/UtilsService.ts ***!
-  \**************************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.UtilsServiceInstance = void 0;
-const _service_1 = __importDefault(__webpack_require__(/*! ./_service */ "../node_modules/@rws-framework/client/src/services/_service.ts"));
-class UtilsService extends _service_1.default {
-    mergeDeep(target, source) {
-        const isObject = (obj) => obj && typeof obj === 'object';
-        if (!isObject(target) || !isObject(source)) {
-            return source;
-        }
-        Object.keys(source).forEach(key => {
-            const targetValue = target[key];
-            const sourceValue = source[key];
-            if (Array.isArray(targetValue) && Array.isArray(sourceValue)) {
-                target[key] = targetValue.concat(sourceValue);
-            }
-            else if (isObject(targetValue) && isObject(sourceValue)) {
-                target[key] = this.mergeDeep(Object.assign({}, targetValue), sourceValue);
-            }
-            else {
-                target[key] = sourceValue;
-            }
-        });
-        return target;
-    }
-    async fetchSourceMap(jsFilePath) {
-        // Assuming the source map URL is the JS file URL with a '.map' extension
-        const sourceMapUrl = jsFilePath;
-        try {
-            const response = await fetch(sourceMapUrl);
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return await response.json();
-        }
-        catch (error) {
-            console.error('Failed to fetch source map:', error);
-            return null;
-        }
-    }
-    async getCurrentLineNumber(error = null) {
-        if (!error) {
-            error = new Error();
-        }
-        return 0;
-    }
-}
-exports.UtilsServiceInstance = UtilsService;
-UtilsService._DEFAULT = true;
-exports["default"] = UtilsService.getSingleton();
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/services/_api/backend.ts"
-/*!**************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/services/_api/backend.ts ***!
-  \**************************************************************************/
-(__unused_webpack_module, exports) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.backend = void 0;
-exports.backend = {
-    getBackendUrl(routeName, params = {}, queryParams = {}) {
-        const config = this.config;
-        const routesPackage = config.get('backendRoutes');
-        let routes = [];
-        routesPackage.forEach((item) => {
-            // Check if item is an instance of IPrefixedHTTProutes
-            if ('prefix' in item && 'routes' in item && Array.isArray(item.routes)) {
-                // Handle the case where item is of type IPrefixedHTTProutes
-                if (item.exportAutoRoutes) {
-                    item.routes = [...item.routes,
-                        {
-                            name: `list`,
-                            path: '/',
-                            method: 'GET'
-                        },
-                        {
-                            name: `create`,
-                            path: '/',
-                            method: 'POST'
-                        },
-                        {
-                            name: `show`,
-                            path: '/:id',
-                            method: 'GET'
-                        },
-                        {
-                            name: `update`,
-                            path: '/:id',
-                            method: 'PUT'
-                        },
-                        {
-                            name: `delete`,
-                            path: '/:id',
-                            method: 'DELETE'
-                        },
-                    ];
-                }
-                routes = [...routes, ...item.routes.map((subRouteItem) => {
-                        const subRoute = {
-                            path: Array.isArray(subRouteItem.path) ? subRouteItem.path.map(subPath => item.prefix + subPath) : item.prefix + subRouteItem.path,
-                            name: exports.backend.checkPrefixedRouteName(subRouteItem.name, item.controllerName),
-                            method: subRouteItem.method || 'GET'
-                        };
-                        return subRoute;
-                    })];
-            }
-            else {
-                // Handle the case where item is of type IHTTProute
-                routes.push(item);
-            }
-        });
-        const route = routes.find((item) => item.name === routeName);
-        if (!route) {
-            throw new Error(`Backend route '${routeName}' does not exist.`);
-        }
-        let apiPath = route.path;
-        if (Array.isArray(apiPath)) {
-            const paramsLength = Object.keys(params).length;
-            if (paramsLength > 0) {
-                for (const searchedPath of apiPath) {
-                    let foundParams = 0;
-                    for (const p of Object.keys(params)) {
-                        if (searchedPath.indexOf(`:${p}`) !== -1) {
-                            foundParams++;
-                        }
-                    }
-                    if (foundParams === paramsLength) {
-                        apiPath = searchedPath;
-                        break;
-                    }
-                }
-            }
-            else {
-                for (const searchedPath of apiPath) {
-                    if (!searchedPath.includes(':')) {
-                        apiPath = searchedPath;
-                        break;
-                    }
-                }
-            }
-        }
-        Object.keys(params).forEach((paramKey) => {
-            const paramValue = params[paramKey];
-            apiPath = apiPath.replace(`:${paramKey}`, paramValue);
-        });
-        let finalUrl = `${config.get('backendUrl')}${config.get('apiPrefix') || ''}${apiPath}`;
-        if (Object.keys(queryParams).length > 0) {
-            const queryString = new URLSearchParams(queryParams).toString();
-            finalUrl += `?${queryString}`;
-        }
-        return finalUrl;
-    },
-    checkPrefixedRouteName(routeName, prefixName) {
-        let finalRoute = routeName;
-        if (routeName.indexOf(prefixName) === -1) {
-            finalRoute = `${routeName}`;
-        }
-        return finalRoute;
-    }
-};
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/services/_api/calls.ts"
-/*!************************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/services/_api/calls.ts ***!
-  \************************************************************************/
-(__unused_webpack_module, exports) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.calls = void 0;
-const _DEFAULT_CONTENT_TYPE = 'application/json';
-exports.calls = {
-    addHeader(headers, key, val) {
-        if (headers instanceof Headers) {
-            headers.append(key, val);
-        }
-        else if (Array.isArray(headers)) {
-            headers.push([key, val]);
-        }
-        else {
-            headers[key] = val;
-        }
-    },
-    getHeaders(token = null, optHeaders = {}) {
-        const headers = { ...optHeaders };
-        if (!('Content-Type' in headers)) {
-            this.addHeader(headers, 'Content-Type', _DEFAULT_CONTENT_TYPE);
-        }
-        if (token) {
-            this.addHeader(headers, 'Authorization', `Bearer ${token}`);
-        }
-        if (headers['Content-Type']) {
-            this.addHeader(headers, 'Accept', '*/*');
-        }
-        else {
-            this.addHeader(headers, 'Accept', headers['Content-Type'] || _DEFAULT_CONTENT_TYPE);
-        }
-        return headers;
-    },
-    async pureGet(url, options = {}) {
-        try {
-            const response = await fetch(url, {
-                headers: exports.calls.getHeaders(this.token, options.headers),
-            });
-            return await response.text();
-        }
-        catch (error) {
-            console.error('GET request failed:', error);
-            throw error;
-        }
-    },
-    async get(url, options = {}) {
-        try {
-            const response = await fetch(url, {
-                headers: exports.calls.getHeaders(this.token, options.headers),
-            });
-            const data = await response.json();
-            return data;
-        }
-        catch (error) {
-            console.error('GET request failed:', error);
-            throw error;
-        }
-    },
-    async post(url, payload, options = {}) {
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: exports.calls.getHeaders(this.token, options.headers),
-                body: payload ? JSON.stringify(payload) : null,
-            });
-            const data = await response.json();
-            return data;
-        }
-        catch (error) {
-            console.error('POST request failed:', error);
-            throw error;
-        }
-    },
-    async put(url, payload, options = {}) {
-        try {
-            const response = await fetch(url, {
-                method: 'PUT',
-                headers: exports.calls.getHeaders(this.token, options.headers),
-                body: JSON.stringify(payload),
-            });
-            const data = await response.json();
-            return data;
-        }
-        catch (error) {
-            console.error('PUT request failed:', error);
-            throw error;
-        }
-    },
-    async delete(url, options = {}) {
-        try {
-            const response = await fetch(url, {
-                method: 'DELETE',
-                headers: exports.calls.getHeaders(this.token, options.headers),
-            });
-            const data = await response.json();
-            return data;
-        }
-        catch (error) {
-            console.error('DELETE request failed:', error);
-            throw error;
-        }
-    }
-};
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/services/_service.ts"
-/*!**********************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/services/_service.ts ***!
-  \**********************************************************************/
+/***/ "../node_modules/@rws-framework/components/src/services/index.ts"
+/*!***********************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/services/index.ts ***!
+  \***********************************************************************/
 (__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -19131,93 +23637,23 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const _container_1 = __importStar(__webpack_require__(/*! ../components/_container */ "../node_modules/@rws-framework/client/src/components/_container.ts"));
-const RWSWindow_1 = __webpack_require__(/*! ../types/RWSWindow */ "../node_modules/@rws-framework/client/src/types/RWSWindow.ts");
-class TheRWSService {
-    constructor() {
-        this._RELOADABLE = false;
-    }
-    register() {
-        this.getSingleton();
-    }
-    getSingleton() {
-        return this.getSingleton();
-    }
-    static register() {
-        this.getSingleton();
-    }
-    static getSingleton(serviceName = null) {
-        const richWindow = (0, RWSWindow_1.loadRWSRichWindow)();
-        if (!serviceName) {
-            serviceName = this.name;
-        }
-        if (Object.keys(richWindow.RWS._registered).includes(serviceName)) {
-            return richWindow.RWS._registered[serviceName];
-        }
-        const interf = _container_1.DI.createInterface(serviceName);
-        (0, _container_1.default)().register(_container_1.Registration.singleton(interf, this));
-        richWindow.RWS._registered[serviceName] = interf;
-        return interf;
-    }
-    isDefault() {
-        return this.constructor._DEFAULT;
-    }
-    isInClient() {
-        return this.constructor._IN_CLIENT;
-    }
-}
-TheRWSService._IN_CLIENT = false;
-TheRWSService._DEFAULT = false;
-exports["default"] = TheRWSService;
+exports.DragDropServiceInstance = exports.DragDropService = void 0;
+const DragDropService_1 = __importStar(__webpack_require__(/*! ./drag-drop/DragDropService */ "../node_modules/@rws-framework/components/src/services/drag-drop/DragDropService.ts"));
+exports.DragDropService = DragDropService_1.default;
+Object.defineProperty(exports, "DragDropServiceInstance", ({ enumerable: true, get: function () { return DragDropService_1.DragDropServiceInstance; } }));
 
 
 /***/ },
 
-/***/ "../node_modules/@rws-framework/client/src/types/IRWSPlugin.ts"
-/*!*********************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/types/IRWSPlugin.ts ***!
-  \*********************************************************************/
+/***/ "../node_modules/@rws-framework/components/src/types/IBackendCore.ts"
+/*!***************************************************************************!*\
+  !*** ../node_modules/@rws-framework/components/src/types/IBackendCore.ts ***!
+  \***************************************************************************/
 (__unused_webpack_module, exports) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.IRWSPlugin = void 0;
-class IRWSPlugin {
-}
-exports.IRWSPlugin = IRWSPlugin;
-
-
-/***/ },
-
-/***/ "../node_modules/@rws-framework/client/src/types/RWSWindow.ts"
-/*!********************************************************************!*\
-  !*** ../node_modules/@rws-framework/client/src/types/RWSWindow.ts ***!
-  \********************************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.loadRWSRichWindow = loadRWSRichWindow;
-const uuid_1 = __webpack_require__(/*! uuid */ "../node_modules/uuid/dist/commonjs-browser/index.js");
-function loadRWSRichWindow() {
-    const richWindow = window;
-    if (!richWindow.RWS) {
-        const newNode = document.createElement('main');
-        newNode.id = 'rws-cntr-id-' + (0, uuid_1.v1)();
-        console.log('\x1b[1m[RWS]\x1b[0m Created new container node: ', newNode.id);
-        richWindow.RWS = {
-            client: null,
-            components: {},
-            plugins: {},
-            container: null,
-            container_node: newNode,
-            _registered: {}
-        };
-    }
-    return richWindow;
-}
 
 
 /***/ },
@@ -85701,20 +90137,25 @@ module.exports = exports.default;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const client_1 = __webpack_require__(/*! @rws-framework/client */ "../node_modules/@rws-framework/client/src/index.ts");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
+const components_1 = __webpack_require__(/*! @rws-framework/components */ "../node_modules/@rws-framework/components/src/index.ts");
 const component_1 = __webpack_require__(/*! ../pages/home/component */ "./src/pages/home/component.ts");
-const component_2 = __webpack_require__(/*! ../components/pokedex-main/component */ "./src/components/pokedex-main/component.ts");
-const component_3 = __webpack_require__(/*! ../components/pokedex-settings/component */ "./src/components/pokedex-settings/component.ts");
-const component_4 = __webpack_require__(/*! ../components/pokedex-header/component */ "./src/components/pokedex-header/component.ts");
-const component_5 = __webpack_require__(/*! ../components/pokedex-screen/component */ "./src/components/pokedex-screen/component.ts");
-const component_6 = __webpack_require__(/*! ../components/pokedex-input/component */ "./src/components/pokedex-input/component.ts");
+const component_2 = __webpack_require__(/*! ../layouts/default-layout/component */ "./src/layouts/default-layout/component.ts");
+const component_3 = __webpack_require__(/*! ../components/pokedex-main/component */ "./src/components/pokedex-main/component.ts");
+const component_4 = __webpack_require__(/*! ../components/pokedex-settings/component */ "./src/components/pokedex-settings/component.ts");
+const component_5 = __webpack_require__(/*! ../components/pokedex-header/component */ "./src/components/pokedex-header/component.ts");
+const component_6 = __webpack_require__(/*! ../components/pokedex-screen/component */ "./src/components/pokedex-screen/component.ts");
+const component_7 = __webpack_require__(/*! ../components/pokedex-input/component */ "./src/components/pokedex-input/component.ts");
 exports["default"] = (parted) => {
+    // Initialize RWS components including the modal
+    (0, components_1.declareRWSComponents)(parted);
     component_1.HomePage;
-    component_2.PokedexMain;
-    component_3.PokedexSettings;
-    component_4.PokedexHeader;
-    component_5.PokedexScreen;
-    component_6.PokedexInput;
+    component_2.DefaultLayout;
+    component_3.PokedexMain;
+    component_4.PokedexSettings;
+    component_5.PokedexHeader;
+    component_6.PokedexScreen;
+    component_7.PokedexInput;
     client_1.RWSClientInstance.defineAllComponents();
 };
 
@@ -85935,7 +90376,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PokedexHeader = void 0;
 const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
 __webpack_require__(/*! ./template.html */ "./src/components/pokedex-header/template.html");
-const client_1 = __webpack_require__(/*! @rws-framework/client */ "../node_modules/@rws-framework/client/src/index.ts");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
 //@ts-ignore                
 let rwsTemplate = T.html `<div class="pokedex-header">
     
@@ -86250,7 +90691,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PokedexInput = void 0;
 const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
 __webpack_require__(/*! ./template.html */ "./src/components/pokedex-input/template.html");
-const client_1 = __webpack_require__(/*! @rws-framework/client */ "../node_modules/@rws-framework/client/src/index.ts");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
 //@ts-ignore                
 let rwsTemplate = T.html `<div class="input-section">
     <div class="search-row">
@@ -86564,7 +91005,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PokedexMain = void 0;
 const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
 __webpack_require__(/*! ./template.html */ "./src/components/pokedex-main/template.html");
-const client_1 = __webpack_require__(/*! @rws-framework/client */ "../node_modules/@rws-framework/client/src/index.ts");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
 const pokedex_ai_service_1 = __webpack_require__(/*! ../../services/pokedex-ai.service */ "./src/services/pokedex-ai.service.ts");
 const pokedex_settings_service_1 = __webpack_require__(/*! ../../services/pokedex-settings.service */ "./src/services/pokedex-settings.service.ts");
 const notification_utils_service_1 = __webpack_require__(/*! ../../services/notification-utils.service */ "./src/services/notification-utils.service.ts");
@@ -86613,6 +91054,7 @@ const styles = T.css `:host {
   justify-content: center;
   padding: 2rem;
   box-sizing: border-box;
+  font-family: var(--font-main);
 }
 
 .pokedex-container {
@@ -86624,6 +91066,7 @@ const styles = T.css `:host {
   border: 6px solid #8b0000;
   position: relative;
   overflow: hidden;
+  font-family: var(--font-main);
 }
 .pokedex-container::before {
   content: "";
@@ -86927,6 +91370,15 @@ let PokedexMain = class PokedexMain extends client_1.RWSViewComponent {
     }
     async connectedCallback() {
         super.connectedCallback();
+        // Test notification system in development
+        if (true) {
+            // Import test service for console access
+            Promise.resolve().then(() => __importStar(__webpack_require__(/*! ../../services/notification-test.service */ "./src/services/notification-test.service.ts")));
+            // Test RWS notification integration after component is ready
+            setTimeout(() => {
+                console.log('🔔 Notification system ready! Try: testNotifications() or testRWSNotifications()');
+            }, 1000);
+        }
     }
     loadSettings() {
         this.settings = this.settingsService.getSettings();
@@ -87168,7 +91620,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PokedexScreen = void 0;
 const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
 __webpack_require__(/*! ./template.html */ "./src/components/pokedex-screen/template.html");
-const client_1 = __webpack_require__(/*! @rws-framework/client */ "../node_modules/@rws-framework/client/src/index.ts");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
 //@ts-ignore                
 let rwsTemplate = T.html `<div class="screen-container">
     <div class="main-screen">
@@ -87532,11 +91984,125 @@ var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PokedexSettings = void 0;
 const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
 __webpack_require__(/*! ./template.html */ "./src/components/pokedex-settings/template.html");
-const client_1 = __webpack_require__(/*! @rws-framework/client */ "../node_modules/@rws-framework/client/src/index.ts");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
 const pokedex_types_1 = __webpack_require__(/*! ../../types/pokedex.types */ "./src/types/pokedex.types.ts");
 //@ts-ignore                
-let rwsTemplate = T.html `<div class="modal fade" :class="show ? 'show' : ''" :style="show ? 'display: block' : 'display: none'" tabindex="-1">
+let rwsTemplate = T.html `${(0, fast_element_1.when)(x => x.show, (0, fast_element_1.html) `
+    <rws-modal name="settings" header="pokedex.settingsTitle" max-width="600px">
+        <form class="p-3">
+            <div class="mb-3">
+                <label class="form-label">
+                    <i class="bi bi-key-fill me-1"></i>
+                    ${'pokedex.apiKey'.t()}
+                </label>
+                <div class="input-group">
+                    <input 
+                        :type="showApiKey ? 'text' : 'password'"
+                        class="form-control"
+                        :value="${x => { var _a; return ((_a = x.tempSettings) === null || _a === void 0 ? void 0 : _a.apiKey) || ''; }}"
+                        @input="${(x, c) => x.updateTempSetting('apiKey', c.event.target.value)}"
+                        :placeholder="'pokedex.enterApiKey'.t()"
+                    >
+                    <button 
+                        class="btn btn-outline-secondary" 
+                        type="button" 
+                        @click="${x => x.toggleApiKeyVisibility()}"
+                    >
+                        <i class="bi ${x => x.showApiKey ? 'bi-eye-slash-fill' : 'bi-eye-fill'}"></i>
+                    </button>
+                </div>
+                <div class="form-text">
+                    ${'pokedex.getApiKey'.t()} 
+                    <a href="https://openrouter.ai/keys" target="_blank">OpenRouter.ai</a>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">
+                    <i class="bi bi-cpu-fill me-1"></i>
+                    ${'pokedex.model'.t()}
+                </label>
+                <select 
+                    class="form-select"
+                    :value="${x => { var _a; return ((_a = x.tempSettings) === null || _a === void 0 ? void 0 : _a.model) || 'openai/gpt-4o-mini'; }}"
+                    @change="${(x, c) => x.updateTempSetting('model', c.event.target.value)}"
+                >
+                    <option value="openai/gpt-4o-mini">GPT-4o Mini</option>
+                    <option value="openai/gpt-4o">GPT-4o</option>
+                    <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet</option>
+                    <option value="google/gemini-pro-1.5">Gemini Pro 1.5</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">
+                    <i class="bi bi-globe me-1"></i>
+                    ${'pokedex.language'.t()}
+                </label>
+                <select 
+                    class="form-select"
+                    :value="${x => { var _a; return ((_a = x.tempSettings) === null || _a === void 0 ? void 0 : _a.language) || 'pl'; }}"
+                    @change="${(x, c) => x.updateTempSetting('language', c.event.target.value)}"
+                >
+                    <option value="pl">${'pokedex.languagePolish'.t()}</option>
+                    <option value="en">${'pokedex.languageEnglish'.t()}</option>
+                    <option value="de">${'pokedex.languageGerman'.t()}</option>
+                    <option value="ja">${'pokedex.languageJapanese'.t()}</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">
+                    <i class="bi bi-thermometer-half me-1"></i>
+                    ${'pokedex.temperature'.t()}: ${x => { var _a; return ((_a = x.tempSettings) === null || _a === void 0 ? void 0 : _a.temperature) || 0.7; }}
+                </label>
+                <input 
+                    type="range" 
+                    class="form-range"
+                    min="0" 
+                    max="2" 
+                    step="0.1"
+                    :value="${x => { var _a; return ((_a = x.tempSettings) === null || _a === void 0 ? void 0 : _a.temperature) || 0.7; }}"
+                    @input="${(x, c) => x.updateTempSetting('temperature', parseFloat(c.event.target.value))}"
+                >
+                <div class="form-text">${'pokedex.temperatureDesc'.t()}</div>
+            </div>
+
+            <div class="mb-3">
+                <div class="form-check form-switch">
+                    <input 
+                        class="form-check-input" 
+                        type="checkbox" 
+                        :checked="${x => { var _a; return ((_a = x.tempSettings) === null || _a === void 0 ? void 0 : _a.streaming) || false; }}"
+                        @change="${(x, c) => x.updateTempSetting('streaming', c.event.target.checked)}"
+                    >
+                    <label class="form-check-label">
+                        <i class="bi bi-arrow-repeat me-1"></i>
+                        ${'pokedex.streaming'.t()}
+                    </label>
+                </div>
+            </div>
+        </form>
+        
+        <div class="modal-footer d-flex justify-content-between p-3">
+            <button type="button" class="btn btn-outline-danger" @click="${x => x.clearSettings()}">
+                <i class="bi bi-trash-fill me-1"></i>
+                ${'pokedex.clear'.t()}
+            </button>
+            <div>
+                <button type="button" class="btn btn-secondary me-2" @click="${x => x.closeSettings()}">
+                    ${'pokedex.cancel'.t()}
+                </button>
+                <button type="button" class="btn btn-primary" @click="${x => x.saveSettings()}">
+                    <i class="bi bi-check-lg me-1"></i>
+                    ${'pokedex.save'.t()}
+                </button>
+            </div>
+        </div>
+    </rws-modal>
+`)}
     <div class="modal-backdrop fade" :class="show ? 'show' : ''" @click="${x => x.closeSettings()}"></div>
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -87747,6 +92313,7 @@ let PokedexSettings = class PokedexSettings extends client_1.RWSViewComponent {
     }
     saveSettings() {
         this.$emit('settings-save', this.tempSettings);
+        this.closeSettings();
     }
     clearSettings() {
         if (confirm('pokedex.confirmClearSettings'.t())) {
@@ -87755,12 +92322,13 @@ let PokedexSettings = class PokedexSettings extends client_1.RWSViewComponent {
         }
     }
     closeSettings() {
+        this.show = false;
         this.$emit('settings-close');
         this.resetTempSettings();
     }
     get tempValue() {
-        var _a;
-        return ((_a = this.tempSettings.temperature) === null || _a === void 0 ? void 0 : _a.toString()) || '0.7';
+        var _a, _b;
+        return ((_b = (_a = this.tempSettings) === null || _a === void 0 ? void 0 : _a.temperature) === null || _b === void 0 ? void 0 : _b.toString()) || '0.7';
     }
 };
 exports.PokedexSettings = PokedexSettings;
@@ -87949,7 +92517,7 @@ if (!(0, translations_1.getLanguage)()) {
     (0, translations_1.setLanguage)('pl');
 }
 __webpack_require__(/*! ./application/globals/global-extensions */ "./src/application/globals/global-extensions.ts");
-const client_1 = __importStar(__webpack_require__(/*! @rws-framework/client */ "../node_modules/@rws-framework/client/src/index.ts"));
+const client_1 = __importStar(__webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts"));
 const browser_router_1 = __webpack_require__(/*! @rws-framework/browser-router */ "../node_modules/@rws-framework/browser-router/src/plugin.ts");
 const _initComponents_1 = __importDefault(__webpack_require__(/*! ./application/_initComponents */ "./src/application/_initComponents.ts"));
 const routes_1 = __importDefault(__webpack_require__(/*! ./routes */ "./src/routes.ts"));
@@ -88043,8 +92611,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.DefaultLayout = void 0;
 const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
+const fast_element_1 = __webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js");
 __webpack_require__(/*! ./template.html */ "./src/layouts/default-layout/template.html");
-const client_1 = __webpack_require__(/*! @rws-framework/client */ "../node_modules/@rws-framework/client/src/index.ts");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
 const browser_router_1 = __webpack_require__(/*! @rws-framework/browser-router */ "../node_modules/@rws-framework/browser-router/src/plugin.ts");
 browser_router_1.RouterComponent;
 const router_1 = __webpack_require__(/*! ./listeners/router */ "./src/layouts/default-layout/listeners/router.ts");
@@ -88053,21 +92622,21 @@ const notify_1 = __webpack_require__(/*! ./listeners/notify */ "./src/layouts/de
 let rwsTemplate = T.html `<div id="root_layout">
     
     <div class="notifications-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
-        ${x => x.notifications.map((notification, index) => `
-            <div class="alert alert-${notification.type === 'error' ? 'danger' : notification.type} 
+        ${(0, fast_element_1.repeat)(x => x.notifications, (0, fast_element_1.html) `
+            <div class="alert alert-${notification => notification.type === 'error' ? 'danger' : notification.type} 
                         alert-dismissible fade show notification-toast" role="alert">
                 <div class="d-flex align-items-center">
-                    <i class="bi ${notification.type === 'success' ? 'bi-check-circle' :
+                    <i class="bi ${notification => notification.type === 'success' ? 'bi-check-circle' :
     notification.type === 'error' ? 'bi-exclamation-triangle' :
         notification.type === 'warning' ? 'bi-exclamation-triangle' :
             'bi-info-circle'} me-2"></i>
-                    <div class="flex-grow-1">${notification.message}</div>
+                    <div class="flex-grow-1">${notification => notification.message}</div>
                     <button type="button" class="btn-close" 
-                            onclick="this.closest('default-layout').removeNotificationByIndex(${index})"
+                            @click="${(notification, c) => c.parent.removeNotificationById(notification.id)}"
                             aria-label="Close"></button>
                 </div>
             </div>
-        `).join('')}
+        `)}
     </div>
     
     <main>
@@ -88193,12 +92762,14 @@ const shadowOptions = { "mode": "open" };
 let DefaultLayout = class DefaultLayout extends client_1.RWSViewComponent {
     constructor() {
         super(...arguments);
+        this.currentUrl = '/';
         this.notifications = [];
     }
     async connectedCallback() {
         super.connectedCallback();
         router_1.listenRouter.bind(this)();
         notify_1.listenNotify.bind(this)();
+        this.$emit('app-started');
     }
     // Method to add notification programmatically
     addNotification(message, type = 'info', duration = 5000) {
@@ -88235,6 +92806,10 @@ __decorate([
     client_1.observable,
     __metadata("design:type", String)
 ], DefaultLayout.prototype, "currentPage", void 0);
+__decorate([
+    client_1.observable,
+    __metadata("design:type", String)
+], DefaultLayout.prototype, "currentUrl", void 0);
 __decorate([
     client_1.observable,
     __metadata("design:type", Array)
@@ -88293,13 +92868,21 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.listenRouter = listenRouter;
 const browser_router_1 = __webpack_require__(/*! @rws-framework/browser-router */ "../node_modules/@rws-framework/browser-router/src/plugin.ts");
 function listenRouter() {
-    this.$emit(browser_router_1._ROUTING_EVENT_NAME, (route_event) => {
-        this.currentPage = route_event.routeName;
+    this.on(browser_router_1._ROUTING_EVENT_NAME, (event) => {
+        this.currentPage = event.detail.routeName;
     });
     this.on('routing.url.changed', (event) => {
         const url = event.detail.item;
         this.currentUrl = url;
     });
+    // Set initial URL from browser
+    if (typeof window !== 'undefined') {
+        this.currentUrl = window.location.pathname + window.location.search;
+        // Listen for browser navigation
+        window.addEventListener('popstate', () => {
+            this.currentUrl = window.location.pathname + window.location.search;
+        });
+    }
 }
 
 
@@ -88379,7 +92962,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.HomePage = void 0;
 const T = __importStar(__webpack_require__(/*! @microsoft/fast-element */ "../node_modules/@microsoft/fast-element/dist/esm/index.js"));
 __webpack_require__(/*! ./template.html */ "./src/pages/home/template.html");
-const client_1 = __webpack_require__(/*! @rws-framework/client */ "../node_modules/@rws-framework/client/src/index.ts");
+const client_1 = __webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts");
 //@ts-ignore                
 let rwsTemplate = T.html `<pokedex-main></pokedex-main>`;
 __webpack_require__(/*! ./styles/layout.scss */ "./src/pages/home/styles/layout.scss");
@@ -88442,9 +93025,8 @@ const component_1 = __webpack_require__(/*! ./pages/home/component */ "./src/pag
 exports.frontRoutes = [
     {
         path: '/',
-        name: 'route.dashboard'.t(),
+        name: 'route.home'.t(),
         component: component_1.HomePage,
-        icon: 'shop-4',
         inMenu: true
     }
 ];
@@ -88460,6 +93042,94 @@ for (const frontRoute of exports.frontRoutes) {
     }
 }
 exports["default"] = routeMap;
+
+
+/***/ },
+
+/***/ "./src/services/notification-test.service.ts"
+/*!***************************************************!*\
+  !*** ./src/services/notification-test.service.ts ***!
+  \***************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.NotificationTestService = void 0;
+const rws_notification_bridge_service_1 = __webpack_require__(/*! ./rws-notification-bridge.service */ "./src/services/rws-notification-bridge.service.ts");
+/**
+ * Test service for notification system
+ */
+class NotificationTestService {
+    static testAllNotificationTypes() {
+        console.log('Testing notification system...');
+        // Test success notification
+        setTimeout(() => {
+            rws_notification_bridge_service_1.rwsNotificationBridge.notify('✅ Success notification test!', 'success', 3000);
+        }, 500);
+        // Test error notification  
+        setTimeout(() => {
+            rws_notification_bridge_service_1.rwsNotificationBridge.notify('❌ Error notification test!', 'error', 4000);
+        }, 1500);
+        // Test warning notification
+        setTimeout(() => {
+            rws_notification_bridge_service_1.rwsNotificationBridge.notify('⚠️ Warning notification test!', 'warning', 3500);
+        }, 2500);
+        // Test info notification
+        setTimeout(() => {
+            rws_notification_bridge_service_1.rwsNotificationBridge.notify('ℹ️ Info notification test!', 'info', 3000);
+        }, 3500);
+    }
+    static testRWSFrameworkNotification() {
+        // Test RWS framework notifier integration
+        Promise.resolve().then(() => __importStar(__webpack_require__(/*! @rws-framework/client */ "../.dev/client/src/index.ts"))).then(({ RWSContainer, NotifyService }) => {
+            const notifyService = RWSContainer().get(NotifyService);
+            setTimeout(() => {
+                notifyService.notify('🔧 RWS Framework notification test!', 'info');
+            }, 5000);
+            setTimeout(() => {
+                notifyService.alert('🚨 RWS Framework alert test!', 'warning');
+            }, 6000);
+        }).catch(console.error);
+    }
+}
+exports.NotificationTestService = NotificationTestService;
+// Auto-export for console testing
+window.testNotifications = NotificationTestService.testAllNotificationTypes;
+window.testRWSNotifications = NotificationTestService.testRWSFrameworkNotification;
 
 
 /***/ },
@@ -89259,7 +93929,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("2fe2c743b2130bc2ed2d")
+/******/ 		__webpack_require__.h = () => ("3c9b5dbd5c1ee53587f3")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

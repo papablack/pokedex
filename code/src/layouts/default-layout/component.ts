@@ -12,13 +12,16 @@ class DefaultLayout extends RWSViewComponent {
     @attr frontRoute: string;
 
     @observable currentPage: string;
+    @observable currentUrl: string = '/';
     @observable notifications: NotifyType[] = [];
 
     async connectedCallback(): Promise<void> {
         super.connectedCallback();
 
         listenRouter.bind(this)();
-        listenNotify.bind(this)();       
+        listenNotify.bind(this)(); 
+        
+        this.$emit('app-started');
     }
     
     // Method to add notification programmatically

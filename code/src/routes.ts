@@ -7,9 +7,8 @@ import { IFrontRouteDef } from './types/route.types';
 export const frontRoutes: IFrontRouteDef[] = [
     {
         path: '/',
-        name: 'route.dashboard'.t(),
-        component: HomePage,        
-        icon: 'shop-4',
+        name: 'route.home'.t(),
+        component: HomePage,                
         inMenu: true
     }
 ];

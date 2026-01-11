@@ -312,9 +312,9 @@
     typescript "^5.3.3"
 
 "@rws-framework/client@*", "@rws-framework/client@2.*":
-  version "2.23.2"
-  resolved "https://registry.yarnpkg.com/@rws-framework/client/-/client-2.23.2.tgz#2a90121afe406b09efa8a59814132166d46b81b4"
-  integrity sha512-9rOGF60hqAJIETDX89OUWgmL7TfDG3XvJY2wInY5EDG3tyt1+60wASK78lPF9mlwI/el5PzO7jNwB50vas9duQ==
+  version "2.23.3"
+  resolved "https://registry.yarnpkg.com/@rws-framework/client/-/client-2.23.3.tgz#b695c4e8574053c72056829b0d113f9811a08dd2"
+  integrity sha512-7qtBwYVg96jUM59I5V1hq+y0nQDt8RBj+gBdL7UXJfmgc7bfg5BqOrYC1vk8wggmRiMWJcc/GrifJGzku4wsZQ==
   dependencies:
     "@microsoft/fast-element" "^1.12.0"
     "@microsoft/fast-foundation" "^2.46.2"

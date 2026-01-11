@@ -44,6 +44,7 @@ export class PokedexSettings extends RWSViewComponent {
 
     saveSettings() {
         this.$emit('settings-save', this.tempSettings);
+        this.closeSettings();
     }
 
     clearSettings() {
@@ -54,12 +55,13 @@ export class PokedexSettings extends RWSViewComponent {
     }
 
     closeSettings() {
+        this.show = false;
         this.$emit('settings-close');
         this.resetTempSettings();
     }
 
     get tempValue(): string {
-        return this.tempSettings.temperature?.toString() || '0.7';
+        return this.tempSettings?.temperature?.toString() || '0.7';
     }
 }
 
