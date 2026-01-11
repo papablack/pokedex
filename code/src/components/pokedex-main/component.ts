@@ -53,6 +53,10 @@ export class PokedexMain extends RWSViewComponent {
         this.activeRightTab = tab;
     }
 
+    toggleRightWing() {
+        this.rightWingVisible = !this.rightWingVisible;
+    }
+
     pokemonDataChanged(oldValue: any, newValue: any) {
         // Automatically open right wing when Pokemon data is available
         if (newValue && !this.rightWingVisible) {

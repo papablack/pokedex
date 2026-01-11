@@ -123,7 +123,11 @@ export class PokedexScreen extends RWSViewComponent {
         this.selectedLocation = null;
         this.filteredPokemonList = [];
         this.saveSelectedGeneration(null);
-        this.updateFilteredContent();
+        this.showFilters = false; // Hide filters when clearing
+        
+        // Clear the filtered content and show default content
+        this.output = '';
+        this.contentReady = true;
     }
 
     private updateFilteredContent() {

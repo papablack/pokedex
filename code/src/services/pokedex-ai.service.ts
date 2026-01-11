@@ -33,6 +33,7 @@ export class PokedexAiService extends RWSService {
         }
         this.openRouterClient = createOpenRouter({
             apiKey: this.settings.apiKey,
+            specificationVersion: 'v3',
         });       
     }
 
@@ -185,7 +186,8 @@ export class PokedexAiService extends RWSService {
             systemPrompt += `\n\nPytanie nie zawiera słów związanych z Pokemon i nie ma danych Pokemon - użyj fallback message.`;
             console.log('Added fallback instruction to system prompt');
         } else {
-            console.log('NOT using fallback - pokemon related query detected');
+            systemPrompt += `\n\nTO PYTANIE ZAWIERA SŁOWA POKEMON - NIGDY NIE UŻYWAJ FALLBACK MESSAGE! Odpowiedz normalnie na pytanie o Pokemon/PokéMMO/grach Pokemon.\n\nWAŻNE: NIE UŻYWAJ MARKDOWN! Odpowiadaj TYLKO czystym HTML z klasami CSS.`;
+            console.log('Added NO FALLBACK instruction - pokemon related query detected');
         }
     
         const { text } = await generateText({
@@ -223,6 +225,8 @@ export class PokedexAiService extends RWSService {
         // If no pokemon keywords/poke and no pokemon data, instruct to use fallback
         if (!hasPokemonKeyword && !hasPoke && !pokemonData) {
             systemPrompt += `\n\nPytanie nie zawiera słów związanych z Pokemon i nie ma danych Pokemon - użyj fallback message.`;
+        } else {
+            systemPrompt += `\n\nTO PYTANIE ZAWIERA SŁOWA POKEMON - NIGDY NIE UŻYWAJ FALLBACK MESSAGE! Odpowiedz normalnie na pytanie o Pokemon/PokéMMO/grach Pokemon.\n\nWAŻNE: NIE UŻYWAJ MARKDOWN! Odpowiadaj TYLKO czystym HTML z klasami CSS.`;
         }
 
         const model = this.generateModelObject(this.settings.model);

@@ -1,3 +1,5 @@
+@import '@workspace/styles/colors';
+
 .screen-container {
     position: relative;
     background: linear-gradient(145deg, #2d3436, #636e72);
@@ -310,17 +312,17 @@
 }
 
 .ai-section-title {
-    color: #00ff00;
+    color: $ai-title-color;
     margin: 10px 0;
     font-size: 1.1rem;
     font-weight: bold;
     font-family: 'Courier New', monospace;
-    text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+    text-shadow: 0 0 8px rgba(0, 255, 65, 0.7);
     text-transform: uppercase;
 }
 
 .ai-paragraph {
-    color: #74b9ff;
+    color: $dos-blue;
     margin-bottom: 8px;
     line-height: 1.5;
     font-family: 'Courier New', monospace;
@@ -335,7 +337,7 @@
 }
 
 .ai-list-item {
-    color: #74b9ff;
+    color: $dos-blue;
     padding: 2px 0;
     margin: 2px 0;
     text-shadow: 0 0 6px rgba(116, 185, 255, 0.5);
@@ -343,33 +345,33 @@
     
     &::before {
         content: ">> ";
-        color: #00ff00;
+        color: $dos-green;
         text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
     }
 }
 
 .ai-highlight {
-    color: #ffff00;
+    color: $dos-yellow;
     background: transparent;
     text-shadow: 0 0 8px rgba(255, 255, 0, 0.7);
     font-family: 'Courier New', monospace;
 }
 
 .ai-strategy {
-    border-left-color: #ff6b7d;
+    border-left-color: $ai-strategy-color;
     
     .ai-section-title {
-        color: #ff6b7d;
-        text-shadow: 0 0 8px rgba(255, 107, 125, 0.7);
+        color: $ai-strategy-color;
+        text-shadow: 0 0 8px rgba(255, 165, 0, 0.7);
     }
 }
 
 .ai-facts {
-    border-left-color: #fd79a8;
+    border-left-color: $ai-facts-color;
     
     .ai-section-title {
-        color: #fd79a8;
-        text-shadow: 0 0 8px rgba(253, 121, 168, 0.7);
+        color: $ai-facts-color;
+        text-shadow: 0 0 8px rgba(144, 238, 144, 0.7);
     }
 }
 
@@ -422,12 +424,12 @@
 }
 
 .ai-section-header {
-    color: #00ff00;
-    border-bottom: 1px solid #00ff00;
+    color: $ai-section-header-color;
+    border-bottom: 1px solid $ai-section-header-color;
     padding-bottom: 3px;
     margin: 15px 0 10px 0;
     font-family: 'Courier New', monospace;
-    text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+    text-shadow: 0 0 8px rgba(0, 191, 255, 0.7);
     text-transform: uppercase;
     font-weight: bold;
 }
@@ -438,7 +440,7 @@
 }
 
 .ai-stat-item {
-    color: #74b9ff;
+    color: $dos-blue;
     padding: 2px 0;
     text-align: left;
     font-family: 'Courier New', monospace;
@@ -446,13 +448,13 @@
     
     &::before {
         content: "* ";
-        color: #00ff00;
+        color: $dos-green;
         text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
     }
 }
 
 .stat-label {
-    color: #00ff00;
+    color: $dos-green;
     text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
     font-family: 'Courier New', monospace;
     
@@ -482,14 +484,14 @@
 }
 
 .ai-effectiveness-title {
-    color: #00ff00;
+    color: $dos-green;
     font-family: 'Courier New', monospace;
     text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
     margin: 10px 0 5px 0;
     text-transform: uppercase;
     
-    &.effective { color: #55efc4; text-shadow: 0 0 8px rgba(85, 239, 196, 0.7); }
-    &.not-effective { color: #ff6b7d; text-shadow: 0 0 8px rgba(255, 107, 125, 0.7); }
+    &.effective { color: $effective-color; text-shadow: 0 0 8px rgba(85, 239, 196, 0.7); }
+    &.not-effective { color: $not-effective-color; text-shadow: 0 0 8px rgba(139, 69, 19, 0.7); }
 }
 
 .ai-effectiveness-list {
@@ -499,25 +501,25 @@
 }
 
 .ai-effectiveness-item {
-    color: #74b9ff;
+    color: $dos-blue;
     padding: 1px 0;
     margin: 1px 0;
     font-family: 'Courier New', monospace;
     text-shadow: 0 0 6px rgba(116, 185, 255, 0.5);
     
     &.strong {
-        color: #55efc4;
+        color: $effective-color;
         text-shadow: 0 0 8px rgba(85, 239, 196, 0.7);
         
         &::before {
             content: "+ ";
-            color: #00ff00;
+            color: $dos-green;
             text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
         }
     }
     
     &.weak {
-        color: #ff6b7d;
+        color: $not-effective-color;
         text-shadow: 0 0 8px rgba(255, 107, 125, 0.7);
         
         &::before {

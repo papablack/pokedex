@@ -7,7 +7,7 @@ import { IPokedexSettings } from '../../types/pokedex.types';
 export class PokedexSettings extends RWSViewComponent {
     @observable settings: IPokedexSettings = {
         apiKey: '',
-        model: 'openai/gpt-4o-mini',
+        model: 'openai/gpt-5.2-chat',
         language: 'pl',
         temperature: 0.7,
         streaming: true

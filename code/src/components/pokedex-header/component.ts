@@ -3,6 +3,8 @@ import { RWSViewComponent, RWSView, observable } from '@rws-framework/client';
 @RWSView('pokedex-header')
 export class PokedexHeader extends RWSViewComponent {
     @observable connected: boolean = false;
+    @observable pokemonData: any = null;
+    @observable rightWingVisible: boolean = false;
 
     constructor() {
         super();

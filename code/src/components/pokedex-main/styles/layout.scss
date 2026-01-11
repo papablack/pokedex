@@ -1,3 +1,6 @@
+@import '@workspace/styles/colors';
+
+
 :host {
     display: block;
     width: 100%;
@@ -374,15 +377,15 @@
             }
             
             h4 {
-                color: #261568;
+                color: $pokedex-dark-blue;
                 margin-bottom: 10px;
                 
-                &.effective { color: #27ae60; }
-                &.not-effective { color: #e74c3c; }
-                &.evolution { color: #27ae60; }
-                &.locations { color: #261568; }
-                &.generation { color: #ff6b6b; }
-                &.additional-info { color: #1976d2; }
+                &.effective { color: $effective-color; }
+                &.not-effective { color: $not-effective-color; }
+                &.evolution { color: $effective-color; }
+                &.locations { color: $pokedex-dark-blue; }
+                &.generation { color: $generation-color; }
+                &.additional-info { color: $pokedex-blue; }
             }
         }
         
@@ -548,7 +551,7 @@
     }
     
     h4 {
-        color: #ffab00;
+        color: $generation-color;
         font-size: 1.3rem;
         margin-bottom: 0.5rem;
     }

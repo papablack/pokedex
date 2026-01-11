@@ -4,6 +4,8 @@
         <!-- Top Section - Header with lens, lights, connection status -->
         <pokedex-header 
             :connected="${x => x.isConnected}"
+            :pokemonData="${x => x.pokemonData}"
+            :rightWingVisible="${x => x.rightWingVisible}"
             @toggle-settings="${x => x.handleToggleSettings()}"
             @toggle-wing="${x => x.toggleRightWing()}">
         </pokedex-header>
