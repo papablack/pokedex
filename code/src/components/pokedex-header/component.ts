@@ -16,6 +16,10 @@ export class PokedexHeader extends RWSViewComponent {
         this.$emit('toggle-settings');
     }
 
+    handleWingToggle() {
+        this.$emit('toggle-wing');
+    }
+
     get connectionStatus() {
         return this.connected ? 'connected' : 'disconnected';
     }

@@ -17,6 +17,7 @@ export class PokedexMain extends RWSViewComponent {
     @observable isGenerating: boolean = false;
     @observable showSettings: boolean = false;
     @observable contentReady: boolean = false;
+    @observable rightWingVisible: boolean = false;
 
     constructor(
         @RWSInject(PokedexAiService) private aiService: PokedexAiServiceInstance,
@@ -44,6 +45,10 @@ export class PokedexMain extends RWSViewComponent {
         this.on('rws_modal:settings:close', () => {
             this.showSettings = false;
         });
+    }
+
+    toggleRightWing() {
+        this.rightWingVisible = !this.rightWingVisible;
     }
 
     private loadSettings() {

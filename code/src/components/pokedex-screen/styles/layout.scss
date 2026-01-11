@@ -1,26 +1,29 @@
 .screen-container {
     position: relative;
     background: linear-gradient(145deg, #2d3436, #636e72);
-    border-radius: 0 0 20px 20px;
-    padding: 2rem;
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 1rem 0;
     box-shadow: 
         inset 0 4px 8px rgba(0, 0, 0, 0.3),
         0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .main-screen {
-    background: linear-gradient(145deg, #1e3c72, #2a5298);
-    border: 4px solid #333;
-    border-radius: 15px;
-    min-height: 300px;
-    max-height: 400px;
-    padding: 1.5rem;
+    background: linear-gradient(145deg, #0d1421, #1a2332);
+    border: 6px solid #333;
+    border-radius: 12px;
+    min-height: 350px;
+    max-height: 450px;
+    padding: 1rem;
     position: relative;
-    overflow-y: auto;
+    overflow: hidden;
     box-shadow: 
-        inset 0 0 20px rgba(0, 0, 0, 0.5),
-        0 0 20px rgba(255, 255, 255, 0.1);
+        inset 0 0 30px rgba(0, 0, 0, 0.7),
+        inset 0 2px 4px rgba(255, 255, 255, 0.1),
+        0 0 20px rgba(116, 185, 255, 0.2);
     
+    // Classic CRT screen effect
     &::before {
         content: '';
         position: absolute;
@@ -32,22 +35,27 @@
             0deg,
             transparent,
             transparent 2px,
-            rgba(255, 255, 255, 0.03) 2px,
-            rgba(255, 255, 255, 0.03) 4px
+            rgba(116, 185, 255, 0.08) 2px,
+            rgba(116, 185, 255, 0.08) 4px
         );
         pointer-events: none;
-        z-index: 1;
+        z-index: 2;
+        animation: screen-flicker 0.15s linear infinite;
     }
     
+    // Screen border glow
     &::after {
         content: '';
         position: absolute;
-        top: -2px;
-        left: -2px;
-        right: -2px;
-        bottom: -2px;
-        background: linear-gradient(45deg, #00f5ff, #ff00ff, #ffff00, #00ff00);
-        border-radius: 17px;
+        top: -3px;
+        left: -3px;
+        right: -3px;
+        bottom: -3px;
+        background: linear-gradient(45deg, 
+            rgba(116, 185, 255, 0.3), 
+            rgba(116, 185, 255, 0.1), 
+            rgba(116, 185, 255, 0.3));
+        border-radius: 15px;
         z-index: -1;
         opacity: 0.1;
         animation: screen-glow 3s ease-in-out infinite alternate;
@@ -59,14 +67,57 @@
     100% { opacity: 0.15; }
 }
 
+@keyframes screen-flicker {
+    0%, 98% { opacity: 1; }
+    99% { opacity: 0.98; }
+    100% { opacity: 1; }
+}
+
 .screen-content {
-    color: #00ff00;
+    color: #74b9ff;
     font-family: 'Courier New', monospace;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     line-height: 1.6;
-    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-    z-index: 2;
+    text-shadow: 0 0 8px rgba(116, 185, 255, 0.5);
+    z-index: 3;
     position: relative;
+    height: 100%;
+    overflow-y: auto;
+    padding: 0.5rem;
+    
+    /* Custom scrollbar */
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: rgba(116, 185, 255, 0.5);
+        border-radius: 4px;
+        
+        &:hover {
+            background: rgba(116, 185, 255, 0.7);
+        }
+    }
+    
+    /* Capitalize Pokemon names and species */
+    h1, h2, h3, h4, h5, h6,
+    .pokemon-name,
+    .species-name,
+    strong:first-child {
+        text-transform: capitalize;
+    }
+    
+    /* Target Pokemon names in formatted content */
+    p:first-of-type strong,
+    div:first-of-type strong,
+    li strong:first-child {
+        text-transform: capitalize;
+    }
     
     .welcome-message {
         text-align: center;

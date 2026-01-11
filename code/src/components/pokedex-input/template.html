@@ -12,29 +12,6 @@
             @click="${x => x.handleSearch()}" 
             :disabled="${x => x.isGenerating}">
             <i class="fa fa-search"></i>
-            ${'pokedex.search'.t()}
-        </button>
-    </div>
-    
-    <!-- Quick Action Buttons -->
-    <div class="quick-buttons">
-        <button class="quick-btn" @click="${x => x.quickSearch('Pikachu')}" :disabled="${x => x.isGenerating}">
-            Pikachu
-        </button>
-        <button class="quick-btn" @click="${x => x.quickSearch('Charizard')}" :disabled="${x => x.isGenerating}">
-            Charizard
-        </button>
-        <button class="quick-btn" @click="${x => x.quickSearch('Blastoise')}" :disabled="${x => x.isGenerating}">
-            Blastoise
-        </button>
-        <button class="quick-btn" @click="${x => x.quickSearch('Venusaur')}" :disabled="${x => x.isGenerating}">
-            Venusaur
-        </button>
-        <button class="quick-btn" @click="${x => x.quickSearch('Mewtwo')}" :disabled="${x => x.isGenerating}">
-            Mewtwo
-        </button>
-        <button class="quick-btn" @click="${x => x.quickSearch('Eevee')}" :disabled="${x => x.isGenerating}">
-            Eevee
         </button>
     </div>
 </div>

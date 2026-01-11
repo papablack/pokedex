@@ -1,9 +1,11 @@
-<div class="pokedex-container">
-    <div class="pokedex-body">
+<div class="pokedex-container ${x => x.rightWingVisible ? 'wing-open' : 'wing-closed'}">
+    <!-- Left Panel - Main Pokedex -->
+    <div class="pokedex-left-panel">
         <!-- Top Section - Header with lens, lights, connection status -->
         <pokedex-header 
             :connected="${x => x.isConnected}"
-            @toggle-settings="${x => x.handleToggleSettings()}">
+            @toggle-settings="${x => x.handleToggleSettings()}"
+            @toggle-wing="${x => x.toggleRightWing()}">
         </pokedex-header>
         
         <!-- Main Screen -->
@@ -19,16 +21,67 @@
             :isGenerating="${x => x.isGenerating}"
             @search="${(x, c) => x.handleSearch(c.event)}">
         </pokedex-input>
-        
-        <!-- Settings Modal -->
-        ${when(x => x.showSettings, html`
-            <rws-modal name="settings" header="pokedex.settingsTitle" max-width="600px" @modal-close="${x => x.handleSettingsClose()}">
-                <pokedex-settings 
-                    :settings="${x => x.settings}"
-                    @settings-save="${(x, c) => x.handleSettingsSave(c.event.detail)}"
-                    @settings-clear="${x => x.handleSettingsClear()}">
-                </pokedex-settings>
-            </rws-modal>
-        `)}
     </div>
+    
+    <!-- Right Wing Panel - Collapsible -->
+    <div class="pokedex-right-wing ${x => x.rightWingVisible ? 'visible' : 'hidden'}">
+        <div class="wing-header">
+            <h3>${'pokedex.dataPanel'.t()}</h3>
+            <button class="btn-close-wing" @click="${x => x.toggleRightWing()}" :title="'pokedex.closePanel'.t()">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        <div class="wing-content">
+            <div class="wing-section">
+                <div class="button-grid">
+                    <div class="grid-row">
+                        <button class="grid-btn blue"></button>
+                        <button class="grid-btn blue"></button>
+                        <button class="grid-btn blue"></button>
+                        <button class="grid-btn blue"></button>
+                        <button class="grid-btn blue"></button>
+                    </div>
+                    <div class="grid-row">
+                        <button class="grid-btn blue"></button>
+                        <button class="grid-btn blue"></button>
+                        <button class="grid-btn blue"></button>
+                        <button class="grid-btn blue"></button>
+                        <button class="grid-btn blue"></button>
+                    </div>
+                    <div class="grid-row">
+                        <button class="grid-btn white"></button>
+                        <button class="grid-btn white"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="wing-section">
+                <div class="speaker-grille">
+                    <div class="grille-line"></div>
+                    <div class="grille-line"></div>
+                    <div class="grille-line"></div>
+                    <div class="grille-line"></div>
+                    <div class="grille-line"></div>
+                    <div class="grille-line"></div>
+                </div>
+            </div>
+            <div class="wing-section future-content">
+                <p>${'pokedex.mapContent'.t()}</p>
+                <div class="map-placeholder">
+                    <i class="fa fa-map"></i>
+                    <span>${'pokedex.comingSoon'.t()}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    ${when(x => x.showSettings, html`
+        <rws-modal name="settings" header="pokedex.settingsTitle" max-width="600px" @modal-close="${x => x.handleSettingsClose()}">
+            <pokedex-settings 
+                :settings="${x => x.settings}"
+                @settings-save="${(x, c) => x.handleSettingsSave(c.event.detail)}"
+                @settings-clear="${x => x.handleSettingsClear()}">
+            </pokedex-settings>
+        </rws-modal>
+    `)}
 </div>

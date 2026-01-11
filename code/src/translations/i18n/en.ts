@@ -40,5 +40,10 @@ export default {
     'pokedex.enterPokemon': 'Enter Pokémon name...',
     'pokedex.search': 'Search',
     'pokedex.analyzing': 'Analyzing',
-    'pokedex.searchComplete': 'search complete'
+    'pokedex.searchComplete': 'search complete',
+    'pokedex.togglePanel': 'Toggle Data Panel',
+    'pokedex.dataPanel': 'Data Panel',
+    'pokedex.closePanel': 'Close Panel',
+    'pokedex.mapContent': 'Map & Navigation',
+    'pokedex.comingSoon': 'Coming Soon'
 };
