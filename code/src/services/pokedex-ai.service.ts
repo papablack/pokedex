@@ -32,8 +32,7 @@ export class PokedexAiService extends RWSService {
             return;
         }
         this.openRouterClient = createOpenRouter({
-            apiKey: this.settings.apiKey,
-            specificationVersion: 'v3',
+            apiKey: this.settings.apiKey            
         });       
     }
 

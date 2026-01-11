@@ -5,7 +5,7 @@
     display: block;
     width: 100%;
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, $pokedex-blue 0%, #764ba2 100%);
     padding: 2rem;
     box-sizing: border-box;
     font-family: var(--font-main);
@@ -20,7 +20,7 @@
     box-shadow: 
         0 25px 60px rgba(0, 0, 0, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    border: 6px solid #8b0000;
+    border: 6px solid $pokedex-dark-red;
     position: relative;
     overflow: hidden;
     font-family: var(--font-main);
@@ -80,7 +80,7 @@
 }
 
 .pokedex-right-wing {
-    background: linear-gradient(145deg, #c82333, #a71e2a);
+    background: linear-gradient(145deg, #c82333, $pokedex-dark-red);
     border-left: 4px solid #8b0000;
     position: relative;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -119,7 +119,7 @@
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
     
     .tab-button {
-        background: linear-gradient(145deg, #c82333, #a71e2a);
+        background: linear-gradient(145deg, #c82333, $pokedex-dark-red);
         border: 2px solid transparent;
         background-clip: padding-box;
         border-image: linear-gradient(45deg, #ff6b7d, #c82333, #8b0000) 1;
@@ -154,7 +154,7 @@
         }
         
         &:hover {
-            background: linear-gradient(145deg, #dc3545, #b21f1f);
+            background: linear-gradient(145deg, $pokedex-red, #b21f1f);
             color: white;
             transform: translateY(-1px);
             box-shadow: 
@@ -163,7 +163,7 @@
         }
         
         &.active {
-            background: linear-gradient(145deg, #e74c3c, #dc3545);
+            background: linear-gradient(145deg, #e74c3c, $pokedex-red);
             color: white;
             border-color: #ff6b7d;
             transform: translateY(-1px);
@@ -187,8 +187,8 @@
     }
     
     .btn-close-wing {
-        background: linear-gradient(145deg, #dc3545, #b21f1f);
-        border: 2px solid #8b0000;
+        background: linear-gradient(145deg, $pokedex-red, #b21f1f);
+        border: 2px solid $pokedex-dark-red;
         color: white;
         width: 36px;
         height: 36px;
@@ -216,7 +216,7 @@
         }
         
         &:hover {
-            background: linear-gradient(145deg, #e74c3c, #dc3545);
+            background: linear-gradient(145deg, #e74c3c, $pokedex-red);
             transform: scale(1.05);
             box-shadow: 
                 0 4px 8px rgba(0, 0, 0, 0.4),

@@ -8,27 +8,19 @@ $pokedex-light: #f8f9fa;
 $pokedex-dark: #2d3436;
 $pokedex-gray: #636e72;
 
-// AI Synopsis and Right Wing colors
-$ai-title-color: #00ff41;
-$ai-section-header-color: #00bfff;
-$ai-detail-label-color: #ffff00;
-$ai-response-text-color: #f0f8ff;
+// AI Synopsis and Right Wing colors (using DOS colors where they match)
 $ai-highlight-color: #ff1493;
 $ai-strategy-color: #ffa500;
 $ai-facts-color: #90ee90;
 
 // Pokemon type effectiveness colors
-$effective-color: #00ff41;      // Green for effective/strong
-$not-effective-color: #8b4513;  // Brown for not-effective/weak
+$not-effective-color: #ca6e05;  // Brown for not-effective/weak
 $generation-color: #ffd700;     // Gold for generation
 
 // Pokemon type colors
-$fire-type-color: #ff6b6b;
 $water-type-color: #4dabf7;
 $grass-type-color: #51cf66;
 $electric-type-color: #ffd43b;
-$psychic-type-color: #d0bfff;
-$ice-type-color: #74c0fc;
 $dragon-type-color: #845ec2;
 $dark-type-color: #495057;
 $fighting-type-color: #c92a2a;
@@ -38,19 +30,18 @@ $flying-type-color: #a5b4fc;
 $bug-type-color: #69db7c;
 $rock-type-color: #9c88ff;
 $ghost-type-color: #663399;
-$steel-type-color: #adb5bd;
 $fairy-type-color: #faa2c1;
 $normal-type-color: #ced4da;
 
-// DOS Terminal colors for retro styling
-$dos-green: #00ff41;
-$dos-blue: #00bfff;
-$dos-yellow: #ffff00;
-$dos-red: #ff6b6b;
-$dos-purple: #d0bfff;
-$dos-cyan: #74c0fc;
-$dos-white: #f0f8ff;
-$dos-gray: #adb5bd;
+// DOS Terminal colors for retro styling (primary theme)
+$dos-green: #00ff41;           // Also used for: ai-title-color, effective-color
+$dos-blue: #00bfff;            // Also used for: ai-section-header-color
+$dos-yellow: #ffff00;          // Also used for: ai-detail-label-color
+$dos-red: #ff6b6b;             // Also used for: fire-type-color
+$dos-purple: #d0bfff;          // Also used for: psychic-type-color
+$dos-cyan: #74c0fc;            // Also used for: ice-type-color, ai-response-text-color
+$dos-white: #f0f8ff;           // Also used for: ai-response-text-color
+$dos-gray: #adb5bd;            // Also used for: steel-type-color
 
 // Background colors
 $terminal-bg: #000;

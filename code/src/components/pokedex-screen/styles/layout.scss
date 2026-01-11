@@ -76,11 +76,11 @@
 }
 
 .screen-content {
-    color: #74b9ff;
+    color: $dos-blue;
     font-family: 'Courier New', monospace;
     font-size: 0.95rem;
     line-height: 1.6;
-    text-shadow: 0 0 8px rgba(116, 185, 255, 0.5);
+    text-shadow: 0 0 8px rgba(0, 191, 255, 0.5);
     z-index: 3;
     position: relative;
     height: 100%;
@@ -98,11 +98,11 @@
     }
     
     &::-webkit-scrollbar-thumb {
-        background: rgba(116, 185, 255, 0.5);
+        background: rgba(0, 191, 255, 0.5);
         border-radius: 4px;
         
         &:hover {
-            background: rgba(116, 185, 255, 0.7);
+            background: rgba(0, 191, 255, 0.7);
         }
     }
     
@@ -129,38 +129,38 @@
             font-size: 1.5rem;
             font-weight: bold;
             margin-bottom: 1rem;
-            color: #ffff00;
+            color: $dos-yellow;
             text-shadow: 0 0 15px rgba(255, 255, 0, 0.7);
             animation: title-pulse 2s ease-in-out infinite;
         }
         
         .subtitle {
-            color: #00ffff;
+            color: $dos-cyan;
             margin-bottom: 0.5rem;
-            text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+            text-shadow: 0 0 8px rgba(116, 192, 252, 0.5);
         }
         
         .instructions {
-            color: #ff69b4;
+            color: $dos-purple;
             font-size: 0.8rem;
-            text-shadow: 0 0 5px rgba(255, 105, 180, 0.3);
+            text-shadow: 0 0 5px rgba(208, 191, 255, 0.3);
         }
     }
     
     strong {
-        color: #ffff00;
+        color: $dos-yellow;
         text-shadow: 0 0 8px rgba(255, 255, 0, 0.6);
     }
     
     em {
-        color: #ff69b4;
+        color: $dos-purple;
         text-shadow: 0 0 5px rgba(255, 105, 180, 0.4);
     }
     
     hr {
         border: none;
         height: 2px;
-        background: linear-gradient(90deg, transparent, #00ff00, transparent);
+        background: linear-gradient(90deg, transparent, $dos-green, transparent);
         margin: 1rem 0;
         box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
     }
@@ -256,7 +256,7 @@
 }
 
 .loading-text {
-    color: #ffff00;
+    color: $dos-yellow;
     font-family: 'Courier New', monospace;
     font-weight: bold;
     text-shadow: 0 0 10px rgba(255, 255, 0, 0.7);
@@ -279,9 +279,9 @@
     }
     
     &::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, #00ff00, #00cc00);
+        background: linear-gradient(135deg, $dos-green, #00cc00);
         border-radius: 4px;
-        box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+        box-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
         
         &:hover {
             background: linear-gradient(135deg, #00cc00, #009900);
@@ -293,9 +293,9 @@
     display: inline-block;
     width: 2px;
     height: 1em;
-    background: #00ff00;
+    background: $dos-green;
     animation: cursor-blink 1s infinite;
-    box-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+    box-shadow: 0 0 5px rgba(0, 255, 65, 0.7);
 }
 
 @keyframes cursor-blink {

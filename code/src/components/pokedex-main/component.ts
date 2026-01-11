@@ -112,6 +112,7 @@ export class PokedexMain extends RWSViewComponent {
         this.output = '';
         this.pokemonDataOutput = '';
         this.aiOutput = '';
+        this.pokemonData = null; // Clear any previous Pokemon data immediately
         this.query = queryToUse;
         
         // Emit search start event and show notification
@@ -160,12 +161,14 @@ export class PokedexMain extends RWSViewComponent {
             this.pokemonDataOutput = '';
         }
         
-        // Handle AI response - now only goes to left panel
+        // Handle AI response - ensure it only goes to main screen and not Pokemon data
         if (response.aiResponse) {
             this.aiOutput = response.aiResponse;
+        } else {
+            this.aiOutput = '';
         }
         
-        // Update output for main screen (AI synopsis only)
+        // Update output for main screen (AI synopsis only) - never Pokemon data
         this.output = this.aiOutput;
         this.contentReady = true;
     }
@@ -186,13 +189,13 @@ export class PokedexMain extends RWSViewComponent {
         if (response.pokemonData) {
             this.pokemonData = response.pokemonData;
             this.pokemonDataOutput = this.pokemonDataService.formatPokemonDataToHTML(response.pokemonData, this.settings.language);
-            this.contentReady = true; // Show Pokemon data immediately
+            this.contentReady = true; // Show Pokemon data immediately in right wing only
         } else {
             this.pokemonData = null;
             this.pokemonDataOutput = '';
         }
         
-        // Stream AI response
+        // Stream AI response - ensure it never contains Pokemon data
         if (response.streamingResponse) {
             let aiText = '';
             let isFirstChunk = true;
@@ -206,7 +209,7 @@ export class PokedexMain extends RWSViewComponent {
                 
                 aiText += chunk;
                 this.aiOutput = aiText + '<span class="typing-cursor"></span>';
-                // Update only the main screen output (AI synopsis)
+                // Update only the main screen output (AI synopsis) - never Pokemon data
                 this.output = this.aiOutput;
                 
                 if (!this.contentReady) {
@@ -216,6 +219,7 @@ export class PokedexMain extends RWSViewComponent {
             
             // Remove cursor after completion
             this.aiOutput = aiText;
+            // Ensure main screen output only contains AI response, never Pokemon data
             this.output = this.aiOutput;
         } else {
             // If no streaming response, stop loading here
