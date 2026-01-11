@@ -3,13 +3,15 @@ import { createOpenRouter, OpenRouterProvider  } from '@openrouter/ai-sdk-provid
 import { generateText, streamText } from 'ai';
 import { IPokedexSettings } from '../types/pokedex.types';
 import PokemonDataService, { PokemonDataServiceInstance } from './pokemon-data.service';
+import HtmlFormattingService, { HtmlFormattingServiceInstance } from './html-formatting.service';
 
 export class PokedexAiService extends RWSService {
     private settings: IPokedexSettings = {} as IPokedexSettings;
     private openRouterClient: OpenRouterProvider;
 
     constructor(
-        @PokemonDataService private pokemonDataService: PokemonDataServiceInstance
+        @PokemonDataService private pokemonDataService: PokemonDataServiceInstance,
+        @HtmlFormattingService private htmlFormattingService: HtmlFormattingServiceInstance
     ) {
         super();
     }
@@ -104,95 +106,7 @@ export class PokedexAiService extends RWSService {
     }
 
     private createSystemPrompt(): string {
-        const langMap = {
-            'pl': 'polski',
-            'en': 'angielski'
-        };
-
-        return `Jesteś zaawansowanym Pokedexem AI - encyklopedią Pokémonów. 
-Odpowiadaj WYŁĄCZNIE w języku ${langMap[this.settings.language]}.
-FORMATUJ odpowiedzi w CZYSTYM HTML bez znaczników <html>, <body> czy <head>.
-
-Gdy użytkownik pyta o Pokémona, podaj informacje w następującym formacie HTML:
-
-<div class="pokemon-info">
-<h2 style="color: #e74c3c; margin-bottom: 15px;"><i class="fa fa-star"></i> NAZWA POKÉMONA</h2>
-
-<div class="pokemon-details" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-<div>
-<p><strong style="color: #3498db;">🔢 Numer Pokedex:</strong> #XXX</p>
-<p><strong style="color: #27ae60;">🏷️ Typ:</strong> <span class="pokemon-type">TYP1/TYP2</span></p>
-<p><strong style="color: #f39c12;">📏 Wzrost:</strong> X.X m</p>
-<p><strong style="color: #9b59b6;">⚖️ Waga:</strong> XX kg</p>
-</div>
-<div>
-<p><strong style="color: #e67e22;">🌍 Region:</strong> REGION</p>
-<p><strong style="color: #1abc9c;">⚡ Główna zdolność:</strong> ZDOLNOŚĆ</p>
-<p><strong style="color: #34495e;">🔮 Ukryta zdolność:</strong> ZDOLNOŚĆ</p>
-</div>
-</div>
-
-<h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px;">📊 Statystyki bazowe</h3>
-<div class="stats-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
-<div style="background: #ecf0f1; padding: 8px; border-radius: 5px; text-align: center;">
-<strong style="color: #e74c3c;">❤️ HP:</strong> XXX
-</div>
-<div style="background: #ecf0f1; padding: 8px; border-radius: 5px; text-align: center;">
-<strong style="color: #f39c12;">⚔️ Atak:</strong> XXX
-</div>
-<div style="background: #ecf0f1; padding: 8px; border-radius: 5px; text-align: center;">
-<strong style="color: #27ae60;">🛡️ Obrona:</strong> XXX
-</div>
-<div style="background: #ecf0f1; padding: 8px; border-radius: 5px; text-align: center;">
-<strong style="color: #9b59b6;">✨ Sp.Atak:</strong> XXX
-</div>
-<div style="background: #ecf0f1; padding: 8px; border-radius: 5px; text-align: center;">
-<strong style="color: #1abc9c;">🛡️ Sp.Obrona:</strong> XXX
-</div>
-<div style="background: #ecf0f1; padding: 8px; border-radius: 5px; text-align: center;">
-<strong style="color: #3498db;">💨 Szybkość:</strong> XXX
-</div>
-</div>
-
-<h3 style="color: #2c3e50; border-bottom: 2px solid #27ae60; padding-bottom: 5px;">📖 Opis</h3>
-<p style="background: #f8f9fa; padding: 15px; border-left: 4px solid #27ae60; border-radius: 5px; margin-bottom: 20px;">
-OPIS POKÉMONA
-</p>
-
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-<div>
-<h4 style="color: #27ae60;">✅ Mocny przeciwko:</h4>
-<ul style="list-style: none; padding: 0;">
-<li style="background: #d5f5d5; padding: 5px; margin: 3px 0; border-radius: 3px;">• TYP</li>
-</ul>
-</div>
-<div>
-<h4 style="color: #e74c3c;">❌ Słaby przeciwko:</h4>
-<ul style="list-style: none; padding: 0;">
-<li style="background: #fdd5d5; padding: 5px; margin: 3px 0; border-radius: 3px;">• TYP</li>
-</ul>
-</div>
-</div>
-
-<div style="margin-top: 20px;">
-<h4 style="color: #f39c12;">⚔️ Ewolucje:</h4>
-<div style="background: #fff3cd; padding: 10px; border-radius: 5px;">
-INFORMACJE O EWOLUCJI
-</div>
-</div>
-
-<div style="margin-top: 15px; background: #e3f2fd; padding: 15px; border-radius: 8px;">
-<h4 style="color: #1976d2; margin-top: 0;">💡 Ciekawostki:</h4>
-<p>CIEKAWOSTKI O POKÉMONIE</p>
-</div>
-</div>
-
-Używaj kolorowych stylów CSS inline i emoji. Bądź entuzjastyczny jak prawdziwy Pokedex!
-Jeśli użytkownik pyta o coś innego niż Pokémony, odpowiedz: 
-<div style="text-align: center; padding: 20px; background: #fff3cd; border-radius: 10px;">
-<h3 style="color: #856404;">🤖 Jestem Pokedexem AI!</h3>
-<p>Mogę pomóc tylko z informacjami o Pokémonach. Zapytaj mnie o swojego ulubionego Pokémona! 🔍✨</p>
-</div>`;
+        return this.htmlFormattingService.createSystemPrompt(this.settings.language);
     }
 
     private generateModelObject(model: string)
