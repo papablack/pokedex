@@ -16,6 +16,50 @@ main {
     margin-bottom: 0px;
 }
 
+// Notification styles
+.notifications-container {
+    max-width: 400px;
+    
+    .notification-toast {
+        min-width: 300px;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        border: none;
+        
+        &.alert-success {
+            background-color: #d1edff;
+            border-color: #28a745;
+            color: #155724;
+        }
+        
+        &.alert-danger {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        
+        &.alert-warning {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+        
+        &.alert-info {
+            background-color: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+        
+        .btn-close {
+            filter: none;
+        }
+        
+        i {
+            font-size: 1.1rem;
+        }
+    }
+}
+
 // Account Limit Warning Bar
 .limit-warning-bar {
     position: fixed;

@@ -38,7 +38,14 @@ async function initializeApp() {
     }    
 
     theClient.setNotifier((message: string, logType?: NotifyLogType) => {
-       //here make som notifications message system
+        // Use our notification bridge to integrate with the layout system
+        import('./services/rws-notification-bridge.service').then(({ rwsNotificationBridge }) => {
+            const type = logType as 'success' | 'error' | 'warning' | 'info' || 'info';
+            rwsNotificationBridge.notify(message, type, 5000);
+        }).catch(() => {
+            // Fallback if bridge service fails
+            console.log(`[RWS Notification - ${(logType || 'info').toUpperCase()}]`, message);
+        });
     });              
         
     

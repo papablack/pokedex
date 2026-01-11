@@ -1,4 +1,23 @@
 <div id="root_layout">
+    <!-- Notification Container -->
+    <div class="notifications-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+        ${x => x.notifications.map((notification, index) => `
+            <div class="alert alert-${notification.type === 'error' ? 'danger' : notification.type} 
+                        alert-dismissible fade show notification-toast" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="bi ${notification.type === 'success' ? 'bi-check-circle' : 
+                                   notification.type === 'error' ? 'bi-exclamation-triangle' :
+                                   notification.type === 'warning' ? 'bi-exclamation-triangle' :
+                                   'bi-info-circle'} me-2"></i>
+                    <div class="flex-grow-1">${notification.message}</div>
+                    <button type="button" class="btn-close" 
+                            onclick="this.closest('default-layout').removeNotificationByIndex(${index})"
+                            aria-label="Close"></button>
+                </div>
+            </div>
+        `).join('')}
+    </div>
+    
     <main>
         <div class="container-fluid">
             <div class="dashboard-wrapper">

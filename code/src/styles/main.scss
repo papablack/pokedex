@@ -28,3 +28,37 @@ body {
     from { opacity: 1; transform: translateY(0); } 
     to { opacity: 0; transform: translateY(-20px); } 
 }
+
+// Toast notification styles
+.notification-toast {
+    min-width: 300px;
+    max-width: 400px;
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    
+    &.show {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    
+    &.hide {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    
+    .toast-body {
+        font-size: 0.9rem;
+        font-weight: 500;
+        
+        i {
+            font-size: 1rem;
+        }
+    }
+    
+    .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
+}

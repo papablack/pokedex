@@ -38,5 +38,6 @@ export default {
     'pokedex.configureApiFirst': 'Najpierw skonfiguruj klucz API w ustawieniach!',
     'pokedex.enterPokemon': 'Wpisz nazwę Pokémona...',
     'pokedex.search': 'Szukaj',
-    'pokedex.analyzing': 'Analizuję'
+    'pokedex.analyzing': 'Analizuję',
+    'pokedex.searchComplete': 'wyszukiwanie zakończone'
 };

@@ -2,6 +2,8 @@ import { RWSViewComponent, RWSView, observable, attr } from '@rws-framework/clie
 import { PokedexAiService } from '../../services/pokedex-ai.service';
 import { PokedexSettingsService } from '../../services/pokedex-settings.service';
 import { notificationService } from '../../services/notification.service';
+import { NotificationUtils } from '../../services/notification-utils.service';
+import { Events, PokedexEvents } from '../../event/events';
 import { IPokedexSettings } from '../../types/pokedex.types';
 
 @RWSView('pokedex-main')
@@ -24,6 +26,17 @@ export class PokedexMain extends RWSViewComponent {
 
     async connectedCallback() {
         super.connectedCallback();
+        
+        // Test notification system in development
+        if (process.env.NODE_ENV === 'development') {
+            // Import test service for console access
+            import('../../services/notification-test.service');
+            
+            // Test RWS notification integration after component is ready
+            setTimeout(() => {
+                console.log('🔔 Notification system ready! Try: testNotifications() or testRWSNotifications()');
+            }, 1000);
+        }
     }
 
     private loadSettings() {
@@ -39,27 +52,31 @@ export class PokedexMain extends RWSViewComponent {
         this.settingsService.saveSettings(newSettings);
         this.aiService.updateSettings(newSettings);
         this.showSettings = false;
-        notificationService.showNotification('pokedex.settingsSaved'.t(), 'success');
+        
+        // Emit settings changed event
+        Events.emit(PokedexEvents.SETTINGS_CHANGED, newSettings);
+        
+        NotificationUtils.showSuccess('pokedex.settingsSaved');
     }
 
     clearSettings() {
         this.settingsService.clearSettings();
         this.loadSettings();
         this.aiService.updateSettings(this.settings);
-        notificationService.showNotification('pokedex.settingsCleared'.t(), 'warning');
+        NotificationUtils.showWarning('pokedex.settingsCleared');
     }
 
     async searchPokemon(searchQuery?: string) {
         const queryToUse = searchQuery || this.query;
         
         if (!queryToUse?.trim()) {
-            notificationService.showNotification('pokedex.enterPokemonName'.t(), 'warning');
+            NotificationUtils.invalidInput();
             return;
         }
 
         if (!this.settingsService.isConfigured()) {
             this.showSettings = true;
-            notificationService.showNotification('pokedex.configureApiFirst'.t(), 'error');
+            NotificationUtils.configurationNeeded();
             return;
         }
 
@@ -68,6 +85,10 @@ export class PokedexMain extends RWSViewComponent {
         this.isGenerating = true;
         this.output = '';
         this.query = queryToUse;
+        
+        // Emit search start event and show notification
+        Events.emit(PokedexEvents.SEARCH_START, { query: queryToUse });
+        NotificationUtils.searchStarted(queryToUse);
 
         try {
             if (this.settings.streaming) {
@@ -75,6 +96,11 @@ export class PokedexMain extends RWSViewComponent {
             } else {
                 await this.generateResponse(queryToUse);
             }
+            
+            // Emit search complete event and show notification
+            Events.emit(PokedexEvents.SEARCH_COMPLETE, { query: queryToUse, output: this.output });
+            NotificationUtils.searchCompleted(queryToUse);
+            
         } catch (error) {
             console.error('pokedex.searchError'.t(), error);
             this.output = `<div class=\"text-danger\">
@@ -82,6 +108,10 @@ export class PokedexMain extends RWSViewComponent {
                 <br><br>
                 <small>${'pokedex.checkApiKey'.t()}</small>
             </div>`;
+            
+            // Emit search error event
+            Events.emit(PokedexEvents.SEARCH_ERROR, { query: queryToUse, error: error.message });
+            NotificationUtils.showError('pokedex.searchError', error.message);
         } finally {
             this.isGenerating = false;
         }

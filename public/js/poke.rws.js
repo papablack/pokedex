@@ -86567,7 +86567,8 @@ __webpack_require__(/*! ./template.html */ "./src/components/pokedex-main/templa
 const client_1 = __webpack_require__(/*! @rws-framework/client */ "../node_modules/@rws-framework/client/src/index.ts");
 const pokedex_ai_service_1 = __webpack_require__(/*! ../../services/pokedex-ai.service */ "./src/services/pokedex-ai.service.ts");
 const pokedex_settings_service_1 = __webpack_require__(/*! ../../services/pokedex-settings.service */ "./src/services/pokedex-settings.service.ts");
-const notification_service_1 = __webpack_require__(/*! ../../services/notification.service */ "./src/services/notification.service.ts");
+const notification_utils_service_1 = __webpack_require__(/*! ../../services/notification-utils.service */ "./src/services/notification-utils.service.ts");
+const events_1 = __webpack_require__(/*! ../../event/events */ "./src/event/events.ts");
 const pokedex_types_1 = __webpack_require__(/*! ../../types/pokedex.types */ "./src/types/pokedex.types.ts");
 //@ts-ignore                
 let rwsTemplate = T.html `<div class="pokedex-container">
@@ -86938,23 +86939,25 @@ let PokedexMain = class PokedexMain extends client_1.RWSViewComponent {
         this.settingsService.saveSettings(newSettings);
         this.aiService.updateSettings(newSettings);
         this.showSettings = false;
-        notification_service_1.notificationService.showNotification('pokedex.settingsSaved'.t(), 'success');
+        // Emit settings changed event
+        events_1.Events.emit(events_1.PokedexEvents.SETTINGS_CHANGED, newSettings);
+        notification_utils_service_1.NotificationUtils.showSuccess('pokedex.settingsSaved');
     }
     clearSettings() {
         this.settingsService.clearSettings();
         this.loadSettings();
         this.aiService.updateSettings(this.settings);
-        notification_service_1.notificationService.showNotification('pokedex.settingsCleared'.t(), 'warning');
+        notification_utils_service_1.NotificationUtils.showWarning('pokedex.settingsCleared');
     }
     async searchPokemon(searchQuery) {
         const queryToUse = searchQuery || this.query;
         if (!(queryToUse === null || queryToUse === void 0 ? void 0 : queryToUse.trim())) {
-            notification_service_1.notificationService.showNotification('pokedex.enterPokemonName'.t(), 'warning');
+            notification_utils_service_1.NotificationUtils.invalidInput();
             return;
         }
         if (!this.settingsService.isConfigured()) {
             this.showSettings = true;
-            notification_service_1.notificationService.showNotification('pokedex.configureApiFirst'.t(), 'error');
+            notification_utils_service_1.NotificationUtils.configurationNeeded();
             return;
         }
         if (this.isGenerating)
@@ -86962,6 +86965,9 @@ let PokedexMain = class PokedexMain extends client_1.RWSViewComponent {
         this.isGenerating = true;
         this.output = '';
         this.query = queryToUse;
+        // Emit search start event and show notification
+        events_1.Events.emit(events_1.PokedexEvents.SEARCH_START, { query: queryToUse });
+        notification_utils_service_1.NotificationUtils.searchStarted(queryToUse);
         try {
             if (this.settings.streaming) {
                 await this.streamResponse(queryToUse);
@@ -86969,6 +86975,9 @@ let PokedexMain = class PokedexMain extends client_1.RWSViewComponent {
             else {
                 await this.generateResponse(queryToUse);
             }
+            // Emit search complete event and show notification
+            events_1.Events.emit(events_1.PokedexEvents.SEARCH_COMPLETE, { query: queryToUse, output: this.output });
+            notification_utils_service_1.NotificationUtils.searchCompleted(queryToUse);
         }
         catch (error) {
             console.error('pokedex.searchError'.t(), error);
@@ -86977,6 +86986,9 @@ let PokedexMain = class PokedexMain extends client_1.RWSViewComponent {
                 <br><br>
                 <small>${'pokedex.checkApiKey'.t()}</small>
             </div>`;
+            // Emit search error event
+            events_1.Events.emit(events_1.PokedexEvents.SEARCH_ERROR, { query: queryToUse, error: error.message });
+            notification_utils_service_1.NotificationUtils.showError('pokedex.searchError', error.message);
         }
         finally {
             this.isGenerating = false;
@@ -87801,9 +87813,88 @@ PokedexSettings.defineComponent();
 /*!*****************************!*\
   !*** ./src/event/events.ts ***!
   \*****************************/
-() {
+(__unused_webpack_module, exports) {
 
-// Missing events file - stub implementation for Pokedex\n\nclass EventEmitter {\n    private events: { [key: string]: Function[] } = {};\n\n    on(event: string, callback: Function) {\n        if (!this.events[event]) {\n            this.events[event] = [];\n        }\n        this.events[event].push(callback);\n    }\n\n    emit(event: string, data?: any) {\n        if (this.events[event]) {\n            this.events[event].forEach(callback => callback(data));\n        }\n    }\n}\n\nexport const Events = new EventEmitter();
+"use strict";
+
+// Event system for Pokedex components
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PokedexEvents = exports.Events = void 0;
+class EventEmitter {
+    constructor() {
+        this.events = {};
+        this.maxListeners = 50;
+    }
+    on(event, callback) {
+        if (!this.events[event]) {
+            this.events[event] = [];
+        }
+        if (this.events[event].length >= this.maxListeners) {
+            console.warn(`Max listeners (${this.maxListeners}) exceeded for event: ${event}`);
+        }
+        this.events[event].push(callback);
+        return this;
+    }
+    once(event, callback) {
+        const onceWrapper = (data) => {
+            callback(data);
+            this.off(event, onceWrapper);
+        };
+        return this.on(event, onceWrapper);
+    }
+    off(event, callback) {
+        if (!this.events[event])
+            return this;
+        if (!callback) {
+            delete this.events[event];
+        }
+        else {
+            this.events[event] = this.events[event].filter(cb => cb !== callback);
+            if (this.events[event].length === 0) {
+                delete this.events[event];
+            }
+        }
+        return this;
+    }
+    emit(event, data) {
+        if (this.events[event]) {
+            // Create a copy to avoid issues if listeners modify the array
+            const listeners = [...this.events[event]];
+            listeners.forEach(callback => {
+                try {
+                    callback(data);
+                }
+                catch (error) {
+                    console.error(`Error in event listener for '${event}':`, error);
+                }
+            });
+        }
+        return this;
+    }
+    listenerCount(event) {
+        return this.events[event] ? this.events[event].length : 0;
+    }
+    removeAllListeners(event) {
+        if (event) {
+            delete this.events[event];
+        }
+        else {
+            this.events = {};
+        }
+        return this;
+    }
+}
+// Global event emitter for Pokedex components
+exports.Events = new EventEmitter();
+// Event types for better type safety
+var PokedexEvents;
+(function (PokedexEvents) {
+    PokedexEvents["SETTINGS_CHANGED"] = "settings-changed";
+    PokedexEvents["SEARCH_START"] = "search-start";
+    PokedexEvents["SEARCH_COMPLETE"] = "search-complete";
+    PokedexEvents["SEARCH_ERROR"] = "search-error";
+    PokedexEvents["NOTIFICATION"] = "notification";
+})(PokedexEvents || (exports.PokedexEvents = PokedexEvents = {}));
 
 
 /***/ },
@@ -87879,7 +87970,14 @@ async function initializeApp() {
         theClient.apiService.setToken(localStorage.getItem('_jwt'));
     }
     theClient.setNotifier((message, logType) => {
-        //here make som notifications message system
+        // Use our notification bridge to integrate with the layout system
+        Promise.resolve().then(() => __importStar(__webpack_require__(/*! ./services/rws-notification-bridge.service */ "./src/services/rws-notification-bridge.service.ts"))).then(({ rwsNotificationBridge }) => {
+            const type = logType || 'info';
+            rwsNotificationBridge.notify(message, type, 5000);
+        }).catch(() => {
+            // Fallback if bridge service fails
+            console.log(`[RWS Notification - ${(logType || 'info').toUpperCase()}]`, message);
+        });
     });
     await theClient.start({
         hot: true,
@@ -87953,6 +88051,25 @@ const router_1 = __webpack_require__(/*! ./listeners/router */ "./src/layouts/de
 const notify_1 = __webpack_require__(/*! ./listeners/notify */ "./src/layouts/default-layout/listeners/notify.ts");
 //@ts-ignore                
 let rwsTemplate = T.html `<div id="root_layout">
+    
+    <div class="notifications-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+        ${x => x.notifications.map((notification, index) => `
+            <div class="alert alert-${notification.type === 'error' ? 'danger' : notification.type} 
+                        alert-dismissible fade show notification-toast" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="bi ${notification.type === 'success' ? 'bi-check-circle' :
+    notification.type === 'error' ? 'bi-exclamation-triangle' :
+        notification.type === 'warning' ? 'bi-exclamation-triangle' :
+            'bi-info-circle'} me-2"></i>
+                    <div class="flex-grow-1">${notification.message}</div>
+                    <button type="button" class="btn-close" 
+                            onclick="this.closest('default-layout').removeNotificationByIndex(${index})"
+                            aria-label="Close"></button>
+                </div>
+            </div>
+        `).join('')}
+    </div>
+    
     <main>
         <div class="container-fluid">
             <div class="dashboard-wrapper">
@@ -87972,6 +88089,42 @@ const styles = T.css `#root {
 main {
   margin-top: 70px;
   margin-bottom: 0px;
+}
+
+.notifications-container {
+  max-width: 400px;
+}
+.notifications-container .notification-toast {
+  min-width: 300px;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border: none;
+}
+.notifications-container .notification-toast.alert-success {
+  background-color: #d1edff;
+  border-color: #28a745;
+  color: #155724;
+}
+.notifications-container .notification-toast.alert-danger {
+  background-color: #f8d7da;
+  border-color: #dc3545;
+  color: #721c24;
+}
+.notifications-container .notification-toast.alert-warning {
+  background-color: #fff3cd;
+  border-color: #ffc107;
+  color: #856404;
+}
+.notifications-container .notification-toast.alert-info {
+  background-color: #d1ecf1;
+  border-color: #17a2b8;
+  color: #0c5460;
+}
+.notifications-container .notification-toast .btn-close {
+  filter: none;
+}
+.notifications-container .notification-toast i {
+  font-size: 1.1rem;
 }
 
 .limit-warning-bar {
@@ -88047,6 +88200,31 @@ let DefaultLayout = class DefaultLayout extends client_1.RWSViewComponent {
         router_1.listenRouter.bind(this)();
         notify_1.listenNotify.bind(this)();
     }
+    // Method to add notification programmatically
+    addNotification(message, type = 'info', duration = 5000) {
+        const notification = {
+            id: `notify_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            message,
+            type,
+            timestamp: Date.now(),
+            duration
+        };
+        this.notifications = [...this.notifications, notification];
+        // Auto remove after duration
+        if (duration > 0) {
+            setTimeout(() => {
+                this.removeNotificationById(notification.id);
+            }, duration);
+        }
+    }
+    // Method to remove notification by ID
+    removeNotificationById(id) {
+        this.notifications = this.notifications.filter(notification => notification.id !== id);
+    }
+    // Method to remove notification by index
+    removeNotificationByIndex(index) {
+        this.notifications = this.notifications.filter((_, itemIndex) => itemIndex !== index);
+    }
 };
 exports.DefaultLayout = DefaultLayout;
 __decorate([
@@ -88079,16 +88257,24 @@ DefaultLayout.defineComponent();
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.listenNotify = listenNotify;
-const events_1 = __webpack_require__(/*! @front/event/events */ "./src/event/events.ts");
+const app_types_1 = __webpack_require__(/*! @front/types/app.types */ "./src/types/app.types.ts");
 function listenNotify() {
-    this.on(events_1.appEvents.removeNotify, (event) => {
+    this.on(app_types_1.appEvents.removeNotify, (event) => {
         this.notifications = this.notifications.filter((item, itemIndex) => itemIndex !== event.detail.index);
     });
-    this.on(events_1.appEvents.removeNotifyById, (event) => {
+    this.on(app_types_1.appEvents.removeNotifyById, (event) => {
         this.notifications = this.notifications.filter((item, itemIndex) => item.id !== event.detail.id);
     });
-    this.on(events_1.appEvents.notify, (event) => {
+    this.on(app_types_1.appEvents.notify, (event) => {
         this.notifications = [...this.notifications, event.detail];
+    });
+    // Auto remove notifications after duration
+    this.notifications.forEach((notification, index) => {
+        if (notification.duration) {
+            setTimeout(() => {
+                this.$emit(app_types_1.appEvents.removeNotify, { index });
+            }, notification.duration);
+        }
     });
 }
 
@@ -88278,6 +88464,57 @@ exports["default"] = routeMap;
 
 /***/ },
 
+/***/ "./src/services/notification-utils.service.ts"
+/*!****************************************************!*\
+  !*** ./src/services/notification-utils.service.ts ***!
+  \****************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.notify = exports.NotificationUtils = void 0;
+const notification_service_1 = __webpack_require__(/*! ./notification.service */ "./src/services/notification.service.ts");
+class NotificationUtils {
+    static showSuccess(messageKey) {
+        notification_service_1.notificationService.showNotification(messageKey.endsWith('.t()') ? messageKey : `${messageKey}`.t(), 'success');
+    }
+    static showError(messageKey, error) {
+        let message = messageKey.endsWith('.t()') ? messageKey : `${messageKey}`.t();
+        if (error && typeof error === 'string') {
+            message += `: ${error}`;
+        }
+        notification_service_1.notificationService.showNotification(message, 'error', 6000);
+    }
+    static showWarning(messageKey) {
+        notification_service_1.notificationService.showNotification(messageKey.endsWith('.t()') ? messageKey : `${messageKey}`.t(), 'warning');
+    }
+    static showInfo(messageKey) {
+        notification_service_1.notificationService.showNotification(messageKey.endsWith('.t()') ? messageKey : `${messageKey}`.t(), 'info');
+    }
+    // Pokemon-specific notifications
+    static searchStarted(pokemonName) {
+        const message = 'pokedex.analyzing'.t() + ` ${pokemonName}...`;
+        notification_service_1.notificationService.showNotification(message, 'info', 2000);
+    }
+    static searchCompleted(pokemonName) {
+        const message = `✅ ${pokemonName} ${'pokedex.searchComplete'.t() || 'data loaded'}!`;
+        notification_service_1.notificationService.showNotification(message, 'success', 3000);
+    }
+    static configurationNeeded() {
+        notification_service_1.notificationService.showNotification('pokedex.configureApiFirst'.t(), 'warning', 5000);
+    }
+    static invalidInput() {
+        notification_service_1.notificationService.showNotification('pokedex.enterPokemonName'.t(), 'warning');
+    }
+}
+exports.NotificationUtils = NotificationUtils;
+// Export singleton
+exports.notify = new NotificationUtils();
+
+
+/***/ },
+
 /***/ "./src/services/notification.service.ts"
 /*!**********************************************!*\
   !*** ./src/services/notification.service.ts ***!
@@ -88289,17 +88526,76 @@ exports["default"] = routeMap;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.notificationService = exports.NotificationService = void 0;
 class NotificationService {
-    showNotification(message, type = 'info') {
-        const toast = document.createElement('div');
-        toast.className = `alert alert-${this.getBootstrapType(type)} position-fixed top-0 end-0 m-3`;
-        toast.style.zIndex = '9999';
-        toast.style.animation = 'fadeIn 0.3s';
-        toast.innerHTML = message;
-        document.body.appendChild(toast);
+    constructor() {
+        this.toastContainer = null;
+        this.toastId = 0;
+        this.ensureToastContainer();
+    }
+    ensureToastContainer() {
+        if (!this.toastContainer) {
+            this.toastContainer = document.createElement('div');
+            this.toastContainer.id = 'toast-container';
+            this.toastContainer.className = 'position-fixed top-0 end-0 p-3';
+            this.toastContainer.style.zIndex = '9999';
+            document.body.appendChild(this.toastContainer);
+        }
+    }
+    showNotification(message, type = 'info', duration = 4000) {
+        this.ensureToastContainer();
+        const toastId = ++this.toastId;
+        const toast = this.createToast(message, type, toastId);
+        this.toastContainer.appendChild(toast);
+        // Trigger show animation
         setTimeout(() => {
-            toast.style.animation = 'fadeOut 0.3s';
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
+            toast.classList.add('show');
+        }, 10);
+        // Auto dismiss
+        setTimeout(() => {
+            this.dismissToast(toast);
+        }, duration);
+    }
+    createToast(message, type, id) {
+        const toast = document.createElement('div');
+        const alertType = this.getBootstrapType(type);
+        const icon = this.getIcon(type);
+        toast.className = `toast align-items-center text-bg-${alertType} border-0 notification-toast`;
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
+        toast.setAttribute('data-toast-id', id.toString());
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="${icon} me-2"></i>${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" 
+                        data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        `;
+        // Add click to dismiss
+        const closeBtn = toast.querySelector('.btn-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                this.dismissToast(toast);
+            });
+        }
+        return toast;
+    }
+    dismissToast(toast) {
+        toast.classList.add('hide');
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+            }
+        }, 300);
+    }
+    getIcon(type) {
+        switch (type) {
+            case 'success': return 'bi bi-check-circle';
+            case 'error': return 'bi bi-exclamation-triangle';
+            case 'warning': return 'bi bi-exclamation-triangle';
+            default: return 'bi bi-info-circle';
+        }
     }
     getBootstrapType(type) {
         switch (type) {
@@ -88465,6 +88761,91 @@ exports.PokedexSettingsService = PokedexSettingsService;
 
 /***/ },
 
+/***/ "./src/services/rws-notification-bridge.service.ts"
+/*!*********************************************************!*\
+  !*** ./src/services/rws-notification-bridge.service.ts ***!
+  \*********************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.rwsNotificationBridge = exports.RWSNotificationBridge = void 0;
+const app_types_1 = __webpack_require__(/*! ../types/app.types */ "./src/types/app.types.ts");
+/**
+ * Service to integrate RWS framework notifications with our layout notification system
+ */
+class RWSNotificationBridge {
+    static getInstance() {
+        if (!RWSNotificationBridge.instance) {
+            RWSNotificationBridge.instance = new RWSNotificationBridge();
+        }
+        return RWSNotificationBridge.instance;
+    }
+    /**
+     * Send notification to the default layout
+     */
+    notify(message, type = 'info', duration = 5000) {
+        const notification = {
+            id: `notify_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            message,
+            type,
+            timestamp: Date.now(),
+            duration
+        };
+        // Try to find the layout component and call its method directly
+        const layoutElement = document.querySelector('default-layout');
+        if (layoutElement && layoutElement.addNotification) {
+            layoutElement.addNotification(message, type, duration);
+            return;
+        }
+        // Fallback: emit event
+        if (layoutElement && layoutElement.$emit) {
+            layoutElement.$emit(app_types_1.appEvents.notify, notification);
+            return;
+        }
+        // Last resort: use our standalone notification service
+        try {
+            const { notificationService } = __webpack_require__(/*! ./notification.service */ "./src/services/notification.service.ts");
+            notificationService.showNotification(message, type, duration);
+        }
+        catch (e) {
+            console.warn('No notification system available, falling back to console:', message);
+            console.log(`[${type.toUpperCase()}]`, message);
+        }
+    }
+    /**
+     * Remove notification by ID
+     */
+    removeById(id) {
+        const layoutElement = document.querySelector('default-layout');
+        if (layoutElement && layoutElement.removeNotificationById) {
+            layoutElement.removeNotificationById(id);
+        }
+        else if (layoutElement && layoutElement.$emit) {
+            layoutElement.$emit(app_types_1.appEvents.removeNotifyById, { id });
+        }
+    }
+    /**
+     * Remove notification by index
+     */
+    removeByIndex(index) {
+        const layoutElement = document.querySelector('default-layout');
+        if (layoutElement && layoutElement.removeNotificationByIndex) {
+            layoutElement.removeNotificationByIndex(index);
+        }
+        else if (layoutElement && layoutElement.$emit) {
+            layoutElement.$emit(app_types_1.appEvents.removeNotify, { index });
+        }
+    }
+}
+exports.RWSNotificationBridge = RWSNotificationBridge;
+// Export singleton instance
+exports.rwsNotificationBridge = RWSNotificationBridge.getInstance();
+
+
+/***/ },
+
 /***/ "./src/styles/main.scss"
 /*!******************************!*\
   !*** ./src/styles/main.scss ***!
@@ -88550,7 +88931,8 @@ exports["default"] = {
     'pokedex.configureApiFirst': 'Configure API key in settings first!',
     'pokedex.enterPokemon': 'Enter Pokémon name...',
     'pokedex.search': 'Search',
-    'pokedex.analyzing': 'Analyzing'
+    'pokedex.analyzing': 'Analyzing',
+    'pokedex.searchComplete': 'search complete'
 };
 
 
@@ -88628,7 +89010,8 @@ exports["default"] = {
     'pokedex.configureApiFirst': 'Najpierw skonfiguruj klucz API w ustawieniach!',
     'pokedex.enterPokemon': 'Wpisz nazwę Pokémona...',
     'pokedex.search': 'Szukaj',
-    'pokedex.analyzing': 'Analizuję'
+    'pokedex.analyzing': 'Analizuję',
+    'pokedex.searchComplete': 'wyszukiwanie zakończone'
 };
 
 
@@ -88668,6 +89051,25 @@ function getCurrentLanguage() {
 function getLanguageList() {
     return Object.keys(i18n_1.translations);
 }
+
+
+/***/ },
+
+/***/ "./src/types/app.types.ts"
+/*!********************************!*\
+  !*** ./src/types/app.types.ts ***!
+  \********************************/
+(__unused_webpack_module, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.appEvents = void 0;
+exports.appEvents = {
+    notify: 'app.notify',
+    removeNotify: 'app.removeNotify',
+    removeNotifyById: 'app.removeNotifyById'
+};
 
 
 /***/ },
@@ -88857,7 +89259,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("6ee92bdbd0688760579d")
+/******/ 		__webpack_require__.h = () => ("2fe2c743b2130bc2ed2d")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

@@ -1,7 +1,6 @@
 import { _ROUTING_EVENT_NAME, IRoutingEvent } from "@rws-framework/browser-router";
 import { DefaultLayout } from "../component";
-import { appEvents } from "@front/event/events";
-import { NotifyType } from "@front/types/app.types";
+import { appEvents, NotifyType } from "@front/types/app.types";
 
 export function listenNotify(this: DefaultLayout){
     this.on<{ index: number }>(appEvents.removeNotify, (event) => {
@@ -14,5 +13,14 @@ export function listenNotify(this: DefaultLayout){
 
     this.on<NotifyType>(appEvents.notify, (event) => {
         this.notifications = [...this.notifications, event.detail]
+    });
+    
+    // Auto remove notifications after duration
+    this.notifications.forEach((notification, index) => {
+        if (notification.duration) {
+            setTimeout(() => {
+                this.$emit(appEvents.removeNotify, { index });
+            }, notification.duration);
+        }
     });
 }
