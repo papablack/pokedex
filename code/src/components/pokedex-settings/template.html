@@ -1,5 +1,5 @@
 ${when(x => x.show, html`
-    <rws-modal name="settings" header="pokedex.settingsTitle" max-width="600px">
+    <rws-modal name="settings" header="pokedex.settingsTitle" max-width="600px" @modal-close="${x => x.closeSettings()}">
         <form class="p-3">
             <div class="mb-3">
                 <label class="form-label">
@@ -100,125 +100,10 @@ ${when(x => x.show, html`
                 <i class="bi bi-trash-fill me-1"></i>
                 ${'pokedex.clear'.t()}
             </button>
-            <div>
-                <button type="button" class="btn btn-secondary me-2" @click="${x => x.closeSettings()}">
-                    ${'pokedex.cancel'.t()}
-                </button>
-                <button type="button" class="btn btn-primary" @click="${x => x.saveSettings()}">
-                    <i class="bi bi-check-lg me-1"></i>
-                    ${'pokedex.save'.t()}
-                </button>
-            </div>
+            <button type="button" class="btn btn-primary" @click="${x => x.saveSettings()}">
+                <i class="bi bi-check-lg me-1"></i>
+                ${'pokedex.save'.t()}
+            </button>
         </div>
     </rws-modal>
 `)}
-    <div class="modal-backdrop fade" :class="show ? 'show' : ''" @click="${x => x.closeSettings()}"></div>
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-gear-fill me-2"></i>${'pokedex.settingsTitle'.t()}
-                </h5>
-                <button type="button" class="btn-close" @click="${x => x.closeSettings()}"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="bi bi-key-fill me-1"></i>
-                            ${'pokedex.apiKey'.t()}
-                        </label>
-                        <div class="input-group">
-                            <input 
-                                :type="showApiKey ? 'text' : 'password'"
-                                class="form-control"
-                                :value="${x => x.tempSettings?.apiKey || ''}"
-                                @input="${(x, c) => x.updateTempSetting('apiKey', c.event.target.value)}"
-                                :placeholder="'pokedex.enterApiKey'.t()"
-                            >
-                            <button 
-                                class="btn btn-outline-secondary" 
-                                type="button" 
-                                @click="${x => x.toggleApiKeyVisibility()}"
-                            >
-                                <i class="bi" :class="showApiKey ? 'bi-eye-slash' : 'bi-eye'"></i>
-                            </button>
-                        </div>
-                        <div class="form-text">
-                            ${'pokedex.getApiKey'.t()} 
-                            <a href="https://openrouter.ai/keys" target="_blank">OpenRouter</a>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="bi bi-cpu-fill me-1"></i>
-                            ${'pokedex.model'.t()}
-                        </label>
-                        <select class="form-select" :value="${x => x.tempSettings?.model || ''}" @change="${(x, c) => x.updateTempSetting('model', c.event.target.value)}">
-                            <option value="openai/gpt-4o-mini">GPT-4o Mini</option>
-                            <option value="openai/gpt-4o">GPT-4o</option>
-                            <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet</option>
-                            <option value="anthropic/claude-3-haiku">Claude 3 Haiku</option>
-                            <option value="google/gemini-pro">Gemini Pro</option>
-                            <option value="meta-llama/llama-3.1-8b-instruct">Llama 3.1 8B</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="bi bi-translate me-1"></i>
-                            ${'pokedex.language'.t()}
-                        </label>
-                        <select class="form-select" :value="${x => x.tempSettings?.language || ''}" @change="${(x, c) => x.updateTempSetting('language', c.event.target.value)}">
-                            <option value="pl">${'pokedex.languagePolish'.t()}</option>
-                            <option value="en">${'pokedex.languageEnglish'.t()}</option>
-                            <option value="de">${'pokedex.languageGerman'.t()}</option>
-                            <option value="ja">${'pokedex.languageJapanese'.t()}</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="bi bi-thermometer-half me-1"></i>
-                            ${'pokedex.temperature'.t()}: <span class="text-primary">${x => x.tempValue}</span>
-                        </label>
-                        <input 
-                            type="range" 
-                            class="form-range" 
-                            min="0" 
-                            max="2" 
-                            step="0.1"
-                            :value="${x => x.tempSettings?.temperature || 0.7}"
-                            @input="${(x, c) => x.updateTempSetting('temperature', parseFloat(c.event.target.value))}"
-                        >
-                        <div class="form-text">
-                            ${'pokedex.temperatureDesc'.t()}
-                        </div>
-                    </div>
-
-                    <div class="form-check form-switch mb-3">
-                        <input 
-                            class="form-check-input" 
-                            type="checkbox" 
-                            :checked="${x => x.tempSettings?.streaming || false}"
-                            @change="${(x, c) => x.updateTempSetting('streaming', c.event.target.checked)}"
-                        >
-                        <label class="form-check-label">
-                            ${'pokedex.streaming'.t()}
-                        </label>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" @click="${x => x.clearSettings()}">
-                    <i class="bi bi-trash me-1"></i>${'pokedex.clear'.t()}
-                </button>
-                <button type="button" class="btn btn-secondary" @click="${x => x.closeSettings()}">${'pokedex.cancel'.t()}</button>
-                <button type="button" class="btn btn-success" @click="${x => x.saveSettings()}">
-                    <i class="bi bi-check-lg me-1"></i>${'pokedex.save'.t()}
-                </button>
-            </div>
-        </div>
-    </div>
-</div>

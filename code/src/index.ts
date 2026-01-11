@@ -13,10 +13,12 @@ import routes, { frontRoutes } from './routes';
 import './styles/main.scss';
 
 import './application/globals/directives'
+import NotificationService, { NotificationServiceInstance } from './services/notification.service';
 
 async function initializeApp() {
     const theClient: RWSClientInstance = RWSContainer().get(RWSClient);
     const configService: ConfigServiceInstance = RWSContainer().get(ConfigService);  
+    const notificationService: NotificationServiceInstance = RWSContainer().get(NotificationService);  
 
     const partedMode = false;
     const lastSync = document.body.getAttribute('data-last-sync') || '0';       
@@ -35,14 +37,8 @@ async function initializeApp() {
     }    
 
     theClient.setNotifier((message: string, logType?: NotifyLogType) => {
-        // Use our notification bridge to integrate with the layout system
-        import('./services/rws-notification-bridge.service').then(({ rwsNotificationBridge }) => {
-            const type = logType as 'success' | 'error' | 'warning' | 'info' || 'info';
-            rwsNotificationBridge.notify(message, type, 5000);
-        }).catch(() => {
-            // Fallback if bridge service fails
-            console.log(`[RWS Notification - ${(logType || 'info').toUpperCase()}]`, message);
-        });
+        const type = logType as 'success' | 'error' | 'warning' | 'info' || 'info';
+        notificationService.showNotification(message, type, 5000);
     });              
         
     

@@ -1,16 +1,21 @@
-import { openrouter } from '@openrouter/ai-sdk-provider';
+import { RWSService } from '@rws-framework/client';
+import { createOpenRouter, OpenRouterProvider  } from '@openrouter/ai-sdk-provider';
 import { generateText, streamText } from 'ai';
 import { IPokedexSettings } from '../types/pokedex.types';
 
-export class PokedexAiService {
-    private settings: IPokedexSettings;
+export class PokedexAiService extends RWSService {
+    private settings: IPokedexSettings = {} as IPokedexSettings;
+    private openRouterClient: OpenRouterProvider;
 
-    constructor(settings: IPokedexSettings) {
-        this.settings = settings;
+    private instantiateClient(){
+        this.openRouterClient = createOpenRouter({
+            apiKey: this.settings.apiKey,
+        });       
     }
 
-    updateSettings(settings: IPokedexSettings) {
+    setSettings(settings: IPokedexSettings) {
         this.settings = settings;
+        this.instantiateClient();
     }
 
     private createSystemPrompt(): string {
@@ -46,13 +51,9 @@ Jeśli użytkownik pyta o coś innego niż Pokémony, odpowiedz krótko że jest
         if (!this.settings.apiKey) {
             throw new Error('pokedex.apiKeyRequired'.t());
         }
-
-        const model = openrouter(this.settings.model, {
-            apiKey: this.settings.apiKey,
-        });
-
+    
         const { text } = await generateText({
-            model,
+            model: this.generateModelObject(this.settings.model),
             messages: [
                 { role: 'system', content: this.createSystemPrompt() },
                 { role: 'user', content: `Podaj informacje o: ${query}` }
@@ -68,11 +69,9 @@ Jeśli użytkownik pyta o coś innego niż Pokémony, odpowiedz krótko że jest
             throw new Error('pokedex.apiKeyRequired'.t());
         }
 
-        const model = openrouter(this.settings.model, {
-            apiKey: this.settings.apiKey,
-        });
+        const model = this.generateModelObject(this.settings.model);
 
-        const { textStream } = await streamText({
+        const { textStream } = streamText({
             model,
             messages: [
                 { role: 'system', content: this.createSystemPrompt() },
@@ -85,4 +84,13 @@ Jeśli użytkownik pyta o coś innego niż Pokémony, odpowiedz krótko że jest
             yield chunk;
         }
     }
+
+    private generateModelObject(model: string)
+    {
+        return this.openRouterClient(this.settings.model);
+    }
 }
+
+// Export both default singleton and instance type for DI
+export default PokedexAiService.getSingleton();
+export { PokedexAiService as PokedexAiServiceInstance };

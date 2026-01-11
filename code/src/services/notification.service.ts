@@ -1,8 +1,11 @@
-export class NotificationService {
+import { RWSService } from '@rws-framework/client';
+
+export class NotificationService extends RWSService {
     private toastContainer: HTMLElement | null = null;
     private toastId = 0;
 
     constructor() {
+        super();
         this.ensureToastContainer();
     }
 
@@ -93,7 +96,48 @@ export class NotificationService {
             default: return 'info';
         }
     }
+
+    // Utility methods
+    showSuccess(messageKey: string) {
+        this.showNotification(messageKey.endsWith('.t()') ? messageKey : `${messageKey}`.t(), 'success');
+    }
+    
+    showError(messageKey: string, error?: any) {
+        let message = messageKey.endsWith('.t()') ? messageKey : `${messageKey}`.t();
+        if (error && typeof error === 'string') {
+            message += `: ${error}`;
+        }
+        this.showNotification(message, 'error', 6000);
+    }
+    
+    showWarning(messageKey: string) {
+        this.showNotification(messageKey.endsWith('.t()') ? messageKey : `${messageKey}`.t(), 'warning');
+    }
+    
+    showInfo(messageKey: string) {
+        this.showNotification(messageKey.endsWith('.t()') ? messageKey : `${messageKey}`.t(), 'info');
+    }
+    
+    // Pokemon-specific notifications
+    searchStarted(pokemonName: string) {
+        const message = 'pokedex.analyzing'.t() + ` ${pokemonName}...`;
+        this.showNotification(message, 'info', 2000);
+    }
+    
+    searchCompleted(pokemonName: string) {
+        const message = `✅ ${pokemonName} ${'pokedex.searchComplete'.t() || 'data loaded'}!`;
+        this.showNotification(message, 'success', 3000);
+    }
+    
+    configurationNeeded() {
+        this.showNotification('pokedex.configureApiFirst'.t(), 'warning', 5000);
+    }
+    
+    invalidInput() {
+        this.showNotification('pokedex.enterPokemonName'.t(), 'warning');
+    }
 }
 
-// Singleton instance
-export const notificationService = new NotificationService();
+// Export both default singleton and instance type for DI
+export default NotificationService.getSingleton();
+export { NotificationService as NotificationServiceInstance };

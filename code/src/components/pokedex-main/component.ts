@@ -1,8 +1,7 @@
-import { RWSViewComponent, RWSView, observable, attr } from '@rws-framework/client';
-import { PokedexAiService } from '../../services/pokedex-ai.service';
-import { PokedexSettingsService } from '../../services/pokedex-settings.service';
-import { notificationService } from '../../services/notification.service';
-import { NotificationUtils } from '../../services/notification-utils.service';
+import { RWSViewComponent, RWSView, RWSInject, observable, attr } from '@rws-framework/client';
+import PokedexAiService, { PokedexAiServiceInstance } from '../../services/pokedex-ai.service';
+import PokedexSettingsService, { PokedexSettingsServiceInstance } from '../../services/pokedex-settings.service';
+import NotificationService, { NotificationServiceInstance } from '../../services/notification.service';
 import { Events, PokedexEvents } from '../../event/events';
 import { IPokedexSettings } from '../../types/pokedex.types';
 
@@ -14,29 +13,19 @@ export class PokedexMain extends RWSViewComponent {
     @observable isGenerating: boolean = false;
     @observable showSettings: boolean = false;
 
-    private aiService: PokedexAiService;
-    private settingsService: PokedexSettingsService;
-
-    constructor() {
-        super();
-        this.settingsService = new PokedexSettingsService();
-        this.loadSettings();
-        this.aiService = new PokedexAiService(this.settings);
+    constructor(
+        @RWSInject(PokedexAiService) private aiService: PokedexAiServiceInstance,
+        @RWSInject(PokedexSettingsService) private settingsService: PokedexSettingsServiceInstance,
+        @RWSInject(NotificationService) private notificationService: NotificationServiceInstance
+    ) {
+        super();        
     }
 
     async connectedCallback() {
         super.connectedCallback();
         
-        // Test notification system in development
-        if (process.env.NODE_ENV === 'development') {
-            // Import test service for console access
-            import('../../services/notification-test.service');
-            
-            // Test RWS notification integration after component is ready
-            setTimeout(() => {
-                console.log('🔔 Notification system ready! Try: testNotifications() or testRWSNotifications()');
-            }, 1000);
-        }
+        this.loadSettings();
+        this.aiService.setSettings(this.settings);       
     }
 
     private loadSettings() {
@@ -50,33 +39,33 @@ export class PokedexMain extends RWSViewComponent {
     saveSettings(newSettings: IPokedexSettings) {
         this.settings = newSettings;
         this.settingsService.saveSettings(newSettings);
-        this.aiService.updateSettings(newSettings);
+        this.aiService.setSettings(newSettings);
         this.showSettings = false;
         
         // Emit settings changed event
         Events.emit(PokedexEvents.SETTINGS_CHANGED, newSettings);
         
-        NotificationUtils.showSuccess('pokedex.settingsSaved');
+        this.notificationService.showSuccess('pokedex.settingsSaved');
     }
 
     clearSettings() {
         this.settingsService.clearSettings();
         this.loadSettings();
-        this.aiService.updateSettings(this.settings);
-        NotificationUtils.showWarning('pokedex.settingsCleared');
+        this.aiService.setSettings(this.settings);
+        this.notificationService.showWarning('pokedex.settingsCleared');
     }
 
     async searchPokemon(searchQuery?: string) {
         const queryToUse = searchQuery || this.query;
         
         if (!queryToUse?.trim()) {
-            NotificationUtils.invalidInput();
+            this.notificationService.invalidInput();
             return;
         }
 
         if (!this.settingsService.isConfigured()) {
             this.showSettings = true;
-            NotificationUtils.configurationNeeded();
+            this.notificationService.configurationNeeded();
             return;
         }
 
@@ -88,7 +77,7 @@ export class PokedexMain extends RWSViewComponent {
         
         // Emit search start event and show notification
         Events.emit(PokedexEvents.SEARCH_START, { query: queryToUse });
-        NotificationUtils.searchStarted(queryToUse);
+        this.notificationService.searchStarted(queryToUse);
 
         try {
             if (this.settings.streaming) {
@@ -99,7 +88,7 @@ export class PokedexMain extends RWSViewComponent {
             
             // Emit search complete event and show notification
             Events.emit(PokedexEvents.SEARCH_COMPLETE, { query: queryToUse, output: this.output });
-            NotificationUtils.searchCompleted(queryToUse);
+            this.notificationService.searchCompleted(queryToUse);
             
         } catch (error) {
             console.error('pokedex.searchError'.t(), error);
@@ -111,7 +100,7 @@ export class PokedexMain extends RWSViewComponent {
             
             // Emit search error event
             Events.emit(PokedexEvents.SEARCH_ERROR, { query: queryToUse, error: error.message });
-            NotificationUtils.showError('pokedex.searchError', error.message);
+            this.notificationService.showError('pokedex.searchError', error.message);
         } finally {
             this.isGenerating = false;
         }
@@ -174,7 +163,7 @@ export class PokedexMain extends RWSViewComponent {
     }
 
     get isConnected(): boolean {
-        return this.settingsService.isConfigured();
+        return this.settingsService && this.settingsService.isConfigured();
     }
 
     // Event handlers for sub-components

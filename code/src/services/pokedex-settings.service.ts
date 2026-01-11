@@ -1,6 +1,7 @@
+import { RWSService } from '@rws-framework/client';
 import { IPokedexSettings } from '../types/pokedex.types';
 
-export class PokedexSettingsService {
+export class PokedexSettingsService extends RWSService {
     private readonly STORAGE_KEY = 'pokedex_settings';
     private defaultSettings: IPokedexSettings = {
         apiKey: '',
@@ -44,3 +45,7 @@ export class PokedexSettingsService {
         return !!settings.apiKey.trim();
     }
 }
+
+// Export both default singleton and instance type for DI
+export default PokedexSettingsService.getSingleton();
+export { PokedexSettingsService as PokedexSettingsServiceInstance };
