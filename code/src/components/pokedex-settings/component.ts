@@ -1,4 +1,6 @@
-import { RWSViewComponent, RWSView, observable } from '@rws-framework/client';
+import { RWSViewComponent, RWSView, RWSInject, observable } from '@rws-framework/client';
+import PokedexSettingsService, { PokedexSettingsServiceInstance } from '../../services/pokedex-settings.service';
+import SignalService, { SignalServiceInstance } from '../../services/signal.service';
 import { IPokedexSettings } from '../../types/pokedex.types';
 
 @RWSView('pokedex-settings')
@@ -13,12 +15,23 @@ export class PokedexSettings extends RWSViewComponent {
     @observable tempSettings: IPokedexSettings;
     @observable showApiKey: boolean = false;
 
-    constructor() {
+    constructor(
+        @RWSInject(PokedexSettingsService) private settingsService: PokedexSettingsServiceInstance,
+        @RWSInject(SignalService) private signalService: SignalServiceInstance
+    ) {
         super();
     }
 
     async connectedCallback() {
         super.connectedCallback();
+        
+        // Subscribe to settings changes
+        const settingsSignal = this.settingsService.getSettingsSignal();
+        settingsSignal.value$.subscribe(newSettings => {
+            this.settings = newSettings;
+            this.resetTempSettings();
+        });
+        
         this.resetTempSettings();
     }
 

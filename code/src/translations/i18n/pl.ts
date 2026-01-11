@@ -29,6 +29,7 @@ export default {
     'pokedex.error': 'Błąd',
     'pokedex.checkApiKey': 'Sprawdź klucz API i połączenie internetowe',
     'pokedex.searchError': 'Błąd podczas wyszukiwania',
+    'pokedex.clientNotInitialized': 'Klient API nie został zainicjalizowany',
     'pokedex.settingsLoadError': 'Błąd wczytywania ustawień',
     'pokedex.settingsSaveError': 'Błąd zapisywania ustawień',
     'pokedex.settingsClearError': 'Błąd czyszczenia ustawień',

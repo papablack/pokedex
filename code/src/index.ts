@@ -14,6 +14,11 @@ import './styles/main.scss';
 
 import './application/globals/directives'
 import NotificationService, { NotificationServiceInstance } from './services/notification.service';
+import { RWSModal } from '@rws-framework/components';
+
+RWSModal.injectStyles([
+    '/css/modal.css'
+]);
 
 async function initializeApp() {
     const theClient: RWSClientInstance = RWSContainer().get(RWSClient);

@@ -2,6 +2,7 @@ import { RWSViewComponent, RWSView, RWSInject, observable, attr } from '@rws-fra
 import PokedexAiService, { PokedexAiServiceInstance } from '../../services/pokedex-ai.service';
 import PokedexSettingsService, { PokedexSettingsServiceInstance } from '../../services/pokedex-settings.service';
 import NotificationService, { NotificationServiceInstance } from '../../services/notification.service';
+import SignalService, { SignalServiceInstance } from '../../services/signal.service';
 import { Events, PokedexEvents } from '../../event/events';
 import { IPokedexSettings } from '../../types/pokedex.types';
 
@@ -16,7 +17,8 @@ export class PokedexMain extends RWSViewComponent {
     constructor(
         @RWSInject(PokedexAiService) private aiService: PokedexAiServiceInstance,
         @RWSInject(PokedexSettingsService) private settingsService: PokedexSettingsServiceInstance,
-        @RWSInject(NotificationService) private notificationService: NotificationServiceInstance
+        @RWSInject(NotificationService) private notificationService: NotificationServiceInstance,
+        @RWSInject(SignalService) private signalService: SignalServiceInstance
     ) {
         super();        
     }
@@ -25,7 +27,18 @@ export class PokedexMain extends RWSViewComponent {
         super.connectedCallback();
         
         this.loadSettings();
-        this.aiService.setSettings(this.settings);       
+        this.aiService.setSettings(this.settings);   
+        
+        // Subscribe to settings changes
+        const settingsSignal = this.settingsService.getSettingsSignal();
+        settingsSignal.value$.subscribe(newSettings => {
+            this.settings = newSettings;
+            this.aiService.setSettings(newSettings);
+        });
+        
+        this.on('rws_modal:settings:close', () => {
+            this.showSettings = false;
+        });
     }
 
     private loadSettings() {
@@ -37,9 +50,7 @@ export class PokedexMain extends RWSViewComponent {
     }
 
     saveSettings(newSettings: IPokedexSettings) {
-        this.settings = newSettings;
         this.settingsService.saveSettings(newSettings);
-        this.aiService.setSettings(newSettings);
         this.showSettings = false;
         
         // Emit settings changed event
@@ -50,8 +61,6 @@ export class PokedexMain extends RWSViewComponent {
 
     clearSettings() {
         this.settingsService.clearSettings();
-        this.loadSettings();
-        this.aiService.setSettings(this.settings);
         this.notificationService.showWarning('pokedex.settingsCleared');
     }
 

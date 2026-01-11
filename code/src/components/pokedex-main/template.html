@@ -16,7 +16,7 @@
         <pokedex-input 
             :query="${x => x.query}"
             :isGenerating="${x => x.isGenerating}"
-            @search="${x => x.handleSearch($event)}">
+            @search="${(x, c) => x.handleSearch(c.event.detail)}">
         </pokedex-input>
         
         <!-- Settings Modal -->
@@ -24,7 +24,7 @@
             <rws-modal name="settings" header="pokedex.settingsTitle" max-width="600px" @modal-close="${x => x.handleSettingsClose()}">
                 <pokedex-settings 
                     :settings="${x => x.settings}"
-                    @settings-save="${x => x.handleSettingsSave($event)}"
+                    @settings-save="${(x, c) => x.handleSettingsSave(c.event.detail)}"
                     @settings-clear="${x => x.handleSettingsClear()}">
                 </pokedex-settings>
             </rws-modal>

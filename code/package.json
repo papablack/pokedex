@@ -18,7 +18,8 @@
         "@rws-framework/components": "0.*",
         "@rws-framework/manager": "^2.*",
         "ai": "^6.0.27",
-        "md5": "^2.3.0"
+        "md5": "^2.3.0",
+        "rxjs": "^7.8.2"
     },
     "devDependencies": {
         "@types/inputmask": "^5.0.7",

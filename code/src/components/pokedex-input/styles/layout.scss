@@ -1,3 +1,5 @@
+@import '@workspace/styles/includes.scss';
+
 .input-section {
     background: linear-gradient(135deg, #2d3436, #636e72);
     padding: 1.5rem;
@@ -54,42 +56,8 @@
 }
 
 .btn-search {
-    padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    border: none;
-    border-radius: 25px;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    @include btn-primary;
     min-width: 120px;
-    justify-content: center;
-    
-    &:hover:not(:disabled) {
-        background: linear-gradient(135deg, #0056b3, #004085);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
-    }
-    
-    &:active:not(:disabled) {
-        transform: translateY(0);
-        box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
-    }
-    
-    &:disabled {
-        background: linear-gradient(135deg, #6c757d, #5a6268);
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: 0 2px 4px rgba(108, 117, 125, 0.2);
-    }
-    
-    i {
-        font-size: 1.1rem;
-    }
 }
 
 .quick-buttons {
@@ -99,38 +67,14 @@
 }
 
 .quick-btn {
+    @include btn-success;
     padding: 0.5rem 0.75rem;
-    background: linear-gradient(135deg, #28a745, #1e7e34);
-    border: none;
-    border-radius: 20px;
-    color: white;
     font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 3px 6px rgba(40, 167, 69, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.25rem;
+    border-radius: 20px;
     min-height: 40px;
-    
-    &:hover:not(:disabled) {
-        background: linear-gradient(135deg, #1e7e34, #155724);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
-    }
-    
-    &:active:not(:disabled) {
-        transform: translateY(0);
-        box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
-    }
+    gap: 0.25rem;
     
     &:disabled {
-        background: linear-gradient(135deg, #6c757d, #5a6268);
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: 0 2px 4px rgba(108, 117, 125, 0.2);
         opacity: 0.7;
     }
 }

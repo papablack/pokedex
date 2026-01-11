@@ -1,36 +1,73 @@
+@import '@workspace/styles/includes.scss';
+
 :host {
     display: block;
 }
 
-// RWS Modal styling
-rws-modal {
-    --modal-border: 3px solid var(--pokedex-dark-red, #a71d2a);
-    --modal-border-radius: 15px;
-    --modal-header-bg: var(--pokedex-red, #dc3545);
-    --modal-header-color: white;
-    --modal-header-border-radius: 12px 12px 0 0;
+// Settings form styling
+.settings-form {
+    @include settings-form;
+}
+
+.form-group {
+    @include form-group;
 }
 
 .form-label {
-    font-weight: 600;
-    color: #2d3436;
+    @include form-label;
 }
 
-.form-control:focus,
-.form-select:focus {
-    border-color: var(--pokedex-red, #dc3545);
-    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+.form-input {
+    @include form-input;
 }
 
-.form-range::-webkit-slider-thumb {
-    background: var(--pokedex-red, #dc3545);
+.form-select {
+    @include form-select;
 }
 
-.form-range::-moz-range-thumb {
-    background: var(--pokedex-red, #dc3545);
+.form-range {
+    @include form-range;
 }
 
-.form-check-input:checked {
-    background-color: var(--pokedex-red, #dc3545);
-    border-color: var(--pokedex-red, #dc3545);
+.form-text {
+    @include form-text;
+}
+
+.input-group {
+    @include input-group;
+}
+
+.form-switch {
+    @include form-switch;
+}
+
+.modal-footer {
+    @include modal-footer;
+}
+
+.btn-primary {
+    @include btn-primary;
+}
+
+.btn-danger {
+    @include btn-danger;
+}
+
+.btn-success {
+    @include btn-success;
+}
+
+.btn-secondary {
+    @include btn-secondary;
+}
+
+// Toggle button specific styling
+.btn-toggle {
+    @include btn-secondary;
+    padding: 0.5rem 0.75rem;
+    min-width: auto;
+    
+    i {
+        font-size: 0.9rem;
+    }
 }

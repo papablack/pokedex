@@ -8,22 +8,24 @@ export class PokedexAiService extends RWSService {
     private openRouterClient: OpenRouterProvider;
 
     private instantiateClient(){
+        if (!this.settings || !this.settings.apiKey) {
+            console.warn('API key not configured, skipping client instantiation');
+            return;
+        }
         this.openRouterClient = createOpenRouter({
             apiKey: this.settings.apiKey,
         });       
     }
 
     setSettings(settings: IPokedexSettings) {
-        this.settings = settings;
+        this.settings = settings || {} as IPokedexSettings;
         this.instantiateClient();
     }
 
     private createSystemPrompt(): string {
         const langMap = {
             'pl': 'polski',
-            'en': 'angielski', 
-            'de': 'niemiecki',
-            'ja': 'japoński'
+            'en': 'angielski'
         };
 
         return `Jesteś zaawansowanym Pokedexem AI - encyklopedią Pokémonów. 
@@ -51,6 +53,10 @@ Jeśli użytkownik pyta o coś innego niż Pokémony, odpowiedz krótko że jest
         if (!this.settings.apiKey) {
             throw new Error('pokedex.apiKeyRequired'.t());
         }
+        
+        if (!this.openRouterClient) {
+            throw new Error('pokedex.clientNotInitialized'.t());
+        }
     
         const { text } = await generateText({
             model: this.generateModelObject(this.settings.model),
@@ -67,6 +73,10 @@ Jeśli użytkownik pyta o coś innego niż Pokémony, odpowiedz krótko że jest
     async *streamResponse(query: string): AsyncGenerator<string, void, unknown> {
         if (!this.settings.apiKey) {
             throw new Error('pokedex.apiKeyRequired'.t());
+        }
+        
+        if (!this.openRouterClient) {
+            throw new Error('pokedex.clientNotInitialized'.t());
         }
 
         const model = this.generateModelObject(this.settings.model);
@@ -87,6 +97,9 @@ Jeśli użytkownik pyta o coś innego niż Pokémony, odpowiedz krótko że jest
 
     private generateModelObject(model: string)
     {
+        if (!this.openRouterClient) {
+            throw new Error('pokedex.clientNotInitialized'.t());
+        }
         return this.openRouterClient(this.settings.model);
     }
 }

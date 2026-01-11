@@ -3,4 +3,5 @@ dist/
 node_modules/
 .dev
 public/js/*
+public/css/generated/*
 .env

@@ -1,19 +1,19 @@
-<form class="p-3">
-    <div class="mb-3">
+<form class="settings-form">
+    <div class="form-group">
         <label class="form-label">
-            <i class="bi bi-key-fill me-1"></i>
+            <i class="bi bi-key-fill"></i>
             ${'pokedex.apiKey'.t()}
         </label>
         <div class="input-group">
             <input 
                 :type="showApiKey ? 'text' : 'password'"
-                class="form-control"
+                class="form-input"
                 :value="${x => x.tempSettings?.apiKey || ''}"
                 @input="${(x, c) => x.updateTempSetting('apiKey', c.event.target.value)}"
                 :placeholder="'pokedex.enterApiKey'.t()"
             >
             <button 
-                class="btn btn-outline-secondary" 
+                class="btn-toggle" 
                 type="button" 
                 @click="${x => x.toggleApiKeyVisibility()}"
             >
@@ -26,9 +26,9 @@
         </div>
     </div>
 
-    <div class="mb-3">
+    <div class="form-group">
         <label class="form-label">
-            <i class="bi bi-cpu-fill me-1"></i>
+            <i class="bi bi-cpu-fill"></i>
             ${'pokedex.model'.t()}
         </label>
         <select 
@@ -43,9 +43,9 @@
         </select>
     </div>
 
-    <div class="mb-3">
+    <div class="form-group">
         <label class="form-label">
-            <i class="bi bi-globe me-1"></i>
+            <i class="bi bi-globe"></i>
             ${'pokedex.language'.t()}
         </label>
         <select 
@@ -60,9 +60,9 @@
         </select>
     </div>
 
-    <div class="mb-3">
+    <div class="form-group">
         <label class="form-label">
-            <i class="bi bi-thermometer-half me-1"></i>
+            <i class="bi bi-thermometer-half"></i>
             ${'pokedex.temperature'.t()}: ${x => x.tempSettings?.temperature || 0.7}
         </label>
         <input 
@@ -77,29 +77,28 @@
         <div class="form-text">${'pokedex.temperatureDesc'.t()}</div>
     </div>
 
-    <div class="mb-3">
-        <div class="form-check form-switch">
+    <div class="form-group">
+        <div class="form-switch">
             <input 
-                class="form-check-input" 
                 type="checkbox" 
                 :checked="${x => x.tempSettings?.streaming || false}"
                 @change="${(x, c) => x.updateTempSetting('streaming', c.event.target.checked)}"
             >
-            <label class="form-check-label">
-                <i class="bi bi-arrow-repeat me-1"></i>
+            <label>
+                <i class="bi bi-arrow-repeat"></i>
                 ${'pokedex.streaming'.t()}
             </label>
         </div>
     </div>
 </form>
 
-<div class="modal-footer d-flex justify-content-between p-3">
-    <button type="button" class="btn btn-outline-danger" @click="${x => x.clearSettings()}">
-        <i class="bi bi-trash-fill me-1"></i>
+<div class="modal-footer">
+    <button type="button" class="btn-danger" @click="${x => x.clearSettings()}">
+        <i class="bi bi-trash-fill"></i>
         ${'pokedex.clear'.t()}
     </button>
-    <button type="button" class="btn btn-primary" @click="${x => x.saveSettings()}">
-        <i class="bi bi-check-lg me-1"></i>
+    <button type="button" class="btn-primary" @click="${x => x.saveSettings()}">
+        <i class="bi bi-check-lg"></i>
         ${'pokedex.save'.t()}
     </button>
 </div>

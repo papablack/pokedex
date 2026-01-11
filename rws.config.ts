@@ -26,7 +26,7 @@ export default function config(): IManagerConfig
                 outputFileName: 'poke.rws.js',
                 publicDir: '../public',  
                 hotReload: true,           
-                cssDir: `../public/css`,  
+                cssDir: `../public/css/generated`,  
                 _builders: {
                     ts: {
                         includes: [         

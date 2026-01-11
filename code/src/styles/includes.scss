@@ -1,0 +1,322 @@
+// Common mixins for Pokedex components
+
+// Colors
+:root {
+  --pokedex-red: #dc3545;
+  --pokedex-dark-red: #a71d2a;
+  --pokedex-blue: #007bff;
+  --pokedex-dark-blue: #0056b3;
+  --pokedex-light: #f8f9fa;
+  --pokedex-dark: #2d3436;
+  --pokedex-gray: #636e72;
+  --font-main: 'Roboto', system-ui, -apple-system, sans-serif;
+  --font-tech: 'Orbitron', monospace;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+// Button mixins
+@mixin btn-base {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+  font-family: var(--font-main);
+  font-size: 0.9rem;
+  
+  &:disabled {
+    cursor: not-allowed;
+    transform: none;
+    opacity: 0.6;
+  }
+  
+  i {
+    font-size: 1rem;
+  }
+}
+
+@mixin btn-primary {
+  @include btn-base;
+  background: linear-gradient(135deg, var(--pokedex-blue), var(--pokedex-dark-blue));
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--pokedex-dark-blue), #004085);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+  }
+}
+
+@mixin btn-danger {
+  @include btn-base;
+  background: linear-gradient(135deg, transparent, transparent);
+  color: var(--pokedex-red);
+  border: 2px solid var(--pokedex-red);
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--pokedex-red), var(--pokedex-dark-red));
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+  }
+}
+
+@mixin btn-secondary {
+  @include btn-base;
+  background: linear-gradient(145deg, #e9ecef, #dee2e6);
+  color: #495057;
+  border: 2px solid #6c757d;
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(145deg, #dee2e6, #ced4da);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.2);
+  }
+}
+
+@mixin btn-success {
+  @include btn-base;
+  background: linear-gradient(135deg, #28a745, #1e7e34);
+  color: white;
+  box-shadow: 0 3px 6px rgba(40, 167, 69, 0.3);
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #1e7e34, #155724);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+  }
+}
+
+// Form input mixins
+@mixin form-input {
+  padding: 0.75rem 1rem;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  font-family: var(--font-main);
+  font-size: 0.9rem;
+  color: #333;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  
+  &:focus {
+    outline: none;
+    border-color: var(--pokedex-blue);
+    background: #ffffff;
+    box-shadow: 
+      inset 0 2px 4px rgba(0, 0, 0, 0.05),
+      0 0 0 3px rgba(0, 123, 255, 0.1);
+  }
+  
+  &:disabled {
+    background: linear-gradient(145deg, #f1f3f4, #e8eaed);
+    color: #999;
+    cursor: not-allowed;
+  }
+}
+
+@mixin form-select {
+  @include form-input;
+  cursor: pointer;
+}
+
+@mixin form-range {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #ddd, #ddd);
+  outline: none;
+  transition: background 0.3s ease;
+  
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--pokedex-blue), var(--pokedex-dark-blue));
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+    }
+  }
+  
+  &::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--pokedex-blue), var(--pokedex-dark-blue));
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+  }
+}
+
+@mixin form-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &:checked {
+    background: linear-gradient(135deg, var(--pokedex-blue), var(--pokedex-dark-blue));
+    border-color: var(--pokedex-blue);
+  }
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  }
+}
+
+// Form label mixin
+@mixin form-label {
+  font-weight: 600;
+  color: var(--pokedex-dark);
+  font-family: var(--font-main);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  i {
+    color: var(--pokedex-blue);
+    font-size: 1rem;
+  }
+}
+
+// Form group mixin
+@mixin form-group {
+  margin-bottom: 1.5rem;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// Form text (help text) mixin
+@mixin form-text {
+  font-size: 0.8rem;
+  color: #6c757d;
+  margin-top: 0.5rem;
+  font-family: var(--font-main);
+  
+  a {
+    color: var(--pokedex-blue);
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Input group mixin
+@mixin input-group {
+  display: flex;
+  align-items: stretch;
+  
+  input {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    flex: 1;
+  }
+  
+  button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: none;
+    padding: 0 1rem;
+  }
+}
+
+// Switch/Toggle mixin
+@mixin form-switch {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  
+  input[type="checkbox"] {
+    width: 50px;
+    height: 26px;
+    border-radius: 13px;
+    background: #ddd;
+    position: relative;
+    appearance: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:checked {
+      background: linear-gradient(135deg, var(--pokedex-blue), var(--pokedex-dark-blue));
+    }
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    &:checked::before {
+      transform: translateX(24px);
+    }
+    
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+  }
+  
+  label {
+    @include form-label;
+    margin-bottom: 0;
+    cursor: pointer;
+  }
+}
+
+// Modal footer mixin
+@mixin modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-top: 1px solid #e9ecef;
+  background: linear-gradient(145deg, #f8f9fa, #ffffff);
+  border-radius: 0 0 15px 15px;
+}
+
+// Container/form mixin
+@mixin settings-form {
+  padding: 2rem;
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  font-family: var(--font-main);
+}
