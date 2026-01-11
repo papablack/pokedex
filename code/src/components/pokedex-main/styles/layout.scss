@@ -380,9 +380,9 @@
                 color: $pokedex-dark-blue;
                 margin-bottom: 10px;
                 
-                &.effective { color: $effective-color; }
+                &.effective { color: $ai-facts-color; }
                 &.not-effective { color: $not-effective-color; }
-                &.evolution { color: $effective-color; }
+                &.evolution { color: $ai-facts-color; }
                 &.locations { color: $pokedex-dark-blue; }
                 &.generation { color: $generation-color; }
                 &.additional-info { color: $pokedex-blue; }

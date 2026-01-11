@@ -312,7 +312,7 @@
 }
 
 .ai-section-title {
-    color: $ai-title-color;
+    color: $ai-facts-color;
     margin: 10px 0;
     font-size: 1.1rem;
     font-weight: bold;
@@ -424,8 +424,8 @@
 }
 
 .ai-section-header {
-    color: $ai-section-header-color;
-    border-bottom: 1px solid $ai-section-header-color;
+    color: $ai-facts-color;
+    border-bottom: 1px solid $ai-facts-color;
     padding-bottom: 3px;
     margin: 15px 0 10px 0;
     font-family: 'Courier New', monospace;
@@ -490,7 +490,7 @@
     margin: 10px 0 5px 0;
     text-transform: uppercase;
     
-    &.effective { color: $effective-color; text-shadow: 0 0 8px rgba(85, 239, 196, 0.7); }
+    &.effective { color: $ai-facts-color; text-shadow: 0 0 8px rgba(85, 239, 196, 0.7); }
     &.not-effective { color: $not-effective-color; text-shadow: 0 0 8px rgba(139, 69, 19, 0.7); }
 }
 
@@ -508,7 +508,7 @@
     text-shadow: 0 0 6px rgba(116, 185, 255, 0.5);
     
     &.strong {
-        color: $effective-color;
+        color: $ai-facts-color;
         text-shadow: 0 0 8px rgba(85, 239, 196, 0.7);
         
         &::before {
