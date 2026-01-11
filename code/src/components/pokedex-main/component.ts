@@ -5,15 +5,18 @@ import NotificationService, { NotificationServiceInstance } from '../../services
 import SignalService, { SignalServiceInstance } from '../../services/signal.service';
 import PokemonDataService, { PokemonDataServiceInstance } from '../../services/pokemon-data.service';
 import { Events, PokedexEvents } from '../../event/events';
-import { IPokedexSettings } from '../../types/pokedex.types';
+import { IPokedexSettings, IPokedexResponse } from '../../types/pokedex.types';
 
 @RWSView('pokedex-main')
 export class PokedexMain extends RWSViewComponent {
     @observable settings: IPokedexSettings;
     @observable query: string = '';
     @observable output: string = '';
+    @observable pokemonDataOutput: string = '';
+    @observable aiOutput: string = '';
     @observable isGenerating: boolean = false;
     @observable showSettings: boolean = false;
+    @observable contentReady: boolean = false;
 
     constructor(
         @RWSInject(PokedexAiService) private aiService: PokedexAiServiceInstance,
@@ -83,7 +86,10 @@ export class PokedexMain extends RWSViewComponent {
         if (this.isGenerating) return;
 
         this.isGenerating = true;
+        this.contentReady = false;
         this.output = '';
+        this.pokemonDataOutput = '';
+        this.aiOutput = '';
         this.query = queryToUse;
         
         // Emit search start event and show notification
@@ -113,41 +119,118 @@ export class PokedexMain extends RWSViewComponent {
             Events.emit(PokedexEvents.SEARCH_ERROR, { query: queryToUse, error: error.message });
             this.notificationService.showError('pokedex.searchError', error.message);
         } finally {
-            this.isGenerating = false;
+            // Only stop loading if not streaming (streaming handles this internally)
+            if (!this.settings.streaming) {
+                this.isGenerating = false;
+            }
         }
     }
 
     private async generateResponse(query: string) {
-        const response = await this.aiService.generateResponse(query);
+        const response: IPokedexResponse = await this.aiService.generateResponse(query);
         
-        // Check if response is already HTML formatted (from Pokemon data service)
-        if (response.includes('<div class="pokemon-info">') || response.includes('<div style=')) {
-            this.output = response;
-        } else {
-            this.output = this.formatPokemonText(response);
+        // Handle Pokemon data if found
+        if (response.pokemonData) {
+            this.pokemonDataOutput = this.pokemonDataService.formatPokemonDataToHTML(response.pokemonData, this.settings.language);
         }
-    }
-
-    private async streamResponse(query: string) {
-        let fullText = '';
         
-        for await (const chunk of this.aiService.streamResponse(query)) {
-            fullText += chunk;
-            
-            // Check if response is already HTML formatted (from Pokemon data service)
-            if (fullText.includes('<div class="pokemon-info">') || fullText.includes('<div style=')) {
-                this.output = fullText + '<span class="typing-cursor"></span>';
+        // Handle AI response
+        if (response.aiResponse) {
+            // Only format as Pokemon text if it's plain text (not HTML)
+            if (this.isHtmlContent(response.aiResponse)) {
+                this.aiOutput = response.aiResponse;
             } else {
-                this.output = this.formatPokemonText(fullText) + '<span class="typing-cursor"></span>';
+                this.aiOutput = this.formatPokemonText(response.aiResponse);
             }
         }
         
-        // Remove cursor after completion - check if HTML is already formatted
-        if (fullText.includes('<div class="pokemon-info">') || fullText.includes('<div style=')) {
-            this.output = fullText;
-        } else {
-            this.output = this.formatPokemonText(fullText);
+        // Update combined output and mark ready
+        this.updateCombinedOutput();
+        this.contentReady = true;
+    }
+
+    private async streamResponse(query: string) {
+        const responseGen = this.aiService.streamResponse(query);
+        let response: IPokedexResponse | undefined;
+        
+        // Get the initial response structure
+        for await (const res of responseGen) {
+            response = res;
+            break; // We only need the first yield which contains the structure
         }
+        
+        if (!response) return;
+        
+        // Handle Pokemon data if found
+        if (response.pokemonData) {
+            this.pokemonDataOutput = this.pokemonDataService.formatPokemonDataToHTML(response.pokemonData, this.settings.language);
+            this.updateCombinedOutput();
+            this.contentReady = true; // Show Pokemon data immediately
+        }
+        
+        // Stream AI response
+        if (response.streamingResponse) {
+            let aiText = '';
+            let isFirstChunk = true;
+            
+            for await (const chunk of response.streamingResponse) {
+                // Stop loading on first AI chunk
+                if (isFirstChunk) {
+                    this.isGenerating = false;
+                    isFirstChunk = false;
+                }
+                
+                aiText += chunk;
+                // Only format as Pokemon text if it's plain text (not HTML)
+                if (this.isHtmlContent(aiText)) {
+                    this.aiOutput = aiText + '<span class="typing-cursor"></span>';
+                } else {
+                    this.aiOutput = this.formatPokemonText(aiText) + '<span class="typing-cursor"></span>';
+                }
+                this.updateCombinedOutput();
+                
+                if (!this.contentReady) {
+                    this.contentReady = true; // Show content on first AI chunk
+                }
+            }
+            
+            // Remove cursor after completion
+            if (this.isHtmlContent(aiText)) {
+                this.aiOutput = aiText;
+            } else {
+                this.aiOutput = this.formatPokemonText(aiText);
+            }
+            this.updateCombinedOutput();
+        } else {
+            // If no streaming response, stop loading here
+            this.isGenerating = false;
+            if (!this.contentReady) {
+                this.contentReady = true;
+            }
+        }
+    }
+    
+    private isHtmlContent(text: string): boolean {
+        // Check if text contains HTML tags
+        return /<[^>]*>/.test(text);
+    }
+    
+    private updateCombinedOutput() {
+        // Combine Pokemon data and AI output
+        let combined = '';
+        
+        if (this.pokemonDataOutput) {
+            combined += this.pokemonDataOutput;
+        }
+        
+        if (this.aiOutput) {
+            if (combined) {
+                combined += '<hr style="border-color:#2d3436;margin:15px 0;">';
+            }
+            combined += this.aiOutput;
+        }
+        
+        this.output = combined;
     }
 
     quickSearch(pokemonName: string) {

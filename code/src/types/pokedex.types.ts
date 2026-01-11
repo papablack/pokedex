@@ -16,3 +16,18 @@ export interface IAiResponse {
         };
     }>;
 }
+
+export interface IQueryAnalysis {
+    isPokemonSearch: boolean;
+    pokemonNames: string[];
+    queryType: 'pokemon_data' | 'game_help' | 'general_discussion';
+    confidence: number;
+    extractedPokemonName?: string;
+}
+
+export interface IPokedexResponse {
+    analysis: IQueryAnalysis;
+    pokemonData?: any;
+    aiResponse?: string;
+    streamingResponse?: AsyncGenerator<string, void, unknown>;
+}

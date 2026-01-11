@@ -14,6 +14,18 @@ export class PokedexInput extends RWSViewComponent {
         this.$emit('search', query);
     }
 
+    handleKeyDown(event: KeyboardEvent) {
+        if (event.key === 'Enter') {
+            this.handleSearch();
+        }
+    }
+
+    handleKeyUp(event: KeyboardEvent) {
+        if (event.key === 'Enter') {
+            this.handleSearch();
+        }
+    }
+
     quickSearch(pokemonName: string) {
         if (this.searchInput) {
             this.searchInput.value = pokemonName;

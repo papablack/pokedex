@@ -1,6 +1,8 @@
 <div class="screen-container">
     <div class="main-screen">
-        <div class="screen-content" :innerHTML="${x => x.output || x.defaultContent}">
+        <div class="screen-content" 
+             :innerHTML="${x => (x.contentReady && x.output) ? x.output : x.defaultContent}"
+             style="visibility: ${x => x.contentReady || !x.isGenerating ? 'visible' : 'hidden'}; overflow-y: auto; max-height: 400px;">
             
         </div>
         
