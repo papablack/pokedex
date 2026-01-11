@@ -137,7 +137,7 @@ export class PokemonDataService extends RWSService {
 
         return {
             num: pokemon.id,
-            species: pokemon.species.name,
+            species: this.capitalizePokemonName(pokemon.species.name),
             types: pokemon.types.map((t: any) => ({ name: t.type.name })),
             height: pokemon.height / 10, // Convert to meters
             weight: pokemon.weight / 10, // Convert to kg
@@ -196,6 +196,10 @@ export class PokemonDataService extends RWSService {
         }
     }
 
+    private capitalizePokemonName(name: string): string {
+        return name.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('-');
+    }
+
     private parseEvolutionChain(chain: any, currentPokemonName: string): { evolutions: any[], preevolutions: any[] } {
         const evolutions: any[] = [];
         const preevolutions: any[] = [];
@@ -205,14 +209,14 @@ export class PokemonDataService extends RWSService {
                 // Found current Pokemon, everything after this is evolution
                 node.evolves_to?.forEach((evo: any) => {
                     evolutions.push({
-                        species: evo.species.name,
+                        species: this.capitalizePokemonName(evo.species.name),
                         evolutionLevel: evo.evolution_details[0]?.min_level || null
                     });
                     traverseChain(evo, false);
                 });
             } else if (isPreEvolution) {
                 preevolutions.push({
-                    species: node.species.name,
+                    species: this.capitalizePokemonName(node.species.name),
                     evolutionLevel: null
                 });
             }
@@ -222,7 +226,7 @@ export class PokemonDataService extends RWSService {
                 if (evo.species.name === currentPokemonName) {
                     // Current node is a pre-evolution
                     preevolutions.push({
-                        species: node.species.name,
+                        species: this.capitalizePokemonName(node.species.name),
                         evolutionLevel: null
                     });
                 } else {
