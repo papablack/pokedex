@@ -16,7 +16,7 @@
         <pokedex-input 
             :query="${x => x.query}"
             :isGenerating="${x => x.isGenerating}"
-            @search="${(x, c) => x.handleSearch(c.event.detail)}">
+            @search="${(x, c) => x.handleSearch(c.event)}">
         </pokedex-input>
         
         <!-- Settings Modal -->

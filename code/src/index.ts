@@ -44,8 +44,9 @@ async function initializeApp() {
     theClient.setNotifier((message: string, logType?: NotifyLogType) => {
         const type = logType as 'success' | 'error' | 'warning' | 'info' || 'info';
         notificationService.showNotification(message, type, 5000);
-    });              
-        
+    });   
+    
+    RWSViewComponent.injectStyles(['/css/fa.css', '/css/modal.css']);        
     
     await theClient.start({                
         hot: true,

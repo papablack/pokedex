@@ -27,10 +27,13 @@ export class PokedexSettings extends RWSViewComponent {
         
         // Subscribe to settings changes
         const settingsSignal = this.settingsService.getSettingsSignal();
-        settingsSignal.value$.subscribe(newSettings => {
-            this.settings = newSettings;
-            this.resetTempSettings();
-        });
+        
+        if (settingsSignal) {
+            settingsSignal.value$.subscribe(newSettings => {
+                this.settings = newSettings;
+                this.resetTempSettings();
+            });
+        }
         
         this.resetTempSettings();
     }

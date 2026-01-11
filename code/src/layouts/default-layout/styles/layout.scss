@@ -18,47 +18,124 @@ main {
 
 // Notification styles
 .notifications-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
     max-width: 400px;
+    pointer-events: none;
     
     .notification-toast {
-        min-width: 300px;
-        margin-bottom: 0.5rem;
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-        border: none;
+        pointer-events: auto;
+        min-width: 320px;
+        margin-bottom: 12px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 0;
+        animation: slideInFromRight 0.3s ease-out;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
         
         &.alert-success {
-            background-color: #d1edff;
-            border-color: #28a745;
-            color: #155724;
+            border-left: 4px solid #00b894;
         }
         
         &.alert-danger {
-            background-color: #f8d7da;
-            border-color: #dc3545;
-            color: #721c24;
+            border-left: 4px solid #e17055;
         }
         
         &.alert-warning {
-            background-color: #fff3cd;
-            border-color: #ffc107;
-            color: #856404;
+            border-left: 4px solid #fdcb6e;
         }
         
         &.alert-info {
-            background-color: #d1ecf1;
-            border-color: #17a2b8;
-            color: #0c5460;
+            border-left: 4px solid #74b9ff;
         }
         
-        .btn-close {
-            filter: none;
+        .notification-content {
+            display: flex;
+            align-items: flex-start;
+            padding: 16px;
+            gap: 12px;
         }
         
-        i {
-            font-size: 1.1rem;
+        .notification-icon {
+            font-size: 18px;
+            margin-top: 2px;
+            flex-shrink: 0;
+            
+            .alert-success & {
+                color: #00b894;
+            }
+            
+            .alert-danger & {
+                color: #e17055;
+            }
+            
+            .alert-warning & {
+                color: #fdcb6e;
+            }
+            
+            .alert-info & {
+                color: #74b9ff;
+            }
+        }
+        
+        .notification-message {
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #2d3436;
+            font-weight: 500;
+        }
+        
+        .notification-close {
+            background: transparent;
+            border: none;
+            padding: 4px;
+            border-radius: 6px;
+            color: #636e72;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            
+            &:hover {
+                background: rgba(99, 110, 114, 0.1);
+                color: #2d3436;
+                transform: scale(1.1);
+            }
+            
+            i {
+                font-size: 12px;
+            }
         }
     }
 }
+
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 
 // Account Limit Warning Bar
 .limit-warning-bar {

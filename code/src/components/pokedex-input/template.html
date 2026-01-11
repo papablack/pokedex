@@ -3,17 +3,14 @@
         <input 
             type="text" 
             class="pokemon-input" 
-            :value="${x => x.currentQuery}"
-            @input="${(x, c) => x.handleInput(c.event)}"
-            @keypress="${(x, c) => x.handleKeypress(c.event)}"
+            ${ref('searchInput')}
             :placeholder="'pokedex.enterPokemon'.t()"
-            :disabled="${x => x.isGenerating}"
         >
         <button 
             class="btn-search" 
             @click="${x => x.handleSearch()}" 
             :disabled="${x => x.isGenerating}">
-            <i class="bi bi-search"></i>
+            <i class="fa fa-search"></i>
             ${'pokedex.search'.t()}
         </button>
     </div>

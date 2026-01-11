@@ -2,37 +2,22 @@ import { RWSViewComponent, RWSView, observable } from '@rws-framework/client';
 
 @RWSView('pokedex-input')
 export class PokedexInput extends RWSViewComponent {
-    @observable query: string = '';
     @observable isGenerating: boolean = false;
-    @observable currentQuery: string = '';
+    searchInput: HTMLInputElement;
 
     constructor() {
         super();
     }
 
-    async connectedCallback() {
-        super.connectedCallback();
-        this.currentQuery = this.query;
-    }
-
-    handleInput(event: InputEvent) {
-        this.currentQuery = (event.target as HTMLInputElement).value;
-    }
-
-    handleKeypress(event: KeyboardEvent) {
-        if (event.key === 'Enter' && !this.isGenerating) {
-            this.handleSearch();
-        }
-    }
-
     handleSearch() {
-        if (this.currentQuery.trim()) {
-            this.$emit('search', this.currentQuery);
-        }
+        const query = this.searchInput?.value?.trim() || '';
+        this.$emit('search', query);
     }
 
     quickSearch(pokemonName: string) {
-        this.currentQuery = pokemonName;
+        if (this.searchInput) {
+            this.searchInput.value = pokemonName;
+        }
         this.$emit('search', pokemonName);
     }
 }

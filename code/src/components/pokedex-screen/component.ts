@@ -13,6 +13,10 @@ export class PokedexScreen extends RWSViewComponent {
         super.connectedCallback();
     }
 
+    outputChanged(oldValue: string, newValue: string) {
+        // React to output changes if needed
+    }
+
     get defaultContent(): string {
         return `<div class="welcome-message">
             <div class="title">${'pokedex.title'.t()}</div>

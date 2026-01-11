@@ -8,16 +8,9 @@
     </div>
     
     <!-- Status and Controls -->
-    <div class="status-controls">
-        <div class="connection-status">
-            <div class="status-badge" :class="x => x.statusBadgeClass">
-                <div class="status-indicator" :class="x => x.statusBadgeClass"></div>
-                ${x => x.connected ? 'pokedex.connected'.t() : 'pokedex.disconnected'.t()}
-            </div>
-        </div>
-        
+    <div class="status-controls">                
         <button class="btn-settings" @click="${x => x.handleSettingsClick()}" :title="'pokedex.settings'.t()">
-            <i class="bi bi-gear-fill"></i>
+            <i class="fa fa-cog"></i>
         </button>
     </div>
 </div>

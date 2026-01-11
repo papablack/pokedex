@@ -1,7 +1,7 @@
 <form class="settings-form">
     <div class="form-group">
         <label class="form-label">
-            <i class="bi bi-key-fill"></i>
+            <i class="fa fa-key"></i>
             ${'pokedex.apiKey'.t()}
         </label>
         <div class="input-group">
@@ -17,7 +17,7 @@
                 type="button" 
                 @click="${x => x.toggleApiKeyVisibility()}"
             >
-                <i class="bi ${x => x.showApiKey ? 'bi-eye-slash-fill' : 'bi-eye-fill'}"></i>
+                <i class="fa ${x => x.showApiKey ? 'fa-eye-slash' : 'fa-eye'}"></i>
             </button>
         </div>
         <div class="form-text">
@@ -28,7 +28,7 @@
 
     <div class="form-group">
         <label class="form-label">
-            <i class="bi bi-cpu-fill"></i>
+            <i class="fa fa-microchip"></i>
             ${'pokedex.model'.t()}
         </label>
         <select 
@@ -45,7 +45,7 @@
 
     <div class="form-group">
         <label class="form-label">
-            <i class="bi bi-globe"></i>
+            <i class="fa fa-globe"></i>
             ${'pokedex.language'.t()}
         </label>
         <select 
@@ -62,7 +62,7 @@
 
     <div class="form-group">
         <label class="form-label">
-            <i class="bi bi-thermometer-half"></i>
+            <i class="fa fa-thermometer-half"></i>
             ${'pokedex.temperature'.t()}: ${x => x.tempSettings?.temperature || 0.7}
         </label>
         <input 
@@ -85,7 +85,7 @@
                 @change="${(x, c) => x.updateTempSetting('streaming', c.event.target.checked)}"
             >
             <label>
-                <i class="bi bi-arrow-repeat"></i>
+                <i class="fa fa-repeat"></i>
                 ${'pokedex.streaming'.t()}
             </label>
         </div>
@@ -94,11 +94,11 @@
 
 <div class="modal-footer">
     <button type="button" class="btn-danger" @click="${x => x.clearSettings()}">
-        <i class="bi bi-trash-fill"></i>
+        <i class="fa fa-trash"></i>
         ${'pokedex.clear'.t()}
     </button>
     <button type="button" class="btn-primary" @click="${x => x.saveSettings()}">
-        <i class="bi bi-check-lg"></i>
+        <i class="fa fa-check"></i>
         ${'pokedex.save'.t()}
     </button>
 </div>

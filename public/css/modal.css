@@ -44,10 +44,19 @@
   box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
 }
 
-/* Font Awesome icon for modal header danger button */
+/* Font Awesome icon for modal header close button */
+.rws-modal-header .btn-close,
+.rws-modal-header .btn.btn-danger {
+  font-size: 0; /* Hide the text content */
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.rws-modal-header .btn-close::before,
 .rws-modal-header .btn.btn-danger::before {
-  content: "\f057";
+  content: "\f057"; /* fa-times-circle */
   font-family: "Font Awesome 6 Free";
   font-weight: 900;
-  margin-right: 0.5rem;
+  font-size: 1.2rem;
+  margin-right: 0;
 }

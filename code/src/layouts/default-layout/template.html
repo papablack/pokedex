@@ -1,18 +1,19 @@
 <div id="root_layout">
-    <!-- Notification Container -->
-    <div class="notifications-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
-        ${repeat(x => x.notifications, html<NotifyType>`
-            <div class="alert alert-${notification => notification.type === 'error' ? 'danger' : notification.type} 
-                        alert-dismissible fade show notification-toast" role="alert">
-                <div class="d-flex align-items-center">
-                    <i class="bi ${notification => notification.type === 'success' ? 'bi-check-circle' : 
-                                   notification.type === 'error' ? 'bi-exclamation-triangle' :
-                                   notification.type === 'warning' ? 'bi-exclamation-triangle' :
-                                   'bi-info-circle'} me-2"></i>
-                    <div class="flex-grow-1">${notification => notification.message}</div>
-                    <button type="button" class="btn-close" 
+    <!-- Notification Container managed by DefaultLayout -->
+    <div class="notifications-container">
+        ${repeat(x => x.notifications, html`
+            <div class="notification-toast alert-${notification => notification.type === 'error' ? 'danger' : notification.type}" role="alert">
+                <div class="notification-content">
+                    <i class="fa ${notification => notification.type === 'success' ? 'fa-check-circle' : 
+                                   notification.type === 'error' ? 'fa-exclamation-triangle' :
+                                   notification.type === 'warning' ? 'fa-exclamation-triangle' :
+                                   'fa-info-circle'} notification-icon"></i>
+                    <div class="notification-message">${notification => notification.message}</div>
+                    <button type="button" class="notification-close" 
                             @click="${(notification, c) => c.parent.removeNotificationById(notification.id)}"
-                            aria-label="Close"></button>
+                            aria-label="Close">
+                        <i class="fa fa-times"></i>
+                    </button>
                 </div>
             </div>
         `)}

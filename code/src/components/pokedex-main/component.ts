@@ -3,6 +3,7 @@ import PokedexAiService, { PokedexAiServiceInstance } from '../../services/poked
 import PokedexSettingsService, { PokedexSettingsServiceInstance } from '../../services/pokedex-settings.service';
 import NotificationService, { NotificationServiceInstance } from '../../services/notification.service';
 import SignalService, { SignalServiceInstance } from '../../services/signal.service';
+import PokemonDataService, { PokemonDataServiceInstance } from '../../services/pokemon-data.service';
 import { Events, PokedexEvents } from '../../event/events';
 import { IPokedexSettings } from '../../types/pokedex.types';
 
@@ -18,7 +19,8 @@ export class PokedexMain extends RWSViewComponent {
         @RWSInject(PokedexAiService) private aiService: PokedexAiServiceInstance,
         @RWSInject(PokedexSettingsService) private settingsService: PokedexSettingsServiceInstance,
         @RWSInject(NotificationService) private notificationService: NotificationServiceInstance,
-        @RWSInject(SignalService) private signalService: SignalServiceInstance
+        @RWSInject(SignalService) private signalService: SignalServiceInstance,
+        @RWSInject(PokemonDataService) private pokemonDataService: PokemonDataServiceInstance
     ) {
         super();        
     }
@@ -117,7 +119,13 @@ export class PokedexMain extends RWSViewComponent {
 
     private async generateResponse(query: string) {
         const response = await this.aiService.generateResponse(query);
-        this.output = this.formatPokemonText(response);
+        
+        // Check if response is already HTML formatted (from Pokemon data service)
+        if (response.includes('<div class="pokemon-info">') || response.includes('<div style=')) {
+            this.output = response;
+        } else {
+            this.output = this.formatPokemonText(response);
+        }
     }
 
     private async streamResponse(query: string) {
@@ -125,11 +133,21 @@ export class PokedexMain extends RWSViewComponent {
         
         for await (const chunk of this.aiService.streamResponse(query)) {
             fullText += chunk;
-            this.output = this.formatPokemonText(fullText) + '<span class=\"typing-cursor\"></span>';
+            
+            // Check if response is already HTML formatted (from Pokemon data service)
+            if (fullText.includes('<div class="pokemon-info">') || fullText.includes('<div style=')) {
+                this.output = fullText + '<span class="typing-cursor"></span>';
+            } else {
+                this.output = this.formatPokemonText(fullText) + '<span class="typing-cursor"></span>';
+            }
         }
         
-        // Remove cursor after completion
-        this.output = this.formatPokemonText(fullText);
+        // Remove cursor after completion - check if HTML is already formatted
+        if (fullText.includes('<div class="pokemon-info">') || fullText.includes('<div style=')) {
+            this.output = fullText;
+        } else {
+            this.output = this.formatPokemonText(fullText);
+        }
     }
 
     quickSearch(pokemonName: string) {
@@ -181,11 +199,16 @@ export class PokedexMain extends RWSViewComponent {
     }
 
     handleSearch(event: CustomEvent) {
-        this.searchPokemon(event.detail);
+        // For RWS $emit, the data is directly in event.detail
+        const searchQuery = event.detail;
+        this.searchPokemon(searchQuery);
     }
 
     handleSettingsSave(event: CustomEvent) {
-        this.saveSettings(event.detail);
+        // Try event.detail first, then fall back to event if detail is undefined
+        const settingsData = event.detail || event;
+        
+        this.saveSettings(settingsData);
         this.showSettings = false;
     }
 
