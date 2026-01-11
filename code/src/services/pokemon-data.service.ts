@@ -1,6 +1,7 @@
 import { RWSService, RWSInject } from '@rws-framework/client';
 import Pokedex from '@sherwinski/pokeapi-ts';
 import HtmlFormattingService, { HtmlFormattingServiceInstance } from './html-formatting.service';
+import { getCurrentLanguage } from '../translations/trans';
 
 interface PokemonLocationData {
     locationAreas: {
@@ -154,10 +155,7 @@ export class PokemonDataService extends RWSService {
             evolutionLevel: null, // Would need more complex logic
             evolutions,
             preevolutions,
-            flavorTexts: species?.flavor_text_entries?.map((entry: any) => ({
-                flavor: entry.flavor_text,
-                game: entry.version.name
-            })) || [],
+            flavorTexts: this.getLocalizedFlavorTexts(species?.flavor_text_entries || []),
             sprite: pokemon.sprites.front_default,
             shinySprite: pokemon.sprites.front_shiny,
             legendary: species?.is_legendary || false,
@@ -181,8 +179,18 @@ export class PokemonDataService extends RWSService {
     private async getAbilityDescription(abilityName: string): Promise<string> {
         try {
             const ability = await fetch(`https://pokeapi.co/api/v2/ability/${abilityName}/`).then(res => res.json());
-            const englishEntry = ability.effect_entries.find((entry: any) => entry.language.name === 'en');
-            return englishEntry?.effect || 'No description available';
+            const currentLang = getCurrentLanguage();
+            const langCode = this.getPokeApiLanguageCode(currentLang);
+            
+            // Try to find description in current language first
+            let entry = ability.effect_entries.find((entry: any) => entry.language.name === langCode);
+            
+            // Fallback to English if current language not available
+            if (!entry) {
+                entry = ability.effect_entries.find((entry: any) => entry.language.name === 'en');
+            }
+            
+            return entry?.effect || 'No description available';
         } catch (error) {
             return 'No description available';
         }
@@ -280,6 +288,39 @@ export class PokemonDataService extends RWSService {
 
     formatPokemonDataToHTML(pokemon: any, language: string = 'pl'): string {
         return this.htmlFormattingService.formatPokemonDataToHTML(pokemon, language);
+    }
+
+    private getLocalizedFlavorTexts(flavorTextEntries: any[]): any[] {
+        const currentLang = getCurrentLanguage();
+        const langCode = this.getPokeApiLanguageCode(currentLang);
+        
+        // Filter flavor texts by current language first
+        let filteredEntries = flavorTextEntries.filter((entry: any) => entry.language.name === langCode);
+        
+        // Fallback to English if no entries in current language
+        if (filteredEntries.length === 0) {
+            filteredEntries = flavorTextEntries.filter((entry: any) => entry.language.name === 'en');
+        }
+        
+        // If still no entries, take any available
+        if (filteredEntries.length === 0) {
+            filteredEntries = flavorTextEntries.slice(0, 5); // Take first 5 as fallback
+        }
+        
+        return filteredEntries.map((entry: any) => ({
+            flavor: entry.flavor_text.replace(/\n|\f/g, ' '), // Clean up newlines and form feeds
+            game: entry.version.name
+        }));
+    }
+
+    private getPokeApiLanguageCode(language: string): string {
+        // Map our language codes to PokeAPI language codes
+        const languageMap: Record<string, string> = {
+            'en': 'en',
+            'pl': 'pl', // Polish is supported by PokeAPI
+        };
+        
+        return languageMap[language] || 'en';
     }
 
 }

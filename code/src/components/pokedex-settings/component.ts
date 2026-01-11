@@ -2,6 +2,7 @@ import { RWSViewComponent, RWSView, RWSInject, observable } from '@rws-framework
 import PokedexSettingsService, { PokedexSettingsServiceInstance } from '../../services/pokedex-settings.service';
 import SignalService, { SignalServiceInstance } from '../../services/signal.service';
 import { IPokedexSettings } from '../../types/pokedex.types';
+import { getCurrentLanguage, langKey } from '../../translations/trans';
 
 @RWSView('pokedex-settings')
 export class PokedexSettings extends RWSViewComponent {
@@ -58,7 +59,25 @@ export class PokedexSettings extends RWSViewComponent {
     }
 
     saveSettings() {
-        this.$emit('settings-save', this.tempSettings);
+        const currentLanguage = getCurrentLanguage();
+        const newLanguage = this.tempSettings.language;
+        
+        // Check if language changed
+        if (currentLanguage !== newLanguage) {
+            // Update global language setting
+            if (typeof localStorage !== 'undefined') {
+                localStorage.setItem(langKey, newLanguage);
+            }
+            
+            // Emit settings save event
+            this.$emit('settings-save', this.tempSettings);
+            
+            // Reload the window to apply language changes
+            window.location.reload();
+        } else {
+            // Just save settings without reload if language didn't change
+            this.$emit('settings-save', this.tempSettings);
+        }
     }
 
     clearSettings() {
