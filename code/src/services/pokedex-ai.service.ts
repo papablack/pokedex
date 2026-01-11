@@ -10,9 +10,9 @@ import HtmlFormattingService, { HtmlFormattingServiceInstance } from './html-for
 const QueryAnalysisSchema = z.object({
     isPokemonSearch: z.boolean().describe('True if the user is asking about specific Pokemon data/stats'),
     pokemonNames: z.array(z.string()).describe('List of Pokemon names mentioned in the query'),
-    queryType: z.enum(['pokemon_data', 'game_help', 'general_discussion']).describe('Type of query: pokemon_data for stats/info, game_help for gameplay assistance, general_discussion for other topics'),
+    queryType: z.enum(['pokemon_data', 'game_help', 'general_discussion']).describe('Type of query: pokemon_data for stats/info, game_help for gameplay assistance including fan games like PokéMMO, general_discussion for Pokemon-related topics like lore/community'),
     confidence: z.number().min(0).max(1).describe('Confidence level in the analysis (0-1)'),
-    extractedPokemonName: z.string().optional().describe('Primary Pokemon name to search for if isPokemonSearch is true')
+    extractedPokemonName: z.string().describe('Primary Pokemon name to search for if isPokemonSearch is true, empty string if no specific Pokemon')
 });
 
 export class PokedexAiService extends RWSService {
@@ -44,15 +44,15 @@ export class PokedexAiService extends RWSService {
     async analyzeQuery(query: string): Promise<IQueryAnalysis> {
         if (!this.settings.apiKey || !this.openRouterClient) {
             // Simple fallback analysis without AI - rely mostly on game help keywords
-            const isGameHelp = this.isGameHelpQuery(query.toLowerCase());
+            const isPokemonRelated = this.isGameHelpQuery(query.toLowerCase());
             const potentialNames = this.extractPokemonNamesFromQuery(query.toLowerCase());
             
             return {
-                isPokemonSearch: !isGameHelp && potentialNames.length > 0,
+                isPokemonSearch: potentialNames.length > 0,
                 pokemonNames: potentialNames,
-                queryType: isGameHelp ? 'game_help' : 'general_discussion',
+                queryType: isPokemonRelated ? 'game_help' : 'general_discussion',
                 confidence: 0.3, // Low confidence since we don't have AI analysis
-                extractedPokemonName: potentialNames[0]
+                extractedPokemonName: potentialNames[0] || ''
             };
         }
 
@@ -63,7 +63,7 @@ export class PokedexAiService extends RWSService {
                 messages: [
                     { 
                         role: 'system', 
-                        content: 'Analyze user queries about Pokemon. Determine if they want specific Pokemon data/stats, game help (locations, how to find, where to catch, evolution methods), or general discussion. Be precise about Pokemon names mentioned. Game help includes questions about WHERE to find Pokemon, HOW to catch them, WHEN they evolve, WHAT items are needed, etc.' 
+                        content: 'Analyze user queries about Pokemon. Determine if they want specific Pokemon data/stats, game help (locations, how to find, where to catch, evolution methods), or general discussion about Pokemon-related topics. Be precise about Pokemon names mentioned. \n\nPOKEMON-RELATED CONTENT INCLUDES:\n- Official Pokemon games (Red, Blue, Gold, Silver, etc.)\n- Fan-made Pokemon games (PokéMMO, ROM hacks, fan games)\n- Pokemon mechanics, strategies, competitive play\n- Pokemon lore, characters, regions\n- Pokemon community, culture, memes\n- Anything involving Pokemon creatures, universe, or games\n\nGame help includes questions about WHERE to find Pokemon, HOW to catch them, WHEN they evolve, WHAT items are needed, etc.\n\nONLY classify as non-Pokemon if the question is completely unrelated to Pokemon universe (weather, politics, other franchises).' 
                     },
                     { role: 'user', content: query }
                 ],
@@ -82,7 +82,7 @@ export class PokedexAiService extends RWSService {
                 pokemonNames: potentialNames,
                 queryType: isGameHelp ? 'game_help' : 'general_discussion',
                 confidence: 0.3, // Low confidence since we don't have AI analysis
-                extractedPokemonName: potentialNames[0]
+                extractedPokemonName: potentialNames[0] || ''
             };
         }
     }
@@ -165,11 +165,33 @@ export class PokedexAiService extends RWSService {
         if (!this.openRouterClient) {
             throw new Error('pokedex.clientNotInitialized'.t());
         }
+
+        // Check if query contains pokemon-related keywords - especially "poke"
+        const pokemonKeywords = ['poke', 'pokemon', 'pokémon', 'pokemmo', 'pokeball'];
+        const hasPokemonKeyword = pokemonKeywords.some(keyword => 
+            query.toLowerCase().includes(keyword.toLowerCase())
+        );
+
+        // Simple check: if query contains "poke" anywhere, always answer
+        const hasPoke = query.toLowerCase().includes('poke');
+
+        console.log('Pokemon keywords check:', hasPokemonKeyword, 'Has "poke":', hasPoke, 'Query:', query);
+        console.log('Will use fallback:', (!hasPokemonKeyword && !hasPoke && !pokemonData));
+
+        let systemPrompt = this.createSystemPrompt(analysis, pokemonData);
+        
+        // If no pokemon keywords/poke and no pokemon data, instruct to use fallback
+        if (!hasPokemonKeyword && !hasPoke && !pokemonData) {
+            systemPrompt += `\n\nPytanie nie zawiera słów związanych z Pokemon i nie ma danych Pokemon - użyj fallback message.`;
+            console.log('Added fallback instruction to system prompt');
+        } else {
+            console.log('NOT using fallback - pokemon related query detected');
+        }
     
         const { text } = await generateText({
             model: this.generateModelObject(this.settings.model),
             messages: [
-                { role: 'system', content: this.createSystemPrompt(analysis, pokemonData) },
+                { role: 'system', content: systemPrompt },
                 { role: 'user', content: query }
             ],
             temperature: this.settings.temperature,
@@ -187,12 +209,28 @@ export class PokedexAiService extends RWSService {
             throw new Error('pokedex.clientNotInitialized'.t());
         }
 
+        // Check if query contains pokemon-related keywords - especially "poke"
+        const pokemonKeywords = ['poke', 'pokemon', 'pokémon', 'pokemmo', 'pokeball'];
+        const hasPokemonKeyword = pokemonKeywords.some(keyword => 
+            query.toLowerCase().includes(keyword.toLowerCase())
+        );
+
+        // Simple check: if query contains "poke" anywhere, always answer
+        const hasPoke = query.toLowerCase().includes('poke');
+
+        let systemPrompt = this.createSystemPrompt(analysis, pokemonData);
+        
+        // If no pokemon keywords/poke and no pokemon data, instruct to use fallback
+        if (!hasPokemonKeyword && !hasPoke && !pokemonData) {
+            systemPrompt += `\n\nPytanie nie zawiera słów związanych z Pokemon i nie ma danych Pokemon - użyj fallback message.`;
+        }
+
         const model = this.generateModelObject(this.settings.model);
 
         const { textStream } = streamText({
             model,
             messages: [
-                { role: 'system', content: this.createSystemPrompt(analysis, pokemonData) },
+                { role: 'system', content: systemPrompt },
                 { role: 'user', content: query }
             ],
             temperature: this.settings.temperature,
@@ -205,17 +243,44 @@ export class PokedexAiService extends RWSService {
 
     private createSystemPrompt(analysis?: IQueryAnalysis, pokemonData?: any): string {
         if (pokemonData) {
-            // When we have Pokemon data, use the specialized synopsis prompt
-            return this.htmlFormattingService.createSynopsisPrompt(this.settings.language);
+            // When we have Pokemon data, use the specialized synopsis prompt with enhanced context
+            let prompt = this.htmlFormattingService.createSynopsisPrompt(this.settings.language);
+            
+            // Add generation context
+            if (pokemonData.generation) {
+                prompt += `\n\nGeneration Context: This Pokemon is from ${pokemonData.generation.name} (Generation ${pokemonData.generation.id}).`;
+            }
+            
+            // Add location context
+            if (pokemonData.locations && pokemonData.locations.length > 0) {
+                const locationNames = pokemonData.locations.map((loc: any) => loc.name).join(', ');
+                prompt += `\n\nLocation Context: This Pokemon can be found in the following areas: ${locationNames}. Provide helpful tips about where to encounter this Pokemon.`;
+            }
+            
+            return prompt;
         }
         
         let basePrompt = this.htmlFormattingService.createSystemPrompt(this.settings.language);
         
+        // Add modified behavior based on pokemon-related detection in the main generateResponse
+        
         if (analysis && analysis.queryType === 'game_help') {
-            basePrompt += `\n\nContext: The user is asking for game help or strategy advice. Provide practical, helpful information about Pokemon games, locations, strategies, tips, or gameplay mechanics.`;
+            basePrompt += `\n\nContext: The user is asking for game help or strategy advice. Focus on providing detailed location information, evolution requirements, gameplay tips, and practical advice about Pokemon games, locations, strategies, or gameplay mechanics.`;
         } else if (analysis && analysis.queryType === 'general_discussion') {
-            basePrompt += `\n\nContext: The user wants to discuss Pokemon in general. Be conversational and engaging while providing interesting information.`;
+            basePrompt += `\n\nContext: The user wants to discuss Pokemon in general. Be conversational and engaging while providing interesting information about Pokemon lore, comparisons, and general knowledge.`;
         }
+        
+        // Add generation awareness for all prompts
+        basePrompt += `\n\nGeneration Knowledge: When discussing Pokemon, always mention which generation they are from if relevant. The generations are:
+        - Generation I (Kanto): Red, Blue, Yellow
+        - Generation II (Johto): Gold, Silver, Crystal  
+        - Generation III (Hoenn): Ruby, Sapphire, Emerald
+        - Generation IV (Sinnoh): Diamond, Pearl, Platinum
+        - Generation V (Unova): Black, White, Black 2, White 2
+        - Generation VI (Kalos): X, Y
+        - Generation VII (Alola): Sun, Moon, Ultra Sun, Ultra Moon
+        - Generation VIII (Galar): Sword, Shield
+        - Generation IX (Paldea): Scarlet, Violet`;
         
         return basePrompt;
     }
@@ -245,10 +310,27 @@ export class PokedexAiService extends RWSService {
             'level up', 'trade', 'stone', 'item', 'obtain', 'get', 'encounter', 'spawn', 'appear',
             'forest', 'cave', 'city', 'town', 'gym', 'elite four', 'champion', 'safari', 'game corner',
             'slot', 'prize', 'fishing', 'surfing', 'rock smash', 'headbutt', 'time', 'day', 'night',
-            'morning', 'evening', 'season', 'weather', 'rare', 'shiny', 'legendary', 'mythical'
+            'morning', 'evening', 'season', 'weather', 'rare', 'shiny', 'legendary', 'mythical',
+            'generation', 'gen', 'version', 'game', 'red', 'blue', 'yellow', 'gold', 'silver', 'crystal',
+            'ruby', 'sapphire', 'emerald', 'diamond', 'pearl', 'platinum', 'black', 'white', 
+            'sword', 'shield', 'scarlet', 'violet', 'sun', 'moon', 'ultra', 'lets go', 'arceus',
+            'legends', 'brilliant', 'shining', 'move', 'tm', 'hm', 'ability', 'nature', 'iv', 'ev',
+            'breeding', 'egg', 'hatch', 'wild', 'trainer', 'battle', 'competitive', 'strategy',
+            'pokemmo', 'mmo', 'pokemon mmo', 'fan game', 'rom hack', 'hack', 'emulator', 'online',
+            'multiplayer', 'server', 'community', 'what is', 'explain', 'about'
         ];
         
-        return gameHelpKeywords.some(keyword => query.includes(keyword));
+        // Check for Pokemon-related content regardless of game help keywords
+        const pokemonRelatedKeywords = [
+            'pokemon', 'pokémon', 'pokedex', 'pokeball', 'poke', 'trainer', 'gym', 'battle',
+            'pokemmo', 'mmo', 'fan game', 'rom', 'hack', 'emulator'
+        ];
+        
+        const isPokemonRelated = pokemonRelatedKeywords.some(keyword => query.includes(keyword));
+        const isGameHelp = gameHelpKeywords.some(keyword => query.includes(keyword));
+        
+        // If it's Pokemon-related, it should be treated as valid content
+        return isPokemonRelated || isGameHelp;
     }
 
     private generateModelObject(model: string) {

@@ -1,35 +1,74 @@
 import { RWSService, RWSInject } from '@rws-framework/client';
-import type { Query, QueryGetPokemonArgs, QueryGetFuzzyPokemonArgs } from '@favware/graphql-pokemon';
+import Pokedex from '@sherwinski/pokeapi-ts';
 import HtmlFormattingService, { HtmlFormattingServiceInstance } from './html-formatting.service';
 
-interface GraphQLPokemonResponse<K extends keyof Omit<Query, '__typename'>> {
-    data: Record<K, Omit<Query[K], '__typename'>>;
+interface PokemonLocationData {
+    locationAreas: {
+        name: string;
+        url: string;
+        encounters: any[];
+    }[];
+}
+
+interface GenerationData {
+    id: number;
+    name: string;
+    main_region: {
+        name: string;
+        url: string;
+    };
+    pokemon_species: {
+        name: string;
+        url: string;
+    }[];
 }
 
 export class PokemonDataService extends RWSService {
-    private readonly apiUrl = 'https://graphqlpokemon.favware.tech/v8';
+    private pokedex: Pokedex;
 
     constructor(
         @HtmlFormattingService private htmlFormattingService: HtmlFormattingServiceInstance
     ) {
         super();
+        this.pokedex = new Pokedex();
     }
 
     async getPokemonData(pokemonName: string): Promise<any> {
         try {
-            // First try exact match
-            let data = await this.queryPokemon(pokemonName);
+            let pokemon = null;
             
-            // If no exact match, try fuzzy search
-            if (!data) {
-                data = await this.queryFuzzyPokemon(pokemonName);
+            // Try to get Pokemon data using SDK
+            try {
+                pokemon = await this.pokedex.pokemon.searchByName(pokemonName.toLowerCase());
+            } catch (error) {
+                console.warn(`Failed to find Pokemon by name: ${pokemonName}, trying by ID...`);
+                
+                // If name search fails, try to parse as ID or use direct API call as fallback
+                const pokemonId = parseInt(pokemonName);
+                if (!isNaN(pokemonId)) {
+                    pokemon = await this.pokedex.pokemon.searchById(pokemonId);
+                } else {
+                    // Last resort: direct API call
+                    pokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}/`).then(res => res.json());
+                }
             }
-
-            if (!data) {
+            
+            if (!pokemon) {
                 return null;
             }
 
-            return data;
+            // Get species data for additional info
+            const speciesUrl = pokemon.species.url;
+            const speciesId = speciesUrl.split('/').slice(-2, -1)[0];
+            const species = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${speciesId}/`).then(res => res.json());
+            
+            // Get location data
+            const locationAreas = await this.getPokemonLocationData(pokemon.id);
+            
+            // Transform data to match expected format
+            const transformedData = await this.transformPokemonData(pokemon, species, locationAreas);
+            
+            return transformedData;
 
         } catch (error) {
             console.error(`❌ Error fetching Pokemon data for ${pokemonName}:`, error);
@@ -37,181 +76,205 @@ export class PokemonDataService extends RWSService {
         }
     }
 
-    private async queryPokemon(pokemon: string): Promise<any> {
-        const query = `
-            query getPokemon($pokemon: PokemonEnum!) {
-                getPokemon(pokemon: $pokemon) {
-                    num
-                    species
-                    types {
-                        name
-                    }
-                    height
-                    weight
-                    baseStats {
-                        hp
-                        attack
-                        defense
-                        specialattack
-                        specialdefense
-                        speed
-                    }
-                    abilities {
-                        first {
-                            name
-                            desc
-                        }
-                        second {
-                            name
-                            desc
-                        }
-                        hidden {
-                            name
-                            desc
-                        }
-                    }
-                    color
-                    eggGroups
-                    evolutionLevel
-                    evolutions {
-                        species
-                        evolutionLevel
-                    }
-                    preevolutions {
-                        species
-                        evolutionLevel
-                    }
-                    flavorTexts {
-                        flavor
-                        game
-                    }
-                    sprite
-                    shinySprite
-                    legendary
-                    mythical
-                    catchRate {
-                        base
-                        percentageWithOrdinaryPokeballAtFullHealth
-                    }
-                    gender {
-                        male
-                        female
-                    }
+    private async getPokemonLocationData(pokemonId: number): Promise<PokemonLocationData> {
+        try {
+            // Use direct API call since SDK doesn't expose location encounters endpoint
+            const encounters = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}/encounters`).then(res => res.json());
+            const locationAreas = [];
+            
+            for (const encounter of encounters.slice(0, 10)) { // Limit to 10 locations
+                try {
+                    const locationArea = await fetch(encounter.location_area.url).then(res => res.json());
+                    locationAreas.push({
+                        name: locationArea.name,
+                        url: locationArea.location.url,
+                        encounters: encounter.version_details || []
+                    });
+                } catch (err) {
+                    console.warn('Failed to fetch location area:', encounter.location_area.name);
                 }
             }
-        `;
-
-        try {
-            const response = await fetch(this.apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    query,
-                    variables: { pokemon: pokemon.toUpperCase() }
-                })
-            });
-
-            const result = await response.json() as GraphQLPokemonResponse<'getPokemon'>;
             
-            if (result.data?.getPokemon) {
-                return result.data.getPokemon;
+            return { locationAreas };
+        } catch (error) {
+            console.warn('Failed to fetch location data:', error);
+            return { locationAreas: [] };
+        }
+    }
+
+    private async transformPokemonData(pokemon: any, species: any, locationData: PokemonLocationData): Promise<any> {
+        // Transform PokeAPI data to match expected format
+        const abilities = {
+            first: pokemon.abilities[0] ? {
+                name: pokemon.abilities[0].ability.name,
+                desc: await this.getAbilityDescription(pokemon.abilities[0].ability.name)
+            } : null,
+            second: pokemon.abilities[1] && !pokemon.abilities[1].is_hidden ? {
+                name: pokemon.abilities[1].ability.name,
+                desc: await this.getAbilityDescription(pokemon.abilities[1].ability.name)
+            } : null,
+            hidden: pokemon.abilities.find((a: any) => a.is_hidden) ? {
+                name: pokemon.abilities.find((a: any) => a.is_hidden).ability.name,
+                desc: await this.getAbilityDescription(pokemon.abilities.find((a: any) => a.is_hidden).ability.name)
+            } : null
+        };
+
+        // Get evolution chain if available
+        let evolutions = [];
+        let preevolutions = [];
+        if (species?.evolution_chain?.url) {
+            try {
+                const evolutionChainId = species.evolution_chain.url.split('/').slice(-2, -1)[0];
+                const evolutionData = await fetch(`https://pokeapi.co/api/v2/evolution-chain/${evolutionChainId}/`).then(res => res.json());
+                const evolutionInfo = this.parseEvolutionChain(evolutionData, pokemon.name);
+                evolutions = evolutionInfo.evolutions;
+                preevolutions = evolutionInfo.preevolutions;
+            } catch (err) {
+                console.warn('Failed to fetch evolution data');
+            }
+        }
+
+        return {
+            num: pokemon.id,
+            species: pokemon.species.name,
+            types: pokemon.types.map((t: any) => ({ name: t.type.name })),
+            height: pokemon.height / 10, // Convert to meters
+            weight: pokemon.weight / 10, // Convert to kg
+            baseStats: {
+                hp: pokemon.stats.find((s: any) => s.stat.name === 'hp')?.base_stat || 0,
+                attack: pokemon.stats.find((s: any) => s.stat.name === 'attack')?.base_stat || 0,
+                defense: pokemon.stats.find((s: any) => s.stat.name === 'defense')?.base_stat || 0,
+                specialattack: pokemon.stats.find((s: any) => s.stat.name === 'special-attack')?.base_stat || 0,
+                specialdefense: pokemon.stats.find((s: any) => s.stat.name === 'special-defense')?.base_stat || 0,
+                speed: pokemon.stats.find((s: any) => s.stat.name === 'speed')?.base_stat || 0
+            },
+            abilities,
+            color: species?.color?.name || 'unknown',
+            eggGroups: species?.egg_groups?.map((g: any) => g.name) || [],
+            evolutionLevel: null, // Would need more complex logic
+            evolutions,
+            preevolutions,
+            flavorTexts: species?.flavor_text_entries?.map((entry: any) => ({
+                flavor: entry.flavor_text,
+                game: entry.version.name
+            })) || [],
+            sprite: pokemon.sprites.front_default,
+            shinySprite: pokemon.sprites.front_shiny,
+            legendary: species?.is_legendary || false,
+            mythical: species?.is_mythical || false,
+            catchRate: {
+                base: species?.capture_rate || 0,
+                percentageWithOrdinaryPokeballAtFullHealth: species?.capture_rate ? Math.round((species.capture_rate / 255) * 100) : 0
+            },
+            gender: {
+                male: species?.gender_rate === -1 ? 0 : (8 - (species?.gender_rate || 4)) / 8 * 100,
+                female: species?.gender_rate === -1 ? 0 : (species?.gender_rate || 4) / 8 * 100
+            },
+            generation: species?.generation ? {
+                id: parseInt(species.generation.url.split('/').slice(-2, -1)[0]),
+                name: species.generation.name
+            } : null,
+            locations: locationData.locationAreas
+        };
+    }
+
+    private async getAbilityDescription(abilityName: string): Promise<string> {
+        try {
+            const ability = await fetch(`https://pokeapi.co/api/v2/ability/${abilityName}/`).then(res => res.json());
+            const englishEntry = ability.effect_entries.find((entry: any) => entry.language.name === 'en');
+            return englishEntry?.effect || 'No description available';
+        } catch (error) {
+            return 'No description available';
+        }
+    }
+
+    private parseEvolutionChain(chain: any, currentPokemonName: string): { evolutions: any[], preevolutions: any[] } {
+        const evolutions: any[] = [];
+        const preevolutions: any[] = [];
+        
+        const traverseChain = (node: any, isPreEvolution = false) => {
+            if (node.species.name === currentPokemonName) {
+                // Found current Pokemon, everything after this is evolution
+                node.evolves_to?.forEach((evo: any) => {
+                    evolutions.push({
+                        species: evo.species.name,
+                        evolutionLevel: evo.evolution_details[0]?.min_level || null
+                    });
+                    traverseChain(evo, false);
+                });
+            } else if (isPreEvolution) {
+                preevolutions.push({
+                    species: node.species.name,
+                    evolutionLevel: null
+                });
             }
             
-            return null;
+            // Check if current Pokemon is in the evolves_to
+            node.evolves_to?.forEach((evo: any) => {
+                if (evo.species.name === currentPokemonName) {
+                    // Current node is a pre-evolution
+                    preevolutions.push({
+                        species: node.species.name,
+                        evolutionLevel: null
+                    });
+                } else {
+                    traverseChain(evo, false);
+                }
+            });
+        };
+        
+        traverseChain(chain.chain, true);
+        return { evolutions, preevolutions };
+    }
+
+    async getGenerationData(generationId: number): Promise<GenerationData | null> {
+        try {
+            const generation = await this.pokedex.generation.searchById(generationId);
+            return {
+                id: generation.id,
+                name: generation.name,
+                main_region: generation.main_region,
+                pokemon_species: generation.pokemon_species
+            };
         } catch (error) {
-            console.error('Error in exact Pokemon query:', error);
+            console.error(`Error fetching generation ${generationId}:`, error);
             return null;
         }
     }
 
-    private async queryFuzzyPokemon(pokemon: string): Promise<any> {
-        const query = `
-            query getFuzzyPokemon($pokemon: String!) {
-                getFuzzyPokemon(pokemon: $pokemon) {
-                    num
-                    species
-                    types {
-                        name
-                    }
-                    height
-                    weight
-                    baseStats {
-                        hp
-                        attack
-                        defense
-                        specialattack
-                        specialdefense
-                        speed
-                    }
-                    abilities {
-                        first {
-                            name
-                            desc
-                        }
-                        second {
-                            name
-                            desc
-                        }
-                        hidden {
-                            name
-                            desc
-                        }
-                    }
-                    color
-                    eggGroups
-                    evolutionLevel
-                    evolutions {
-                        species
-                        evolutionLevel
-                    }
-                    preevolutions {
-                        species
-                        evolutionLevel
-                    }
-                    flavorTexts {
-                        flavor
-                        game
-                    }
-                    sprite
-                    shinySprite
-                    legendary
-                    mythical
-                    catchRate {
-                        base
-                        percentageWithOrdinaryPokeballAtFullHealth
-                    }
-                    gender {
-                        male
-                        female
-                    }
+    async getPokemonByGeneration(generationId: number): Promise<string[]> {
+        try {
+            const generation = await this.getGenerationData(generationId);
+            return generation?.pokemon_species.map(p => p.name) || [];
+        } catch (error) {
+            console.error(`Error fetching Pokemon by generation ${generationId}:`, error);
+            return [];
+        }
+    }
+
+    async getLocationAreas(locationName?: string): Promise<any[]> {
+        try {
+            if (locationName) {
+                const location = await fetch(`https://pokeapi.co/api/v2/location/${locationName.toLowerCase()}/`).then(res => res.json());
+                return location.areas || [];
+            }
+            // If no specific location, return a list of common locations
+            const locations = ['kanto-route-1', 'johto-route-29', 'hoenn-route-101', 'sinnoh-route-201'];
+            const locationData = [];
+            
+            for (const loc of locations) {
+                try {
+                    const location = await fetch(`https://pokeapi.co/api/v2/location/${loc}/`).then(res => res.json());
+                    locationData.push(location);
+                } catch (err) {
+                    console.warn(`Failed to fetch location: ${loc}`);
                 }
             }
-        `;
-
-        try {
-            const response = await fetch(this.apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    query,
-                    variables: { pokemon }
-                })
-            });
-
-            const result = await response.json() as GraphQLPokemonResponse<'getFuzzyPokemon'>;
             
-            if (result.data?.getFuzzyPokemon && Array.isArray(result.data.getFuzzyPokemon) && result.data.getFuzzyPokemon.length > 0) {
-                return result.data.getFuzzyPokemon[0]; // Take the first match
-            }
-            
-            return null;
+            return locationData;
         } catch (error) {
-            console.error('Error in fuzzy Pokemon query:', error);
-            return null;
+            console.error('Error fetching locations:', error);
+            return [];
         }
     }
 

@@ -83,7 +83,7 @@
     position: relative;
     height: 100%;
     overflow-y: auto;
-    padding: 0.5rem;
+    padding: 0.5rem 0.5rem 1.5rem 0.5rem;
     
     /* Custom scrollbar */
     &::-webkit-scrollbar {
@@ -176,6 +176,13 @@
     transform: translate(-50%, -50%);
     z-index: 3;
     text-align: center;
+    background: linear-gradient(145deg, #dc3545, #c82333);
+    border: 3px double white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        inset 0 2px 4px rgba(255, 255, 255, 0.2);
 }
 
 .pokeball-loader {
@@ -292,4 +299,282 @@
 @keyframes cursor-blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
+}
+
+// AI Response Styles - DOS Terminal Style
+.ai-response-section {
+    background: transparent;
+    padding: 15px 0;
+    margin: 10px 0;
+    font-family: 'Courier New', monospace;
+}
+
+.ai-section-title {
+    color: #00ff00;
+    margin: 10px 0;
+    font-size: 1.1rem;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+    text-transform: uppercase;
+}
+
+.ai-paragraph {
+    color: #74b9ff;
+    margin-bottom: 8px;
+    line-height: 1.5;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 6px rgba(116, 185, 255, 0.5);
+}
+
+.ai-list {
+    list-style: none;
+    padding-left: 20px;
+    margin: 8px 0;
+    font-family: 'Courier New', monospace;
+}
+
+.ai-list-item {
+    color: #74b9ff;
+    padding: 2px 0;
+    margin: 2px 0;
+    text-shadow: 0 0 6px rgba(116, 185, 255, 0.5);
+    font-family: 'Courier New', monospace;
+    
+    &::before {
+        content: ">> ";
+        color: #00ff00;
+        text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+    }
+}
+
+.ai-highlight {
+    color: #ffff00;
+    background: transparent;
+    text-shadow: 0 0 8px rgba(255, 255, 0, 0.7);
+    font-family: 'Courier New', monospace;
+}
+
+.ai-strategy {
+    border-left-color: #ff6b7d;
+    
+    .ai-section-title {
+        color: #ff6b7d;
+        text-shadow: 0 0 8px rgba(255, 107, 125, 0.7);
+    }
+}
+
+.ai-facts {
+    border-left-color: #fd79a8;
+    
+    .ai-section-title {
+        color: #fd79a8;
+        text-shadow: 0 0 8px rgba(253, 121, 168, 0.7);
+    }
+}
+
+// Pokemon Response Styles - DOS Terminal Style
+.ai-pokemon-response {
+    background: transparent;
+    padding: 15px 0;
+    margin: 10px 0;
+    font-family: 'Courier New', monospace;
+}
+
+.ai-pokemon-title {
+    color: #00ff00;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+    text-transform: uppercase;
+    
+    i {
+        color: #ffff00;
+        text-shadow: 0 0 8px rgba(255, 255, 0, 0.7);
+    }
+}
+
+.ai-pokemon-details {
+    display: block;
+    margin-bottom: 15px;
+}
+
+.ai-detail-item {
+    margin-bottom: 4px;
+    color: #74b9ff;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 6px rgba(116, 185, 255, 0.5);
+}
+
+.ai-detail-label {
+    color: #00ff00;
+    text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+    font-family: 'Courier New', monospace;
+    
+    &.number { color: #74b9ff; text-shadow: 0 0 8px rgba(116, 185, 255, 0.7); }
+    &.type { color: #55efc4; text-shadow: 0 0 8px rgba(85, 239, 196, 0.7); }
+    &.height { color: #74b9ff; text-shadow: 0 0 8px rgba(116, 185, 255, 0.7); }
+    &.weight { color: #fd79a8; text-shadow: 0 0 8px rgba(253, 121, 168, 0.7); }
+    &.region { color: #fdcb6e; text-shadow: 0 0 8px rgba(253, 203, 110, 0.7); }
+    &.ability { color: #81ecec; text-shadow: 0 0 8px rgba(129, 236, 236, 0.7); }
+    &.hidden-ability { color: #a29bfe; text-shadow: 0 0 8px rgba(162, 155, 254, 0.7); }
+}
+
+.ai-section-header {
+    color: #00ff00;
+    border-bottom: 1px solid #00ff00;
+    padding-bottom: 3px;
+    margin: 15px 0 10px 0;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.ai-stats-grid {
+    display: block;
+    margin-bottom: 15px;
+}
+
+.ai-stat-item {
+    color: #74b9ff;
+    padding: 2px 0;
+    text-align: left;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 6px rgba(116, 185, 255, 0.5);
+    
+    &::before {
+        content: "* ";
+        color: #00ff00;
+        text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+    }
+}
+
+.stat-label {
+    color: #00ff00;
+    text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+    font-family: 'Courier New', monospace;
+    
+    &.hp { color: #ff6b7d; text-shadow: 0 0 8px rgba(255, 107, 125, 0.7); }
+    &.attack { color: #ff6b7d; text-shadow: 0 0 8px rgba(255, 107, 125, 0.7); }
+    &.defense { color: #55efc4; text-shadow: 0 0 8px rgba(85, 239, 196, 0.7); }
+    &.sp-attack { color: #fd79a8; text-shadow: 0 0 8px rgba(253, 121, 168, 0.7); }
+    &.sp-defense { color: #81ecec; text-shadow: 0 0 8px rgba(129, 236, 236, 0.7); }
+    &.speed { color: #74b9ff; text-shadow: 0 0 8px rgba(116, 185, 255, 0.7); }
+}
+
+.ai-description-box {
+    background: transparent;
+    padding: 8px 0;
+    border-left: 2px solid #74b9ff;
+    padding-left: 15px;
+    margin-bottom: 15px;
+    color: #74b9ff;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 6px rgba(116, 185, 255, 0.5);
+    line-height: 1.5;
+}
+
+.ai-effectiveness-container {
+    display: block;
+    margin-bottom: 15px;
+}
+
+.ai-effectiveness-title {
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+    margin: 10px 0 5px 0;
+    text-transform: uppercase;
+    
+    &.effective { color: #55efc4; text-shadow: 0 0 8px rgba(85, 239, 196, 0.7); }
+    &.not-effective { color: #ff6b7d; text-shadow: 0 0 8px rgba(255, 107, 125, 0.7); }
+}
+
+.ai-effectiveness-list {
+    list-style: none;
+    padding: 0;
+    margin-left: 15px;
+}
+
+.ai-effectiveness-item {
+    color: #74b9ff;
+    padding: 1px 0;
+    margin: 1px 0;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 6px rgba(116, 185, 255, 0.5);
+    
+    &.strong {
+        color: #55efc4;
+        text-shadow: 0 0 8px rgba(85, 239, 196, 0.7);
+        
+        &::before {
+            content: "+ ";
+            color: #00ff00;
+            text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+        }
+    }
+    
+    &.weak {
+        color: #ff6b7d;
+        text-shadow: 0 0 8px rgba(255, 107, 125, 0.7);
+        
+        &::before {
+            content: "- ";
+            color: #ff6b7d;
+            text-shadow: 0 0 8px rgba(255, 107, 125, 0.7);
+        }
+    }
+}
+
+.ai-evolution-section {
+    margin-top: 15px;
+}
+
+.ai-evolution-info {
+    background: transparent;
+    padding: 8px 0;
+    border-left: 2px solid #55efc4;
+    padding-left: 15px;
+    color: #55efc4;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 6px rgba(85, 239, 196, 0.5);
+}
+
+.ai-facts-section {
+    margin-top: 15px;
+    background: transparent;
+    padding: 8px 0;
+    border-left: 2px solid #fd79a8;
+    padding-left: 15px;
+}
+
+.ai-facts-content {
+    color: #fd79a8;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 6px rgba(253, 121, 168, 0.5);
+    margin: 0;
+}
+
+.ai-fallback-message {
+    text-align: center;
+    padding: 15px 0;
+    background: transparent;
+    border: 1px solid #fd79a8;
+    font-family: 'Courier New', monospace;
+}
+
+.ai-fallback-title {
+    color: #fd79a8;
+    text-shadow: 0 0 8px rgba(253, 121, 168, 0.7);
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+}
+
+.ai-fallback-text {
+    color: #74b9ff;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 6px rgba(116, 185, 255, 0.5);
+    margin: 0;
 }

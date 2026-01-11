@@ -11,7 +11,13 @@ export class PokedexInput extends RWSViewComponent {
 
     handleSearch() {
         const query = this.searchInput?.value?.trim() || '';
-        this.$emit('search', query);
+        if (query) {
+            this.$emit('search', query);
+            // Clear input after successful submission
+            if (this.searchInput) {
+                this.searchInput.value = '';
+            }
+        }
     }
 
     handleKeyDown(event: KeyboardEvent) {

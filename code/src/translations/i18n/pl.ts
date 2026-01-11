@@ -45,5 +45,15 @@ export default {
     'pokedex.dataPanel': 'Panel Danych',
     'pokedex.closePanel': 'Zamknij Panel',
     'pokedex.mapContent': 'Mapa i Nawigacja',
-    'pokedex.comingSoon': 'Wkrótce'
+    'pokedex.comingSoon': 'Wkrótce',
+    'pokedex.browseByGeneration': 'Przeglądaj według generacji',
+    'pokedex.selectGeneration': 'Wybierz generację',
+    'pokedex.foundPokemon': 'Znaleziono Pokémonów',
+    'pokedex.clickToView': 'Kliknij, aby zobaczyć szczegóły',
+    'pokedex.clearFilters': 'Wyczyść filtry',
+    'pokedex.hideFilters': 'Ukryj filtry',
+    'pokedex.rightWing.dataTab': 'Dane',
+    'pokedex.rightWing.mapTab': 'Mapa',
+    'pokedex.rightWing.mapTitle': 'Mapa lokacji',
+    'pokedex.rightWing.mapWorkInProgress': 'Interaktywna mapa lokacji już wkrótce!'
 };

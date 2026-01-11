@@ -1,3 +1,20 @@
+<!-- Filter Controls -->
+<div class="filter-controls" style="display: ${x => x.showFilters ? 'block' : 'none'}; margin-bottom: 15px;">
+    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px solid #dee2e6;">
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+            <button @click="${x => x.clearFilters()}" 
+                    style="background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
+                🔄 ${'pokedex.clearFilters'.t()}
+            </button>
+            
+            <button @click="${x => x.toggleFilters()}" 
+                    style="background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
+                ✖️ ${'pokedex.hideFilters'.t()}
+            </button>
+        </div>
+    </div>
+</div>
+
 <div class="screen-container">
     <div class="main-screen">
         <div class="screen-content" 

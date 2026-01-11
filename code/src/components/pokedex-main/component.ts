@@ -18,6 +18,8 @@ export class PokedexMain extends RWSViewComponent {
     @observable showSettings: boolean = false;
     @observable contentReady: boolean = false;
     @observable rightWingVisible: boolean = false;
+    @observable pokemonData: any = null;
+    @observable activeRightTab: string = 'data';
 
     constructor(
         @RWSInject(PokedexAiService) private aiService: PokedexAiServiceInstance,
@@ -47,8 +49,19 @@ export class PokedexMain extends RWSViewComponent {
         });
     }
 
-    toggleRightWing() {
-        this.rightWingVisible = !this.rightWingVisible;
+    switchRightTab(tab: string) {
+        this.activeRightTab = tab;
+    }
+
+    pokemonDataChanged(oldValue: any, newValue: any) {
+        // Automatically open right wing when Pokemon data is available
+        if (newValue && !this.rightWingVisible) {
+            this.rightWingVisible = true;
+        }
+        // Close right wing when Pokemon data is cleared
+        else if (!newValue && this.rightWingVisible) {
+            this.rightWingVisible = false;
+        }
     }
 
     private loadSettings() {
@@ -136,21 +149,20 @@ export class PokedexMain extends RWSViewComponent {
         
         // Handle Pokemon data if found
         if (response.pokemonData) {
+            this.pokemonData = response.pokemonData;
             this.pokemonDataOutput = this.pokemonDataService.formatPokemonDataToHTML(response.pokemonData, this.settings.language);
+        } else {
+            this.pokemonData = null;
+            this.pokemonDataOutput = '';
         }
         
-        // Handle AI response
+        // Handle AI response - now only goes to left panel
         if (response.aiResponse) {
-            // Only format as Pokemon text if it's plain text (not HTML)
-            if (this.isHtmlContent(response.aiResponse)) {
-                this.aiOutput = response.aiResponse;
-            } else {
-                this.aiOutput = this.formatPokemonText(response.aiResponse);
-            }
+            this.aiOutput = response.aiResponse;
         }
         
-        // Update combined output and mark ready
-        this.updateCombinedOutput();
+        // Update output for main screen (AI synopsis only)
+        this.output = this.aiOutput;
         this.contentReady = true;
     }
 
@@ -168,9 +180,12 @@ export class PokedexMain extends RWSViewComponent {
         
         // Handle Pokemon data if found
         if (response.pokemonData) {
+            this.pokemonData = response.pokemonData;
             this.pokemonDataOutput = this.pokemonDataService.formatPokemonDataToHTML(response.pokemonData, this.settings.language);
-            this.updateCombinedOutput();
             this.contentReady = true; // Show Pokemon data immediately
+        } else {
+            this.pokemonData = null;
+            this.pokemonDataOutput = '';
         }
         
         // Stream AI response
@@ -186,13 +201,9 @@ export class PokedexMain extends RWSViewComponent {
                 }
                 
                 aiText += chunk;
-                // Only format as Pokemon text if it's plain text (not HTML)
-                if (this.isHtmlContent(aiText)) {
-                    this.aiOutput = aiText + '<span class="typing-cursor"></span>';
-                } else {
-                    this.aiOutput = this.formatPokemonText(aiText) + '<span class="typing-cursor"></span>';
-                }
-                this.updateCombinedOutput();
+                this.aiOutput = aiText + '<span class="typing-cursor"></span>';
+                // Update only the main screen output (AI synopsis)
+                this.output = this.aiOutput;
                 
                 if (!this.contentReady) {
                     this.contentReady = true; // Show content on first AI chunk
@@ -200,12 +211,8 @@ export class PokedexMain extends RWSViewComponent {
             }
             
             // Remove cursor after completion
-            if (this.isHtmlContent(aiText)) {
-                this.aiOutput = aiText;
-            } else {
-                this.aiOutput = this.formatPokemonText(aiText);
-            }
-            this.updateCombinedOutput();
+            this.aiOutput = aiText;
+            this.output = this.aiOutput;
         } else {
             // If no streaming response, stop loading here
             this.isGenerating = false;
@@ -218,24 +225,6 @@ export class PokedexMain extends RWSViewComponent {
     private isHtmlContent(text: string): boolean {
         // Check if text contains HTML tags
         return /<[^>]*>/.test(text);
-    }
-    
-    private updateCombinedOutput() {
-        // Combine Pokemon data and AI output
-        let combined = '';
-        
-        if (this.pokemonDataOutput) {
-            combined += this.pokemonDataOutput;
-        }
-        
-        if (this.aiOutput) {
-            if (combined) {
-                combined += '<hr style="border-color:#2d3436;margin:15px 0;">';
-            }
-            combined += this.aiOutput;
-        }
-        
-        this.output = combined;
     }
 
     quickSearch(pokemonName: string) {

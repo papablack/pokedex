@@ -23,52 +23,50 @@
         </pokedex-input>
     </div>
     
-    <!-- Right Wing Panel - Collapsible -->
-    <div class="pokedex-right-wing ${x => x.rightWingVisible ? 'visible' : 'hidden'}">
-        <div class="wing-header">
-            <h3>${'pokedex.dataPanel'.t()}</h3>
-            <button class="btn-close-wing" @click="${x => x.toggleRightWing()}" :title="'pokedex.closePanel'.t()">
+    <!-- Right Wing Panel - Pokemon Data Display -->
+    <div class="pokedex-right-wing ${x => x.pokemonData ? 'visible' : 'hidden'}">
+        <!-- Tab Navigation -->
+        <div class="wing-tabs">
+            <button 
+                class="tab-button ${x => x.activeRightTab === 'data' ? 'active' : ''}"
+                @click="${(x, c) => x.switchRightTab('data')}"
+            >
+                <i class="fa fa-database"></i>
+                <span>${'pokedex.rightWing.dataTab'.t()}</span>
+            </button>
+            <button 
+                class="tab-button ${x => x.activeRightTab === 'map' ? 'active' : ''}"
+                @click="${(x, c) => x.switchRightTab('map')}"
+            >
+                <i class="fa fa-map"></i>
+                <span>${'pokedex.rightWing.mapTab'.t()}</span>
+            </button>
+            <button class="btn-close-wing" @click="${x => x.pokemonData = null}" :title="'pokedex.closePanel'.t()">
                 <i class="fa fa-times"></i>
             </button>
         </div>
+
+        <!-- Tab Content -->
         <div class="wing-content">
-            <div class="wing-section">
-                <div class="button-grid">
-                    <div class="grid-row">
-                        <button class="grid-btn blue"></button>
-                        <button class="grid-btn blue"></button>
-                        <button class="grid-btn blue"></button>
-                        <button class="grid-btn blue"></button>
-                        <button class="grid-btn blue"></button>
-                    </div>
-                    <div class="grid-row">
-                        <button class="grid-btn blue"></button>
-                        <button class="grid-btn blue"></button>
-                        <button class="grid-btn blue"></button>
-                        <button class="grid-btn blue"></button>
-                        <button class="grid-btn blue"></button>
-                    </div>
-                    <div class="grid-row">
-                        <button class="grid-btn white"></button>
-                        <button class="grid-btn white"></button>
-                    </div>
-                </div>
+            <!-- Data Tab -->
+            <div class="tab-panel ${x => x.activeRightTab === 'data' ? 'active' : ''}" data-tab="data">
+                <div class="pokemon-data-display" :innerHTML="${x => x.pokemonDataOutput}"></div>
             </div>
-            <div class="wing-section">
-                <div class="speaker-grille">
-                    <div class="grille-line"></div>
-                    <div class="grille-line"></div>
-                    <div class="grille-line"></div>
-                    <div class="grille-line"></div>
-                    <div class="grille-line"></div>
-                    <div class="grille-line"></div>
-                </div>
-            </div>
-            <div class="wing-section future-content">
-                <p>${'pokedex.mapContent'.t()}</p>
-                <div class="map-placeholder">
-                    <i class="fa fa-map"></i>
-                    <span>${'pokedex.comingSoon'.t()}</span>
+            
+            <!-- Map Tab -->
+            <div class="tab-panel ${x => x.activeRightTab === 'map' ? 'active' : ''}" data-tab="map">
+                <div class="map-section">
+                    <div class="map-placeholder">
+                        <i class="fa fa-map map-icon"></i>
+                        <h4>${'pokedex.rightWing.mapTitle'.t()}</h4>
+                        <p>${'pokedex.rightWing.mapWorkInProgress'.t()}</p>
+                        <div class="progress-indicator">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 25%"></div>
+                            </div>
+                            <span>25% Complete</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

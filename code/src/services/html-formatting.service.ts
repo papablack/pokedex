@@ -138,112 +138,135 @@ export class HtmlFormattingService extends RWSService {
 
         return `
             <div class="pokemon-info">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
-                    <h2 style="color: #e74c3c; margin: 0;"><i class="fa fa-star"></i> ${pokemon.species || 'Nieznany Pokémon'}</h2>
-                    <div style="display: flex; gap: 10px;">
-                        ${sprite ? `<img src="${sprite}" alt="${pokemon.species || 'Pokemon'}" style="width: 80px; height: 80px; image-rendering: pixelated;">` : ''}
-                        ${shinySprite ? `<img src="${shinySprite}" alt="${pokemon.species || 'Pokemon'} Shiny" style="width: 80px; height: 80px; image-rendering: pixelated; filter: brightness(1.2);">` : ''}
+                <div class="pokemon-header">
+                    <h2 class="pokemon-name"><i class="fa fa-star"></i> ${pokemon.species || 'Nieznany Pokémon'}</h2>
+                    <div class="bulbapedia-link">
+                        <a href="https://bulbapedia.bulbagarden.net/wiki/${encodeURIComponent(pokemon.species || 'Pokemon')}" target="_blank" class="bulbapedia-button">
+                            <i class="fa fa-external-link"></i> Bulbapedia
+                        </a>
+                    </div>
+                    <div class="pokemon-images">
+                        ${sprite ? `<img src="${sprite}" alt="${pokemon.species || 'Pokemon'}" class="pokemon-sprite">` : ''}
+                        ${shinySprite ? `<img src="${shinySprite}" alt="${pokemon.species || 'Pokemon'} Shiny" class="pokemon-sprite shiny">` : ''}
                     </div>
                 </div>
 
-                <div class="pokemon-details" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                <div class="pokemon-details">
                     <div>
-                        <p><strong style="color: #3498db;">🔢 Numer Pokedex:</strong> #${pokemon.num ? pokemon.num.toString().padStart(3, '0') : '000'}</p>
-                        <p><strong style="color: #27ae60;">🏷️ Typ:</strong> ${types.map((type: string, i: number) => 
-                            `<span style="background: ${typeColors[i]}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.9em;">${type}</span>`
-                        ).join(' ')}</p>
-                        <p><strong style="color: #3498db;">📏 Wzrost:</strong> ${pokemon.height || 0} m</p>
-                        <p><strong style="color: #9b59b6;">⚖️ Waga:</strong> ${pokemon.weight || 0} kg</p>
+                        <div class="detail-item"><span class="detail-label number">🔢 Numer Pokedex:</span> #${pokemon.num ? pokemon.num.toString().padStart(3, '0') : '000'}</div>
+                        <div class="detail-item"><span class="detail-label type">🏷️ Typ:</span> ${types.map((type: string, i: number) => 
+                            `<span class="type-badge" style="background: ${typeColors[i]};">${type}</span>`
+                        ).join(' ')}</div>
+                        <div class="detail-item"><span class="detail-label height">📏 Wzrost:</span> ${pokemon.height || 0} m</div>
+                        <div class="detail-item"><span class="detail-label weight">⚖️ Waga:</span> ${pokemon.weight || 0} kg</div>
                     </div>
                     <div>
-                        <p><strong style="color: #e67e22;">🎨 Kolor:</strong> ${pokemon.color || 'Nieznany'}</p>
-                        <p><strong style="color: #1abc9c;">⚡ Główna zdolność:</strong> ${pokemon.abilities?.first?.name || 'Brak'}</p>
-                        ${pokemon.abilities?.hidden ? `<p><strong style="color: #34495e;">🔮 Ukryta zdolność:</strong> ${pokemon.abilities.hidden.name}</p>` : ''}
+                        <div class="detail-item"><span class="detail-label color">🎨 Kolor:</span> ${pokemon.color || 'Nieznany'}</div>
+                        <div class="detail-item"><span class="detail-label ability">⚡ Główna zdolność:</span> ${pokemon.abilities?.first?.name || 'Brak'}</div>
+                        ${pokemon.abilities?.hidden ? `<div class="detail-item"><span class="detail-label hidden-ability">🔮 Ukryta zdolność:</span> ${pokemon.abilities.hidden.name}</div>` : ''}
                     </div>
                 </div>
 
-                <h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px;">📊 Statystyki bazowe</h3>
-                <div class="stats-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
-                    <div style="background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; padding: 10px; border-radius: 8px; text-align: center;">
-                        <strong>❤️ HP</strong><br>${pokemon.baseStats?.hp || 0}
-                    </div>
-                    <div style="background: linear-gradient(135deg, #26de81, #20bf6b); color: white; padding: 10px; border-radius: 8px; text-align: center;">
-                        <strong>⚔️ Atak</strong><br>${pokemon.baseStats?.attack || 0}
-                    </div>
-                    <div style="background: linear-gradient(135deg, #48dbfb, #0abde3); color: white; padding: 10px; border-radius: 8px; text-align: center;">
-                        <strong>🛡️ Obrona</strong><br>${pokemon.baseStats?.defense || 0}
-                    </div>
-                    <div style="background: linear-gradient(135deg, #ff9ff3, #f368e0); color: white; padding: 10px; border-radius: 8px; text-align: center;">
-                        <strong>✨ Sp.Atak</strong><br>${pokemon.baseStats?.specialattack || 0}
-                    </div>
-                    <div style="background: linear-gradient(135deg, #ff6348, #ff4757); color: white; padding: 10px; border-radius: 8px; text-align: center;">
-                        <strong>🛡️ Sp.Obrona</strong><br>${pokemon.baseStats?.specialdefense || 0}
-                    </div>
-                    <div style="background: linear-gradient(135deg, #7bed9f, #70a1ff); color: white; padding: 10px; border-radius: 8px; text-align: center;">
-                        <strong>💨 Szybkość</strong><br>${pokemon.baseStats?.speed || 0}
+                <div class="pokemon-section">
+                    <h3>📊 Statystyki bazowe</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item hp">
+                            <strong>❤️ HP</strong><br>${pokemon.baseStats?.hp || 0}
+                        </div>
+                        <div class="stat-item attack">
+                            <strong>⚔️ Atak</strong><br>${pokemon.baseStats?.attack || 0}
+                        </div>
+                        <div class="stat-item defense">
+                            <strong>🛡️ Obrona</strong><br>${pokemon.baseStats?.defense || 0}
+                        </div>
+                        <div class="stat-item sp-attack">
+                            <strong>✨ Sp.Atak</strong><br>${pokemon.baseStats?.specialattack || 0}
+                        </div>
+                        <div class="stat-item sp-defense">
+                            <strong>🛡️ Sp.Obrona</strong><br>${pokemon.baseStats?.specialdefense || 0}
+                        </div>
+                        <div class="stat-item speed">
+                            <strong>💨 Szybkość</strong><br>${pokemon.baseStats?.speed || 0}
+                        </div>
                     </div>
                 </div>
 
-                <h3 style="color: #2c3e50; border-bottom: 2px solid #27ae60; padding-bottom: 5px;">📖 Opis</h3>
-                <p style="background: #f8f9fa; padding: 15px; border-left: 4px solid #27ae60; border-radius: 5px; margin-bottom: 20px;">
-                    ${flavorText}
-                </p>
+                <div class="pokemon-section">
+                    <h3>📖 Opis</h3>
+                    <div class="description-box">
+                        ${flavorText}
+                    </div>
+                </div>
 
                 ${(allStrengths.size > 0 || allWeaknesses.size > 0) ? `
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    ${allStrengths.size > 0 ? `
-                    <div>
-                        <h4 style="color: #27ae60;">✅ Efektywny przeciwko:</h4>
-                        <div style="display: flex; flex-wrap: wrap; gap: 5px;">
-                            ${Array.from(allStrengths).map(type => 
-                                `<span style="background: #d5f5d5; color: #27ae60; padding: 4px 8px; border-radius: 12px; font-size: 0.85em;">${type}</span>`
-                            ).join('')}
-                        </div>
-                    </div>` : ''}
-                    ${allWeaknesses.size > 0 ? `
-                    <div>
-                        <h4 style="color: #e74c3c;">❌ Mało efektywny przeciwko:</h4>
-                        <div style="display: flex; flex-wrap: wrap; gap: 5px;">
-                            ${Array.from(allWeaknesses).map(type => 
-                                `<span style="background: #fdd5d5; color: #e74c3c; padding: 4px 8px; border-radius: 12px; font-size: 0.85em;">${type}</span>`
-                            ).join('')}
-                        </div>
-                    </div>` : ''}
+                <div class="pokemon-section">
+                    <div class="effectiveness-grid">
+                        ${allStrengths.size > 0 ? `
+                        <div>
+                            <h4 class="effective">✅ Efektywny przeciwko:</h4>
+                            <div class="effectiveness-list">
+                                ${Array.from(allStrengths).map(type => 
+                                    `<span class="effectiveness-badge strong">${type}</span>`
+                                ).join('')}
+                            </div>
+                        </div>` : ''}
+                        ${allWeaknesses.size > 0 ? `
+                        <div>
+                            <h4 class="not-effective">❌ Mało efektywny przeciwko:</h4>
+                            <div class="effectiveness-list">
+                                ${Array.from(allWeaknesses).map(type => 
+                                    `<span class="effectiveness-badge weak">${type}</span>`
+                                ).join('')}
+                            </div>
+                        </div>` : ''}
+                    </div>
                 </div>` : ''}
 
                 ${(pokemon.evolutions?.length > 0 || pokemon.preevolutions?.length > 0) ? `
-                <div style="margin-top: 20px;">
-                    <h4 style="color: #27ae60;">⚔️ Łańcuch ewolucji:</h4>
-                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; text-align: center; border: 2px solid #42a5f5; color: #2c3e50;">
-                        ${pokemon.preevolutions?.map((pre: any) => `<span style="color: #34495e;">${pre.species || 'Nieznany'}</span> <span style="color: #7f8c8d;">(Lvl ${pre.evolutionLevel || '?'})</span>`).join(' → ') || ''}
-                        ${pokemon.preevolutions?.length > 0 ? ' → ' : ''}<strong style="color: #2c3e50;">${pokemon.species || 'Nieznany Pokémon'}</strong>
-                        ${pokemon.evolutions?.length > 0 ? ' → ' : ''}${pokemon.evolutions?.map((evo: any) => `<span style="color: #34495e;">${evo.species || 'Nieznany'}</span> <span style="color: #7f8c8d;">(Lvl ${evo.evolutionLevel || '?'})</span>`).join(' → ') || ''}
+                <div class="pokemon-section">
+                    <h4 class="evolution">⚔️ Łańcuch ewolucji:</h4>
+                    <div class="evolution-chain">
+                        ${pokemon.preevolutions?.map((pre: any) => `<span>${pre.species || 'Nieznany'}</span> <span class="evolution-level">(Lvl ${pre.evolutionLevel || '?'})</span>`).join(' → ') || ''}
+                        ${pokemon.preevolutions?.length > 0 ? ' → ' : ''}<span class="current-pokemon">${pokemon.species || 'Nieznany Pokémon'}</span>
+                        ${pokemon.evolutions?.length > 0 ? ' → ' : ''}${pokemon.evolutions?.map((evo: any) => `<span>${evo.species || 'Nieznany'}</span> <span class="evolution-level">(Lvl ${evo.evolutionLevel || '?'})</span>`).join(' → ') || ''}
                     </div>
                 </div>` : ''}
 
                 ${pokemon.locations && pokemon.locations.length > 0 ? `
-                <div style="margin-top: 20px;">
-                    <h4 style="color: #8e44ad;">📍 Lokalizacje:</h4>
-                    <div style="background: #f3e5f5; padding: 15px; border-radius: 8px;">
-                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                            ${pokemon.locations.map((location: string) => 
-                                `<span style="background: #9c27b0; color: white; padding: 6px 12px; border-radius: 16px; font-size: 0.9em;">📍 ${location}</span>`
+                <div class="pokemon-section">
+                    <h4 class="locations">📍 Lokalizacje:</h4>
+                    <div class="locations-box">
+                        <div class="location-badges">
+                            ${pokemon.locations.map((location: any) => 
+                                `<span class="location-badge">📍 ${location.name || location}</span>`
                             ).join('')}
                         </div>
                     </div>
                 </div>` : ''}
 
-                <div style="margin-top: 20px; background: #e3f2fd; padding: 15px; border-radius: 8px;">
-                    <h4 style="color: #1976d2; margin-top: 0;">💡 Dodatkowe informacje:</h4>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
-                        ${pokemon.legendary ? '<span style="background: #ff6b6b; color: #c0392b; padding: 4px 8px; border-radius: 12px; font-size: 0.9em;">🏆 Legendarny</span>' : ''}
-                        ${pokemon.mythical ? '<span style="background: #e1bee7; color: #7b1fa2; padding: 4px 8px; border-radius: 12px; font-size: 0.9em;">✨ Mityczny</span>' : ''}
-                        ${pokemon.catchRate?.percentageWithOrdinaryPokeballAtFullHealth ? 
-                            `<span style="background: #c8e6c9; color: #2e7d32; padding: 4px 8px; border-radius: 12px; font-size: 0.9em;">🎯 Łapalność: ${pokemon.catchRate.percentageWithOrdinaryPokeballAtFullHealth}</span>` : ''}
-                        ${pokemon.gender?.male && pokemon.gender?.female ? 
-                            `<span style="background: #ffcdd2; color: #d32f2f; padding: 4px 8px; border-radius: 12px; font-size: 0.9em;">♂️ ${pokemon.gender.male} ♀️ ${pokemon.gender.female}</span>` : ''}
-                        ${pokemon.eggGroups && pokemon.eggGroups.length > 0 ? 
-                            `<span style="background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 12px; font-size: 0.9em;">🥚 ${pokemon.eggGroups.join(', ')}</span>` : ''}
+                ${pokemon.generation ? `
+                <div class="pokemon-section">
+                    <h4 class="generation">🎮 Generacja:</h4>
+                    <div class="generation-box">
+                        <span class="generation-badge">
+                            ${pokemon.generation.name.replace('-', ' ').toUpperCase()} (#${pokemon.generation.id})
+                        </span>
+                    </div>
+                </div>` : ''}
+
+                <div class="pokemon-section">
+                    <div class="additional-info-box">
+                        <h4 class="additional-info">💡 Dodatkowe informacje:</h4>
+                        <div class="info-grid">
+                            ${pokemon.legendary ? '<span class="info-badge legendary">🏆 Legendarny</span>' : ''}
+                            ${pokemon.mythical ? '<span class="info-badge mythical">✨ Mityczny</span>' : ''}
+                            ${pokemon.catchRate?.percentageWithOrdinaryPokeballAtFullHealth ? 
+                                `<span class="info-badge catch-rate">🎯 Łapalność: ${pokemon.catchRate.percentageWithOrdinaryPokeballAtFullHealth}</span>` : ''}
+                            ${pokemon.gender?.male && pokemon.gender?.female ? 
+                                `<span class="info-badge gender">♂️ ${pokemon.gender.male} ♀️ ${pokemon.gender.female}</span>` : ''}
+                            ${pokemon.eggGroups && pokemon.eggGroups.length > 0 ? 
+                                `<span class="info-badge egg-groups">🥚 ${pokemon.eggGroups.join(', ')}</span>` : ''}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -258,27 +281,42 @@ export class HtmlFormattingService extends RWSService {
 
         return `Jesteś ekspertem Pokemon który komentuje dane już wyświetlone powyżej.
 Odpowiadaj WYŁĄCZNIE w języku ${langMap[language]}.
+FORMATUJ odpowiedzi w CZYSTYM HTML używając klas CSS (bez inline styles).
 
 KOMPLETNE DANE POKEMON SĄ JUŻ WYŚWIETLONE POWYŻEJ!
 
-Twoim zadaniem jest TYLKO skomentować te dane w zwykłym tekście:
-- Dodaj ciekawostki i mało znane fakty
-- Opisz strategie walki i zastosowanie
-- Porównaj z innymi Pokemonami
-- Opowiedz o miejscach występowania w grach
-- Wspomnij o ewolucji i metodach
-- Podziel się poradami dla trenerów
+Twoim zadaniem jest TYLKO skomentować te dane w stylizowanym tekście:
 
-UŻYWAJ:
-- Zwykłych paragrafów <p>
-- Nagłówków <h3>, <h4>
-- List <ul><li>
-- Pogrubień <strong>
-- Emoji dla urozmaicenia
+UŻYWAJ TEGO STYLU HTML Z KLASAMI:
+<div class="ai-response-section">
+<h3 class="ai-section-title">🎯 [NAGŁÓWEK]</h3>
+<p class="ai-paragraph">Treść paragrafu...</p>
+<ul class="ai-list">
+<li class="ai-list-item">• Element listy</li>
+</ul>
+</div>
+
+DOSTĘPNE KLASY CSS:
+- .ai-response-section - główny kontener sekcji
+- .ai-section-title - nagłówki sekcji (różne kolory)
+- .ai-paragraph - paragrafy tekstowe
+- .ai-list - listy bez kropek
+- .ai-list-item - elementy list
+- .ai-highlight - wyróżnienia
+- .ai-strategy - sekcje strategii
+- .ai-facts - sekcje ciekawostek
+
+DODAJ TREŚĆ:
+- Ciekawostki i mało znane fakty 💡
+- Strategie walki i zastosowanie ⚔️
+- Porównania z innymi Pokemonami 📊
+- Miejsca występowania w grach 📍
+- Ewolucje i metody 🔄
+- Porady dla trenerów 🎯
 
 NIE TWÓRZ:
 - Tabel statystyk ❌
-- Kart Pokemon ❌  
+- Kart Pokemon ❌
 - Schematów danych ❌
 - Duplikowania informacji już pokazanych ❌
 
@@ -293,109 +331,120 @@ Bądź jak entuzjastyczny trener Pokemon dzielący się wiedzą!`;
 
         return `Jesteś zaawansowanym Pokedexem AI - encyklopedią Pokémonów. 
 Odpowiadaj WYŁĄCZNIE w języku ${langMap[language]}.
-FORMATUJ odpowiedzi w CZYSTYM HTML bez znaczników <html>, <body> czy <head>.
+FORMATUJ odpowiedzi w CZYSTYM HTML używając klas CSS (bez inline styles).
 
 Gdy użytkownik pyta o Pokémona, podaj informacje w następującym formacie HTML:
 
-<div class="pokemon-info">
-<h2 style="color: #e74c3c; margin-bottom: 15px;"><i class="fa fa-star"></i> NAZWA POKÉMONA</h2>
+<div class="ai-pokemon-response">
+<h2 class="ai-pokemon-title"><i class="fa fa-star"></i> NAZWA POKÉMONA</h2>
 
-<div class="pokemon-details" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+<div class="ai-pokemon-details">
 <div>
-<p><strong style="color: #3498db;">🔢 Numer Pokedex:</strong> #XXX</p>
-<p><strong style="color: #27ae60;">🏷️ Typ:</strong> <span class="pokemon-type">TYP1/TYP2</span></p>
-<p><strong style="color: #3498db;">📏 Wzrost:</strong> X.X m</p>
-<p><strong style="color: #9b59b6;">⚖️ Waga:</strong> XX kg</p>
+<p class="ai-detail-item"><strong class="ai-detail-label number">🔢 Numer Pokedex:</strong> #XXX</p>
+<p class="ai-detail-item"><strong class="ai-detail-label type">🏷️ Typ:</strong> <span class="pokemon-type">TYP1/TYP2</span></p>
+<p class="ai-detail-item"><strong class="ai-detail-label height">📏 Wzrost:</strong> X.X m</p>
+<p class="ai-detail-item"><strong class="ai-detail-label weight">⚖️ Waga:</strong> XX kg</p>
 </div>
 <div>
-<p><strong style="color: #e67e22;">🌍 Region:</strong> REGION</p>
-<p><strong style="color: #1abc9c;">⚡ Główna zdolność:</strong> ZDOLNOŚĆ</p>
-<p><strong style="color: #34495e;">🔮 Ukryta zdolność:</strong> ZDOLNOŚĆ</p>
+<p class="ai-detail-item"><strong class="ai-detail-label region">🌍 Region:</strong> REGION</p>
+<p class="ai-detail-item"><strong class="ai-detail-label ability">⚡ Główna zdolność:</strong> ZDOLNOŚĆ</p>
+<p class="ai-detail-item"><strong class="ai-detail-label hidden-ability">🔮 Ukryta zdolność:</strong> ZDOLNOŚĆ</p>
 </div>
 </div>
 
-<h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px;">📊 Statystyki bazowe</h3>
-<div class="stats-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
-<div style="background: #ecf0f1; padding: 8px; border-radius: 5px; text-align: center;">
-<strong style="color: #e74c3c;">❤️ HP:</strong> XXX
+<h3 class="ai-section-header stats">📊 Statystyki bazowe</h3>
+<div class="ai-stats-grid">
+<div class="ai-stat-item hp">
+<strong class="stat-label hp">❤️ HP:</strong> XXX
 </div>
-<div style="background: #ecf0f1; padding: 8px; border-radius: 5px; text-align: center;">
-<strong style="color: #e74c3c;">⚔️ Atak:</strong> XXX
+<div class="ai-stat-item attack">
+<strong class="stat-label attack">⚔️ Atak:</strong> XXX
 </div>
-<div style="background: #ecf0f1; padding: 8px; border-radius: 5px; text-align: center;">
-<strong style="color: #27ae60;">🛡️ Obrona:</strong> XXX
+<div class="ai-stat-item defense">
+<strong class="stat-label defense">🛡️ Obrona:</strong> XXX
 </div>
-<div style="background: #ecf0f1; padding: 8px; border-radius: 5px; text-align: center;">
-<strong style="color: #9b59b6;">✨ Sp.Atak:</strong> XXX
+<div class="ai-stat-item sp-attack">
+<strong class="stat-label sp-attack">✨ Sp.Atak:</strong> XXX
 </div>
-<div style="background: #ecf0f1; padding: 8px; border-radius: 5px; text-align: center;">
-<strong style="color: #1abc9c;">🛡️ Sp.Obrona:</strong> XXX
+<div class="ai-stat-item sp-defense">
+<strong class="stat-label sp-defense">🛡️ Sp.Obrona:</strong> XXX
 </div>
-<div style="background: #ecf0f1; padding: 8px; border-radius: 5px; text-align: center;">
-<strong style="color: #3498db;">💨 Szybkość:</strong> XXX
+<div class="ai-stat-item speed">
+<strong class="stat-label speed">💨 Szybkość:</strong> XXX
 </div>
 </div>
 
-<h3 style="color: #2c3e50; border-bottom: 2px solid #27ae60; padding-bottom: 5px;">📖 Opis</h3>
-<p style="background: #f8f9fa; padding: 15px; border-left: 4px solid #27ae60; border-radius: 5px; margin-bottom: 20px;">
+<h3 class="ai-section-header description">📖 Opis</h3>
+<div class="ai-description-box">
 OPIS POKÉMONA
-</p>
+</div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div class="ai-effectiveness-container">
 <div>
-<h4 style="color: #27ae60;">✅ Mocny przeciwko:</h4>
-<ul style="list-style: none; padding: 0;">
-<li style="background: #d5f5d5; padding: 5px; margin: 3px 0; border-radius: 3px;">• TYP</li>
+<h4 class="ai-effectiveness-title effective">✅ Mocny przeciwko:</h4>
+<ul class="ai-effectiveness-list">
+<li class="ai-effectiveness-item strong">• TYP</li>
 </ul>
 </div>
 <div>
-<h4 style="color: #e74c3c;">❌ Słaby przeciwko:</h4>
-<ul style="list-style: none; padding: 0;">
-<li style="background: #fdd5d5; padding: 5px; margin: 3px 0; border-radius: 3px;">• TYP</li>
+<h4 class="ai-effectiveness-title not-effective">❌ Słaby przeciwko:</h4>
+<ul class="ai-effectiveness-list">
+<li class="ai-effectiveness-item weak">• TYP</li>
 </ul>
 </div>
 </div>
 
-<div style="margin-top: 20px;">
-<h4 style="color: #27ae60;">⚔️ Ewolucje:</h4>
-<div style="background: #e8f5e8; padding: 10px; border-radius: 5px; border-left: 4px solid #4caf50;">
+<div class="ai-evolution-section">
+<h4 class="ai-section-title evolution">⚔️ Ewolucje:</h4>
+<div class="ai-evolution-info">
 INFORMACJE O EWOLUCJI
 </div>
 </div>
 
-<div style="margin-top: 15px; background: #e3f2fd; padding: 15px; border-radius: 8px;">
-<h4 style="color: #1976d2; margin-top: 0;">💡 Ciekawostki:</h4>
-<p>CIEKAWOSTKI O POKÉMONIE</p>
+<div class="ai-facts-section">
+<h4 class="ai-section-title facts">💡 Ciekawostki:</h4>
+<p class="ai-facts-content">CIEKAWOSTKI O POKÉMONIE</p>
 </div>
 </div>
 
-Używaj kolorowych stylów CSS inline i emoji. Bądź entuzjastyczny jak prawdziwy Pokedex!
+Używaj klas CSS zamiast inline styles. Bądź entuzjastyczny jak prawdziwy Pokedex!
 
 MOŻESZ POMAGAĆ Z:
 1. Informacjami o Pokémonach (statystyki, typy, zdolności)
 2. Lokalizacjami Pokémonów w grach (gdzie znaleźć, jak złapać)
 3. Mechanikami gier Pokemon (ewolucja, przedmioty, strategie)
 4. Przewodnikami po regionach (Kanto, Johto, Hoenn, itp.)
+5. Grami Pokemon (oficjalne i fan-made, włączając PokéMMO, ROM hacki, itp.)
+6. Społecznością Pokemon i kulturą
 
 Dla pytań o lokalizacje Pokemon:
 - Podaj konkretne miejsca, drogi, miasta
 - Wymień poziomy, warunki pogodowe, pory dnia
 - Opisz metody łapania (wędkowanie, surfowanie, itp.)
-- Użyj kolorowego HTML z emoji
+- Użyj klas CSS z emoji
 
 WAŻNE: Jeśli dane Pokemon zostały już wyświetlone powyżej w formatowanej tabeli/karcie, NIE TWÓRZ kolejnej tabeli/schematu!
-Zamiast tego podaj TYLKO zwykły tekst konwersacyjny z:
+Zamiast tego podaj TYLKO zwykły tekst konwersacyjny z klasami CSS:
 - Ciekawostkami i dodatkowymi informacjami
 - Strategiami walki i poradami
 - Historią i ciekawymi faktami
 - Porównaniami z innymi Pokemonami
-Używaj zwykłego HTML (paragrafy, nagłówki, listy) ale BEZ tabel i schematu danych!
+Używaj klas CSS (paragrafy, nagłówki, listy) ale BEZ tabel i schematu danych!
 
-TYLKO jeśli pytanie dotyczy czegoś całkowicie niezwiązanego z Pokemon (np. pogoda, polityka), odpowiedz: 
-<div style="text-align: center; padding: 20px; background: #f3e5f5; border-radius: 10px; border: 2px solid #9c27b0;">
-<h3 style="color: #7b1fa2;">🤖 Jestem Pokedexem AI!</h3>
-<p>Mogę pomóc z informacjami o Pokémonach i grach Pokemon. Zapytaj mnie o swojego ulubionego Pokémona lub jak go znaleźć! 🔍✨</p>
-</div>`;
+REGUŁA: Jeśli pytanie zawiera JAKIEKOLWIEK z tych słów: "poke", "pokemon", "pokémon", "pokemmo", "pokeball" - ZAWSZE odpowiadaj normalnie i NIE UŻYWAJ fallback message.
+
+FALLBACK używaj TYLKO gdy pytanie dotyczy czegoś całkowicie niezwiązanego z Pokemon (pogoda, polityka, matematyka, inne gry niż Pokemon).
+
+<div class="ai-fallback-message">
+<h3 class="ai-fallback-title">🤖 Jestem Pokedexem AI!</h3>
+<p class="ai-fallback-text">Mogę pomóc z informacjami o Pokémonach i grach Pokemon. Zapytaj mnie o swojego ulubionego Pokémona lub jak go znaleźć! 🔍✨</p>
+</div>
+
+PRZYKŁADY KIEDY ODPOWIADAĆ NORMALNIE:
+- "co to jest pokemmo?" → ODPOWIADAJ (zawiera "poke")
+- "what is pokemmo?" → ODPOWIADAJ (zawiera "poke") 
+- "pokemon games" → ODPOWIADAJ (zawiera "pokemon")
+- "jak działa pokeball?" → ODPOWIADAJ (zawiera "poke")`;
     }
 }
 
