@@ -40,6 +40,7 @@ export default {
     'pokedex.settingsCleared': 'Ustawienia wyczyszczone',
     'pokedex.enterPokemonName': 'Wpisz nazwę Pokémona!',
     'pokedex.configureApiFirst': 'Najpierw skonfiguruj klucz API w ustawieniach!',
+    'pokedex.search_input': 'Pole wyszukiwania',
     'pokedex.enterPokemon': 'Wpisz nazwę Pokémona...',
     'pokedex.search': 'Szukaj',
     'pokedex.analyzing': 'Analizuję',

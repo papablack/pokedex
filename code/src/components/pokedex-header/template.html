@@ -18,12 +18,12 @@
     <div class="status-controls">                
         <button class="btn-wing-toggle" 
                 @click="${x => x.handleWingToggle()}" 
-                :title="'pokedex.togglePanel'.t()"
+                title="'pokedex.togglePanel'.t()"
                 style="display: ${x => x.pokemonData ? 'block' : 'none'}">
             <i class="fa ${x => x.rightWingVisible ? 'fa-chevron-right' : 'fa-chevron-left'}"></i>
         </button>
         
-        <button class="btn-settings" @click="${x => x.handleSettingsClick()}" :title="'pokedex.settings'.t()">
+        <button class="btn-settings" @click="${x => x.handleSettingsClick()}" title="'pokedex.settings'.t()">
             <i class="fa fa-cog"></i>
         </button>
     </div>

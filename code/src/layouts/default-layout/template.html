@@ -1,4 +1,12 @@
 <div id="root_layout">
+    <!-- App Title Bar with Close Button - Only show in Electron -->
+    <div class="app-title-bar" :class="${x => x.isElectron ? '' : 'hidden'}">
+        <div class="app-title">AI Pokedex</div>
+        <button class="app-close-btn" @click="${x => x.closeApp()}" title="Close Application">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+    
     <!-- Notification Container managed by DefaultLayout -->
     <div class="notifications-container">
         ${repeat(x => x.notifications, html`
@@ -19,7 +27,7 @@
         `)}
     </div>
     
-    <main>
+    <main class="main-content">
         <div class="container-fluid">
             <div class="dashboard-wrapper">
                 <rws-router :currentUrl="${ x => x.currentUrl}" />

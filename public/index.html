@@ -41,5 +41,30 @@
 <body>
    <default-layout></default-layout>
    <script src="/js/poke.rws.js"></script>
+   
+   <script>
+   // Listen for Electron ready signal
+   window.addEventListener('electron-ready', (event) => {
+       console.log('Electron ready event received, rebuilding layout');
+       
+       // Find and remove existing default-layout
+       const existingLayout = document.querySelector('default-layout');
+       if (existingLayout) {
+           existingLayout.remove();
+       }
+       
+       // Create new default-layout with electron attribute
+       const newLayout = document.createElement('default-layout');
+       newLayout.setAttribute('is-electron', 'true');
+       document.body.insertBefore(newLayout, document.body.firstChild);
+       
+       console.log('New electron layout created');
+       
+       // Enable dev console if in dev mode
+       if (event.detail.isDev && window.electronAPI) {
+           console.log('Development mode enabled - DevTools should be available');
+       }
+   });
+   </script>
 </body>
 </html>

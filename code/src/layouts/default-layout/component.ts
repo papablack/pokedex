@@ -15,6 +15,7 @@ class DefaultLayout extends RWSViewComponent {
     @observable currentPage: string;
     @observable currentUrl: string = '/';
     @observable notifications: NotifyType[] = [];
+    @attr({ mode: 'boolean'}) isElectron: boolean = false;
 
     // Static instance for global access
     private static instance: DefaultLayout | null = null;
@@ -28,6 +29,14 @@ class DefaultLayout extends RWSViewComponent {
 
     async connectedCallback(): Promise<void> {
         super.connectedCallback();
+
+        // Detect if running in Electron
+        this.isElectron = this.detectElectron();
+        
+        // Add electron class to body for CSS targeting
+        if (this.isElectron) {
+            document.body.classList.add('electron-app');
+        }
 
         listenRouter.bind(this)();
         listenNotify.bind(this)(); 
@@ -120,6 +129,53 @@ class DefaultLayout extends RWSViewComponent {
     // Method to remove notification by index (kept for template compatibility)
     removeNotificationByIndex(index: number) {
         this.notifications = this.notifications.filter((_, itemIndex) => itemIndex !== index);
+    }
+    
+    // Method to detect if running in Electron
+    private detectElectron(): boolean {
+        // Check for Electron-specific properties
+        const isElectron = !!(window && ((window as any).require || (window as any).electronAPI || 
+                 (window as any).process?.type === 'renderer' || 
+                 (navigator.userAgent.toLowerCase().indexOf('electron') > -1)));
+        
+        // Add body class for CSS styling
+        if (isElectron) {
+            document.body.classList.add('electron-app');
+        } else {
+            document.body.classList.remove('electron-app');
+        }
+        
+        return isElectron;
+    }
+    
+    // Method to close the Electron app
+    closeApp() {
+        console.log('Close button clicked, isElectron:', this.isElectron);
+        
+        // Check if we're in Electron environment
+        if (this.isElectron) {
+            try {
+                // Try different Electron APIs
+                if ((window as any).electronAPI && (window as any).electronAPI.closeApp) {
+                    (window as any).electronAPI.closeApp();
+                } else if ((window as any).require) {
+                    const { remote } = (window as any).require('electron');
+                    const currentWindow = remote.getCurrentWindow();
+                    currentWindow.close();
+                } else {
+                    // Alternative approach
+                    window.close();
+                }
+            } catch (error) {
+                console.error('Failed to close app via Electron API:', error);
+                // Fallback to window.close() 
+                window.close();
+            }
+        } else {
+            console.log('Not in Electron, using window.close()');
+            // Fallback for non-Electron environments
+            window.close();
+        }
     }
 }
 

@@ -10,10 +10,11 @@
     "watch": "rws build front --watch",
     "start": "node server.js",
     "dev": "node server.js",
-    "electron:build": "tsc -p electron/tsconfig.json && electron-builder",
-    "electron:dev": "tsc -p electron/tsconfig.json && electron .",
-    "full:build": "yarn build && tsc -p electron/tsconfig.json && electron-builder",
-    "full:dev": "yarn build && tsc -p electron/tsconfig.json && electron ."
+    "preload:build": "tsc -p preload/tsconfig.json",
+    "electron:build": "yarn preload:build && tsc -p electron/tsconfig.json && electron-builder",
+    "electron:dev": "yarn preload:build && tsc -p electron/tsconfig.json && electron .",
+    "full:build": "yarn build && yarn preload:build && tsc -p electron/tsconfig.json && electron-builder",
+    "full:dev": "yarn build && yarn preload:build && tsc -p electron/tsconfig.json && electron ."
   },
   "main": "dist/electron/main.js",
   "dependencies": {

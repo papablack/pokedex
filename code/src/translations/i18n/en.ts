@@ -40,6 +40,7 @@ export default {
     'pokedex.settingsCleared': 'Settings cleared',
     'pokedex.enterPokemonName': 'Enter Pokémon name!',
     'pokedex.configureApiFirst': 'Configure API key in settings first!',
+    'pokedex.search_input': 'Search input field',
     'pokedex.enterPokemon': 'Enter Pokémon name...',
     'pokedex.search': 'Search',
     'pokedex.analyzing': 'Analyzing',

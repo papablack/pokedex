@@ -1,6 +1,7 @@
 <div class="input-section">
     <div class="search-row">
         <input 
+            title="${'pokedex.search_input'.t()}"
             type="text" 
             class="pokemon-input" 
             ${ref('searchInput')}
@@ -8,6 +9,7 @@
             @keyup="${(x, c) => x.handleKeyUp(c.event)}"
         >
         <button 
+            title="${'pokedex.search'.t()}"
             class="btn-search" 
             @click="${x => x.handleSearch()}" 
             :disabled="${x => x.isGenerating}">

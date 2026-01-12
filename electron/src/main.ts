@@ -1,10 +1,31 @@
-import { app, BrowserWindow, Menu, shell } from 'electron';
+import { app, BrowserWindow, Menu, shell, ipcMain } from 'electron';
 import * as path from 'path';
 import express from 'express';
 import { AddressInfo } from 'net';
+import dotenv from 'dotenv';
+
+const rootDir = path.join(__dirname, '../../');
+
+try {
+  const envPath = path.join(rootDir, '.env');
+  console.log('Loading .env from:', envPath);
+  dotenv.config({ path: envPath });
+  console.log('Environment variables loaded');
+  console.log('DEV environment variable:', process.env.DEV);
+  console.log('NODE_ENV:', process.env.NODE_ENV);
+} catch (error) {
+  console.log('Could not load .env file:', error instanceof Error ? error.message : String(error));
+  console.log('Using default environment');
+}
 
 // Enable live reload for development
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === 'development' || process.env.DEV === '1';
+console.log('isDev determined as:', isDev);
+
+// Force dev tools open if DEV=1
+if (process.env.DEV === '1') {
+  console.log('DEV=1 detected, will force DevTools open');
+}
 
 let mainWindow: BrowserWindow | null;
 let server: any;
@@ -14,13 +35,13 @@ const createServer = (): Promise<number> => {
     const expressApp = express();
     
     // Serve static files from the public directory
-    expressApp.use(express.static(path.join(__dirname, '../../../public')));
+    expressApp.use(express.static(path.join(rootDir, 'public')));
 
     // Handle SPA routing - serve index.html for all unmatched routes
     expressApp.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
       // If the request is for a file that doesn't exist, serve index.html
       if (!req.url.includes('.')) {
-        res.sendFile(path.join(__dirname, '../../../public', 'index.html'));
+        res.sendFile(path.join(rootDir, 'public', 'index.html'));
       } else {
         next();
       }
@@ -44,17 +65,19 @@ const createWindow = async (): Promise<void> => {
   // Create the browser window
   mainWindow = new BrowserWindow({
     width: 1200,
-    height: 800,
+    height: 900,
     minWidth: 800,
-    minHeight: 600,
+    minHeight: 700,
+    frame: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      webSecurity: true
+      webSecurity: true,
+      preload: path.join(rootDir, 'dist', 'preload.js') // Use compiled preload from dist
     },
-    icon: path.join(__dirname, '../../../public', 'icon.png'), // Add your icon
+    icon: path.join(rootDir, 'public', 'icon.png'), // Add your icon
     show: true, // Show immediately for debugging
-    titleBarStyle: 'default'
+    titleBarStyle: 'hidden'
   });
 
   console.log('Window created');
@@ -69,6 +92,20 @@ const createWindow = async (): Promise<void> => {
   try {
     await mainWindow.loadURL(`http://localhost:${port}`);
     console.log('URL loaded successfully');
+    
+    // Force open dev tools immediately if DEV=1 is set
+    if (process.env.DEV === '1' || isDev) {
+      console.log('Forcing DevTools open immediately (DEV=1 or isDev=true)');
+      mainWindow.webContents.openDevTools();
+      
+      // Also try after a short delay in case it needs DOM to be ready
+      setTimeout(() => {
+        if (mainWindow && !mainWindow.isDestroyed()) {
+          console.log('Opening DevTools again after delay');
+          mainWindow.webContents.openDevTools();
+        }
+      }, 1000);
+    }
   } catch (error) {
     console.error('Failed to load URL:', error);
   }
@@ -80,8 +117,9 @@ const createWindow = async (): Promise<void> => {
       mainWindow.show();
       console.log('Window shown');
       
-      // Focus on window
+      // Focus on window and open dev tools in dev mode
       if (isDev) {
+        console.log('Opening DevTools again in ready-to-show (DEV mode)');
         mainWindow.webContents.openDevTools();
       }
     }
@@ -103,6 +141,14 @@ const createWindow = async (): Promise<void> => {
     return { action: 'deny' };
   });
 };
+
+// IPC Handlers
+ipcMain.on('app-close', () => {
+  console.log('Main process: app-close received');
+  if (mainWindow) {
+    mainWindow.close();
+  }
+});
 
 // This method will be called when Electron has finished initialization
 app.whenReady().then(async () => {
