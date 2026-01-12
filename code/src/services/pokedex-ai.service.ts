@@ -287,7 +287,7 @@ export class PokedexAiService extends RWSService {
         const model = this.generateModelObject(this.settings.model);
 
         try {
-            const { textStream } = streamText({
+            const stream = streamText({
                 model,
                 messages: [
                     { role: 'system', content: systemPrompt },
@@ -296,10 +296,11 @@ export class PokedexAiService extends RWSService {
                 temperature: this.settings.temperature,
             });
 
-            for await (const chunk of textStream) {
+            for await (const chunk of stream.textStream) {
                 yield chunk;
             }
         } catch (error) {
+          
             if (this.isRateLimitError(error)) {
                 console.warn('Rate limit hit in streamAIResponse:', error);
                 this.notificationService.showWarning('pokedx.rateLimitWait');
