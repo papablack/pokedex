@@ -144,7 +144,6 @@ const createWindow = async (): Promise<void> => {
 
 // IPC Handlers
 ipcMain.on('app-close', () => {
-  console.log('Main process: app-close received');
   if (mainWindow) {
     mainWindow.close();
   }

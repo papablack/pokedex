@@ -2,38 +2,71 @@
 
 // @include adapt-component(true);
 
-// Custom title bar for frameless window
+// Custom title bar for frameless window - transparent and seamless
 .app-title-bar {
     height: 32px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: transparent; // Make transparent
     display: flex;
     justify-content: space-between;
+    margin-bottom: 10px;
     align-items: center;
     padding: 0 16px;
-    color: white;
+    color: rgba(255, 255, 255, 0.9);
     font-weight: 600;
     font-size: 14px;
-    -webkit-app-region: drag; // Make the title bar draggable    
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    -webkit-app-region: no-drag; // Make title bar non-draggable by default
     z-index: 10000;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
+    transition: background-color 0.3s ease;
+    
+    // Show subtle background on hover
+    &:hover {
+        background: rgba(0, 0, 0, 0.1);        
+    }
 
     &.hidden {
         display: none !important;
     }
 
-    .app-title {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-weight: 600;
-        letter-spacing: 0.5px;
+    .app-drag-btn {
+        -webkit-app-region: drag; // Only this button is draggable
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: white;
+        font-size: 16px;
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: grab;
+        transition: all 0.2s ease;
+        position: relative;
+        z-index: 10001;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        &:active {
+            cursor: grabbing;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0.95);
+        }
+
+        i {
+            font-size: 14px;
+        }
     }
 
     .app-close-btn {
         -webkit-app-region: no-drag; // Make the close button clickable
-        background: transparent;
+        background: rgba(255, 255, 255, 0.1);
         border: none;
         color: white;
         font-size: 16px;
@@ -64,47 +97,43 @@
     }
 }
 
-// Global draggable area for Electron
+:host {
+    display: block;
+    height: 100vh;
+    width: 100%;
+    position: relative;
+}
+
+// Remove global dragging, only drag button handles window dragging
 body.electron-app {
-    -webkit-app-region: drag;
-    
-    // Make interactive elements non-draggable
-    button, input, textarea, select, a, [role="button"], .clickable,
-    .dashboard-wrapper, .container-fluid, .main-content {
-        -webkit-app-region: no-drag;
-    }
+    // No global dragging - only the drag button handles this
     
     // Adjust main content for title bar in Electron
     main {
         margin-top: 32px; // Account for title bar in Electron
     }
-    
-    // Make empty areas draggable
-    .pokedex-main {
-        -webkit-app-region: drag;
-        
-        // But make content non-draggable
-        .main-wrapper, .content-area {
-            -webkit-app-region: no-drag;
-        }
-    }
 }
 
 #root_layout {
     height: 100vh;
+    width: 100vw;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    position: relative;
 }
 
 #root {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    width: 100vw;
     overflow: hidden;
+    position: relative;
 
     &.not-logged {
         height: 100vh;
+        width: 100vw;
     }
 }
 
@@ -114,12 +143,15 @@ main {
     flex-direction: column;
     margin-bottom: 0px;
     overflow: hidden;
+    width: 100%;
+    height: calc(100vh - 32px); // Account for title bar
     
     .container-fluid {
         flex: 1;
         display: flex;
         flex-direction: column;
         padding: 0;
+        width: 100%;
         height: 100%;
         overflow: hidden;
         
@@ -127,6 +159,7 @@ main {
             flex: 1;
             display: flex;
             flex-direction: column;
+            width: 100%;
             height: 100%;
             overflow: hidden;
         }
