@@ -99,7 +99,11 @@ export class PokedexMain extends RWSViewComponent {
             return;
         }
 
-        if (!this.settingsService.isConfigured()) {
+        // Check if we're in free mode (using default free key) - allow operation
+        const currentSettings = this.settingsService.getSettings();
+        const isFreeMode = PokedexSettingsServiceInstance.isFreeMode(currentSettings);
+        
+        if (!isFreeMode && !this.settingsService.isConfigured()) {
             this.showSettings = true;
             this.notificationService.configurationNeeded();
             return;
@@ -239,43 +243,14 @@ export class PokedexMain extends RWSViewComponent {
         this.searchPokemon(pokemonName);
     }
 
-    private formatPokemonText(text: string): string {
-        return text
-            // Headers
-            .replace(/^### (.+)$/gm, '<strong style=\"color:#d63031;font-size:16px;\">$1</strong>')
-            .replace(/^## (.+)$/gm, '<strong style=\"color:#d63031;font-size:18px;\">$1</strong>')
-            .replace(/^# (.+)$/gm, '<strong style=\"color:#d63031;font-size:20px;\">$1</strong>')
-            // Bold
-            .replace(/\\*\\*(.+?)\\*\\*/g, '<strong>$1</strong>')
-            // Italic
-            .replace(/\\*(.+?)\\*/g, '<em>$1</em>')
-            // New lines
-            .replace(/\\n/g, '<br>')
-            // Horizontal lines
-            .replace(/---/g, '<hr style=\"border-color:#2d3436;margin:10px 0;\">')
-            // Colorful Pokemon types
-            .replace(/(Ogień|Fire)/gi, '<span style=\"background:#ff7675;padding:1px 5px;border-radius:3px;\">$1</span>')
-            .replace(/(Woda|Water)/gi, '<span style=\"background:#74b9ff;padding:1px 5px;border-radius:3px;\">$1</span>')
-            .replace(/(Trawa|Grass)/gi, '<span style=\"background:#55efc4;padding:1px 5px;border-radius:3px;\">$1</span>')
-            .replace(/(Elektryczny|Electric)/gi, '<span style=\"background:#ffeaa7;padding:1px 5px;border-radius:3px;\">$1</span>')
-            .replace(/(Psychiczny|Psychic)/gi, '<span style=\"background:#fd79a8;padding:1px 5px;border-radius:3px;\">$1</span>')
-            .replace(/(Latający|Flying)/gi, '<span style=\"background:#a29bfe;padding:1px 5px;border-radius:3px;\">$1</span>')
-            .replace(/(Ziemia|Ground)/gi, '<span style=\"background:#dfe6e9;padding:1px 5px;border-radius:3px;\">$1</span>')
-            .replace(/(Skała|Rock)/gi, '<span style=\"background:#b2bec3;padding:1px 5px;border-radius:3px;\">$1</span>')
-            .replace(/(Duch|Ghost)/gi, '<span style=\"background:#6c5ce7;color:white;padding:1px 5px;border-radius:3px;\">$1</span>')
-            .replace(/(Smok|Dragon)/gi, '<span style=\"background:#0984e3;color:white;padding:1px 5px;border-radius:3px;\">$1</span>')
-            .replace(/(Ciemność|Dark)/gi, '<span style=\"background:#2d3436;color:white;padding:1px 5px;border-radius:3px;\">$1</span>')
-            .replace(/(Stal|Steel)/gi, '<span style=\"background:#636e72;color:white;padding:1px 5px;border-radius:3px;\">$1</span>')
-            .replace(/(Wróżka|Fairy)/gi, '<span style=\"background:#fab1a0;padding:1px 5px;border-radius:3px;\">$1</span>')
-            .replace(/(Lód|Ice)/gi, '<span style=\"background:#81ecec;padding:1px 5px;border-radius:3px;\">$1</span>')
-            .replace(/(Walka|Fighting)/gi, '<span style=\"background:#e17055;color:white;padding:1px 5px;border-radius:3px;\">$1</span>')
-            .replace(/(Trucizna|Poison)/gi, '<span style=\"background:#a55eea;color:white;padding:1px 5px;border-radius:3px;\">$1</span>')
-            .replace(/(Robak|Bug)/gi, '<span style=\"background:#badc58;padding:1px 5px;border-radius:3px;\">$1</span>')
-            .replace(/(Normalny|Normal)/gi, '<span style=\"background:#dfe6e9;padding:1px 5px;border-radius:3px;\">$1</span>');
-    }
-
     get isConnected(): boolean {
-        return this.settingsService && this.settingsService.isConfigured();
+        if (!this.settingsService) return false;
+        
+        const currentSettings = this.settingsService.getSettings();
+        const isFreeMode = PokedexSettingsServiceInstance.isFreeMode(currentSettings);
+        
+        // Consider both configured custom API key and free mode as connected
+        return isFreeMode || this.settingsService.isConfigured();
     }
 
     // Event handlers for sub-components

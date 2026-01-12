@@ -1,5 +1,6 @@
 import { RWSViewComponent, RWSView, observable, RWSInject } from '@rws-framework/client';
 import PokemonDataService, { PokemonDataServiceInstance } from '@front/services/pokemon-data.service';
+import PokedexSettingsService, { PokedexSettingsServiceInstance } from '@front/services/pokedex-settings.service';
 
 @RWSView('pokedex-screen')
 export class PokedexScreen extends RWSViewComponent {
@@ -17,7 +18,8 @@ export class PokedexScreen extends RWSViewComponent {
     private screenContent: HTMLElement | null = null;
 
     constructor(
-        @PokemonDataService private pokemonDataService: PokemonDataServiceInstance
+        @PokemonDataService private pokemonDataService: PokemonDataServiceInstance,
+        @PokedexSettingsService private settingsService: PokedexSettingsServiceInstance
     ) {
         super();
     }
@@ -250,6 +252,11 @@ export class PokedexScreen extends RWSViewComponent {
     }
 
     get defaultContent(): string {
+        // Check if we're in free mode
+        const currentSettings = this.settingsService?.getSettings();
+        const isFreeMode = currentSettings ? PokedexSettingsService.isFreeMode(currentSettings) : true;
+        const needsConfiguration = !isFreeMode && (!this.settingsService || !this.settingsService.isConfigured());
+        
         return `<div class="welcome-message">
             <div class="title">${'pokedex.title'.t()}</div>
             <div class="subtitle">${'pokedex.welcome'.t()}</div>
@@ -273,8 +280,10 @@ export class PokedexScreen extends RWSViewComponent {
             
             ${this.showFilters ? this.generateFiltersHTML() : ''}
             
-            <hr>
-            <div class="instructions">${'pokedex.configureFirst'.t()}</div>
+            ${needsConfiguration ? `
+                <hr>
+                <div class="instructions">${'pokedex.configureFirst'.t()}</div>
+            ` : ''}
         </div>`;
     }
 

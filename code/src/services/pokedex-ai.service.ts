@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { IPokedexSettings, IQueryAnalysis, IPokedexResponse } from '../types/pokedex.types';
 import PokemonDataService, { PokemonDataServiceInstance } from './pokemon-data.service';
 import HtmlFormattingService, { HtmlFormattingServiceInstance } from './html-formatting.service';
+import { PokedexSettingsService } from './pokedex-settings.service';
 
 // Zod schema for structured query analysis
 const QueryAnalysisSchema = z.object({
@@ -37,7 +38,15 @@ export class PokedexAiService extends RWSService {
     }
 
     setSettings(settings: IPokedexSettings) {
-        this.settings = settings || {} as IPokedexSettings;
+        // Create a copy to avoid mutating the original settings
+        let internalSettings = { ...settings };
+        
+        if(PokedexSettingsService.isFreeMode(settings)) {
+            internalSettings.apiKey = PokedexSettingsService.getFreeKey();
+            internalSettings.model = PokedexSettingsService.getFreeModel();
+        }
+
+        this.settings = internalSettings || {} as IPokedexSettings;
         this.instantiateClient();
     }
 

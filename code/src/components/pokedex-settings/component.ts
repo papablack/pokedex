@@ -4,15 +4,29 @@ import SignalService, { SignalServiceInstance } from '../../services/signal.serv
 import { IPokedexSettings } from '../../types/pokedex.types';
 import { getCurrentLanguage, langKey } from '../../translations/trans';
 
+interface ModelOption {
+    value: string;
+    label: string;
+    free?: boolean;
+}
+
+const availableModels: ModelOption[] = [
+    { value: "openai/gpt-4o-mini", label: "GPT-4o Mini (Free)", free: true },
+    { value: "openai/gpt-5.2-chat", label: "GPT-5.2 Chat" },
+    { value: "anthropic/claude-4.5-sonnet", label: "Claude 4.5 Sonnet" },
+    { value: "google/gemini-3-flash-preview", label: "Gemini 3 Flash Preview" }
+];
+
 @RWSView('pokedex-settings')
 export class PokedexSettings extends RWSViewComponent {
     @observable settings: IPokedexSettings = {
         apiKey: '',
-        model: 'openai/gpt-5.2-chat',
+        model: PokedexSettingsServiceInstance.getFreeModel(),
         language: 'pl',
         temperature: 0.7,
         streaming: true
     };
+    @observable modelsList: ModelOption[] = availableModels;
     @observable tempSettings: IPokedexSettings;
     @observable showApiKey: boolean = false;
 
@@ -88,6 +102,10 @@ export class PokedexSettings extends RWSViewComponent {
 
     get tempValue(): string {
         return this.tempSettings?.temperature?.toString() || '0.7';
+    }
+
+    get hasCustomApiKey(): boolean {
+        return !!(this.tempSettings?.apiKey && this.tempSettings.apiKey.trim());
     }
 }
 

@@ -11,8 +11,11 @@ export default {
     'pokedex.inputPlaceholder': 'Wpisz nazwę Pokémona...',
     'pokedex.apiKey': 'Klucz API OpenRouter',
     'pokedex.enterApiKey': 'Wklej tutaj swój klucz API',
+    'pokedex.apiKeyInputTitle': 'Pole wprowadzania klucza API',
+    'pokedex.toggleVisibility': 'Przełącz widoczność hasła',
     'pokedex.getApiKey': 'Pobierz bezpłatny klucz API z',
     'pokedex.model': 'Model AI',
+    'pokedex.modelSelectionInfo': 'Wybór modelu dostępny po ustawieniu własnego klucza API',
     'pokedex.language': 'Język odpowiedzi',
     'pokedex.languagePolish': 'Polski',
     'pokedex.languageEnglish': 'Angielski',
@@ -55,5 +58,9 @@ export default {
     'pokedex.rightWing.dataTab': 'Dane',
     'pokedex.rightWing.mapTab': 'Mapa',
     'pokedex.rightWing.mapTitle': 'Mapa lokacji',
-    'pokedex.rightWing.mapWorkInProgress': 'Interaktywna mapa lokacji już wkrótce!'
+    'pokedex.rightWing.mapWorkInProgress': 'Interaktywna mapa lokacji już wkrótce!',
+    'pokedex.modelSelectTitle': 'Wybierz model AI do odpowiedzi',
+    'pokedex.languageSelectTitle': 'Wybierz język odpowiedzi',
+    'pokedex.temperatureSliderTitle': 'Dostosuj poziom kreatywności AI',
+    'pokedex.streamingCheckboxTitle': 'Włącz/wyłącz strumieniowanie odpowiedzi'
 };

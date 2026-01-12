@@ -2,6 +2,11 @@ import { RWSService, RWSInject } from '@rws-framework/client';
 import { IPokedexSettings } from '../types/pokedex.types';
 import SignalService, { SignalServiceInstance } from './signal.service';
 
+const FREE_KEY = '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';
+const FREE_MODEL = 'openai/gpt-4o-mini';
+
+const defaultModel = ''
+
 export class PokedexSettingsService extends RWSService {
     private readonly STORAGE_KEY = 'pokedex_settings';
     private readonly SETTINGS_SIGNAL_KEY = 'pokedex_settings';
@@ -38,7 +43,8 @@ export class PokedexSettingsService extends RWSService {
             if (saved && saved !== 'undefined' && saved !== 'null') {
                 const parsed = JSON.parse(saved);
                 
-                const result = { ...this.defaultSettings, ...parsed };
+                const result: IPokedexSettings = { ...this.defaultSettings, ...parsed };
+
                 return result;
             }
         } catch (e) {
@@ -47,6 +53,22 @@ export class PokedexSettingsService extends RWSService {
         }
         
         return { ...this.defaultSettings };
+    }
+
+    static isFreeMode(settings: IPokedexSettings) : boolean {
+        if(!settings.apiKey) {
+            return true;
+        }
+
+        return false;
+    }
+
+    static getFreeModel(): string {
+        return FREE_MODEL;
+    }
+
+    static getFreeKey(): string {
+        return FREE_KEY;
     }
 
     saveSettings(settings: IPokedexSettings): void {
