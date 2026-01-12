@@ -30,13 +30,18 @@ export class PokedexAiService extends RWSService {
     }
 
     private instantiateClient(){
-        if (!this.settings || !this.settings.apiKey) {
-            console.warn('API key not configured, skipping client instantiation');
-            return;
-        }
-        this.openRouterClient = createOpenRouter({
-            apiKey: this.settings.apiKey            
-        });       
+        // For free models, we don't need an API key
+        if (PokedexSettingsService.isFreeMode(this.settings)) {
+            this.openRouterClient = createOpenRouter({});
+        } else {
+            if (!this.settings || !this.settings.apiKey) {
+                console.warn('API key not configured, skipping client instantiation');
+                return;
+            }
+            this.openRouterClient = createOpenRouter({
+                apiKey: this.settings.apiKey            
+            });
+        }       
     }
 
     setSettings(settings: IPokedexSettings) {
@@ -53,7 +58,7 @@ export class PokedexAiService extends RWSService {
     }
 
     async analyzeQuery(query: string): Promise<IQueryAnalysis> {
-        if (!this.settings.apiKey || !this.openRouterClient) {
+        if (!this.openRouterClient || (!PokedexSettingsService.isFreeMode(this.settings) && !this.settings.apiKey)) {
             // Simple fallback analysis without AI - try to detect basic Pokemon searches
             const isPokemonRelated = this.isGameHelpQuery(query.toLowerCase());
             const queryWords = query.toLowerCase().split(/\s+/).map(word => word.replace(/[^\w]/g, ''));
@@ -194,7 +199,7 @@ export class PokedexAiService extends RWSService {
     }
 
     private async generateAIResponse(query: string, analysis: IQueryAnalysis, pokemonData?: any): Promise<string> {
-        if (!this.settings.apiKey) {
+        if (!PokedexSettingsService.isFreeMode(this.settings) && !this.settings.apiKey) {
             throw new Error('pokedex.apiKeyRequired'.t());
         }
         
@@ -247,7 +252,7 @@ export class PokedexAiService extends RWSService {
     }
 
     private async *streamAIResponse(query: string, analysis: IQueryAnalysis, pokemonData?: any): AsyncGenerator<string, void, unknown> {
-        if (!this.settings.apiKey) {
+        if (!PokedexSettingsService.isFreeMode(this.settings) && !this.settings.apiKey) {
             throw new Error('pokedex.apiKeyRequired'.t());
         }
         

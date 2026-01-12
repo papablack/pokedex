@@ -1,5 +1,6 @@
 import { app, BrowserWindow, Menu, shell, ipcMain } from 'electron';
 import * as path from 'path';
+import * as fs from 'fs';
 import express from 'express';
 import { AddressInfo } from 'net';
 import dotenv from 'dotenv';
@@ -8,18 +9,20 @@ const rootDir = path.join(__dirname, '../../');
 
 try {
   const envPath = path.join(rootDir, '.env');
-  console.log('Loading .env from:', envPath);
-  dotenv.config({ path: envPath });
-  console.log('Environment variables loaded');
-  console.log('DEV environment variable:', process.env.DEV);
-  console.log('NODE_ENV:', process.env.NODE_ENV);
+  if(fs.existsSync(envPath)) {
+    console.log('Loading .env from:', envPath);
+    dotenv.config({ path: envPath });
+    console.log('Environment variables loaded');
+    console.log('DEV environment variable:', process.env.DEV);
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+  }  
 } catch (error) {
   console.log('Could not load .env file:', error instanceof Error ? error.message : String(error));
   console.log('Using default environment');
 }
 
 // Enable live reload for development
-const isDev = process.env.NODE_ENV === 'development' || process.env.DEV === '1';
+const isDev = process.env.NODE_ENV === 'development' || process.env.DEV === '1' || false;
 console.log('isDev determined as:', isDev);
 
 // Force dev tools open if DEV=1

@@ -1,6 +1,8 @@
 {
   "name": "rws_pokedex_main",
   "version": "1.0.0",
+  "author": "papablack",
+  "description": "AI Powered pokedex with PokeApi connection",
   "private": true,
   "workspaces": [
     "code"
@@ -18,7 +20,8 @@
   },
   "main": "dist/electron/main.js",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "dotenv": "^16.0.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
@@ -35,10 +38,11 @@
     },
     "files": [
       "dist/electron/**/*",
-      "preload/dist/**/*",
+      "preload/dist/**/*", 
       "public/**/*",
-      "node_modules/**/*"
+      "electron/icon.ico"
     ],
+    "includeSubNodeModules": true,
     "extraFiles": [
       {
         "from": "public",
@@ -51,22 +55,18 @@
         {
           "target": "nsis",
           "arch": ["x64"]
-        },
-        {
-          "target": "portable",
-          "arch": ["x64"]
         }
       ],
-      "icon": "public/favicon.ico",
+      "icon": "electron/icon.ico",
       "artifactName": "${productName} Setup ${version}.${ext}"
     },
     "mac": {
       "target": "dmg",
-      "icon": "public/favicon.ico"
+      "icon": "electron/icon.ico"
     },
     "linux": {
       "target": "AppImage",
-      "icon": "public/favicon.ico"
+      "icon": "electron/icon.ico"
     },
     "nsis": {
       "oneClick": false,

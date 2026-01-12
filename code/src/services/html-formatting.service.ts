@@ -232,6 +232,33 @@ export class HtmlFormattingService extends RWSService {
                     </div>
                 </div>` : ''}
 
+                ${pokemon.moves && pokemon.moves.length > 0 ? `
+                <div class="pokemon-section">
+                    <h4 class="moves">⚡ Ruchy (Poziom):</h4>
+                    <div class="moves-box">
+                        <div class="moves-grid">
+                            ${pokemon.moves.slice(0, 12).map((move: any) => `
+                                <div class="move-card">
+                                    <div class="move-header">
+                                        <span class="move-name">${move.name}</span>
+                                        <span class="move-level">Lv.${move.levelLearned}</span>
+                                    </div>
+                                    <div class="move-details">
+                                        <span class="move-type" style="background: ${this.getTypeColor(move.type)};">${move.type}</span>
+                                        <span class="move-category">${move.category}</span>
+                                        ${move.power ? `<span class="move-power">💥 ${move.power}</span>` : ''}
+                                        ${move.accuracy ? `<span class="move-accuracy">🎯 ${move.accuracy}%</span>` : ''}
+                                        <span class="move-pp">PP: ${move.pp || '?'}</span>
+                                    </div>
+                                    <div class="move-description">
+                                        ${move.description || 'Brak opisu'}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>` : ''}
+
                 ${pokemon.locations && pokemon.locations.length > 0 ? `
                 <div class="pokemon-section">
                     <h4 class="locations">📍 Lokalizacje:</h4>
