@@ -1,18 +1,17 @@
 import { RWSService, RWSInject } from '@rws-framework/client';
 import { IPokedexSettings } from '../types/pokedex.types';
 import SignalService, { SignalServiceInstance } from './signal.service';
+import { AIModelOption } from '@front/types/app.types';
 
 const FREE_KEY = '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';
-const FREE_MODEL = 'openai/gpt-4o-mini';
-
-const defaultModel = ''
+const FREE_MODEL: AIModelOption = { value: 'openai/gpt-oss-120b:free', label: 'GPT OSS 120B (Free)', free: true };
 
 export class PokedexSettingsService extends RWSService {
     private readonly STORAGE_KEY = 'pokedex_settings';
     private readonly SETTINGS_SIGNAL_KEY = 'pokedex_settings';
     private defaultSettings: IPokedexSettings = {
         apiKey: '',
-        model: 'openai/gpt-4o-mini',
+        model: FREE_MODEL.value,
         language: 'pl',
         temperature: 0.7,
         streaming: true
@@ -63,7 +62,7 @@ export class PokedexSettingsService extends RWSService {
         return false;
     }
 
-    static getFreeModel(): string {
+    static getFreeModel(): AIModelOption {
         return FREE_MODEL;
     }
 

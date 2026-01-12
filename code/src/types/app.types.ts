@@ -17,3 +17,9 @@ export const appEvents: AppEvents = {
     removeNotify: 'app.removeNotify', 
     removeNotifyById: 'app.removeNotifyById'
 };
+
+export interface AIModelOption {
+    value: string;
+    label: string;
+    free?: boolean;
+}

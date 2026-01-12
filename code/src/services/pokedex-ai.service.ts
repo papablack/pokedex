@@ -43,7 +43,7 @@ export class PokedexAiService extends RWSService {
         
         if(PokedexSettingsService.isFreeMode(settings)) {
             internalSettings.apiKey = PokedexSettingsService.getFreeKey();
-            internalSettings.model = PokedexSettingsService.getFreeModel();
+            internalSettings.model = PokedexSettingsService.getFreeModel().value;
         }
 
         this.settings = internalSettings || {} as IPokedexSettings;
