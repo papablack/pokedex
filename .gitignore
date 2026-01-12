@@ -1,5 +1,6 @@
 .github/
 dist/
+dist-electron/
 node_modules/
 .dev
 public/js/*

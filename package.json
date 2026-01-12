@@ -9,10 +9,39 @@
     "build": "rws build front",
     "watch": "rws build front --watch",
     "start": "node server.js",
-    "dev": "node server.js"
-  },
+    "dev": "node server.js",
+    "electron:build": "tsc -p electron/tsconfig.json && electron-builder",
+    "electron:dev": "tsc -p electron/tsconfig.json && electron .",
+    "full:build": "yarn build && tsc -p electron/tsconfig.json && electron-builder",
+    "full:dev": "yarn build && tsc -p electron/tsconfig.json && electron ."
+ },
+  "main": "dist/electron/main.js",
   "dependencies": {
     "express": "^5.2.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0",
+    "typescript": "^5.1.6"
+  },
+  "build": {
+    "appId": "com.rws.pokedex",
+    "productName": "Pokedex",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "dist/electron/**/*",
+      "public/**/*",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "public/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
 }
