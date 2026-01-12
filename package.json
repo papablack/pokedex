@@ -14,12 +14,13 @@
     "electron:dev": "tsc -p electron/tsconfig.json && electron .",
     "full:build": "yarn build && tsc -p electron/tsconfig.json && electron-builder",
     "full:dev": "yarn build && tsc -p electron/tsconfig.json && electron ."
- },
+  },
   "main": "dist/electron/main.js",
   "dependencies": {
     "express": "^5.2.1"
   },
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "electron": "^33.0.0",
     "electron-builder": "^25.0.0",
     "typescript": "^5.1.6"
