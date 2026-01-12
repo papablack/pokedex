@@ -30,18 +30,13 @@ export class PokedexAiService extends RWSService {
     }
 
     private instantiateClient(){
-        // For free models, we don't need an API key
-        if (PokedexSettingsService.isFreeMode(this.settings)) {
-            this.openRouterClient = createOpenRouter({});
-        } else {
-            if (!this.settings || !this.settings.apiKey) {
-                console.warn('API key not configured, skipping client instantiation');
-                return;
-            }
-            this.openRouterClient = createOpenRouter({
-                apiKey: this.settings.apiKey            
-            });
-        }       
+        if (!this.settings || !this.settings.apiKey) {
+            console.warn('API key not configured, skipping client instantiation');
+            return;
+        }
+        this.openRouterClient = createOpenRouter({
+            apiKey: this.settings.apiKey            
+        });       
     }
 
     setSettings(settings: IPokedexSettings) {
@@ -58,7 +53,7 @@ export class PokedexAiService extends RWSService {
     }
 
     async analyzeQuery(query: string): Promise<IQueryAnalysis> {
-        if (!this.openRouterClient || (!PokedexSettingsService.isFreeMode(this.settings) && !this.settings.apiKey)) {
+        if (!this.settings.apiKey || !this.openRouterClient) {
             // Simple fallback analysis without AI - try to detect basic Pokemon searches
             const isPokemonRelated = this.isGameHelpQuery(query.toLowerCase());
             const queryWords = query.toLowerCase().split(/\s+/).map(word => word.replace(/[^\w]/g, ''));
@@ -199,7 +194,7 @@ export class PokedexAiService extends RWSService {
     }
 
     private async generateAIResponse(query: string, analysis: IQueryAnalysis, pokemonData?: any): Promise<string> {
-        if (!PokedexSettingsService.isFreeMode(this.settings) && !this.settings.apiKey) {
+        if (!this.settings.apiKey) {
             throw new Error('pokedex.apiKeyRequired'.t());
         }
         
@@ -217,17 +212,24 @@ export class PokedexAiService extends RWSService {
         const hasPoke = query.toLowerCase().includes('poke');
 
         console.log('Pokemon keywords check:', hasPokemonKeyword, 'Has "poke":', hasPoke, 'Query:', query);
+        console.log('Pokemon data available:', !!pokemonData);
         console.log('Will use fallback:', (!hasPokemonKeyword && !hasPoke && !pokemonData));
 
         let systemPrompt = this.createSystemPrompt(analysis, pokemonData);
         
-        // If no pokemon keywords/poke and no pokemon data, instruct to use fallback
-        if (!hasPokemonKeyword && !hasPoke && !pokemonData) {
-            systemPrompt += `\n\nPytanie nie zawiera słów związanych z Pokemon i nie ma danych Pokemon - użyj fallback message.`;
-            console.log('Added fallback instruction to system prompt');
+        // Only add instructions when NO Pokemon data exists
+        if (!pokemonData) {
+            // If no pokemon keywords/poke and no pokemon data, instruct to use fallback
+            if (!hasPokemonKeyword && !hasPoke) {
+                systemPrompt += `\n\nPytanie nie zawiera słów związanych z Pokemon i nie ma danych Pokemon - użyj fallback message.`;
+                console.log('Added fallback instruction to system prompt');
+            } else {
+                systemPrompt += `\n\nTO PYTANIE ZAWIERA SŁOWA POKEMON - NIGDY NIE UŻYWAJ FALLBACK MESSAGE! Odpowiedz normalnie na pytanie o Pokemon/PokéMMO/grach Pokemon.\n\nWAŻNE: NIE UŻYWAJ MARKDOWN! Odpowiadaj TYLKO czystym HTML z klasami CSS.`;
+                console.log('Added NO FALLBACK instruction - pokemon related query detected');
+            }
         } else {
-            systemPrompt += `\n\nTO PYTANIE ZAWIERA SŁOWA POKEMON - NIGDY NIE UŻYWAJ FALLBACK MESSAGE! Odpowiedz normalnie na pytanie o Pokemon/PokéMMO/grach Pokemon.\n\nWAŻNE: NIE UŻYWAJ MARKDOWN! Odpowiadaj TYLKO czystym HTML z klasami CSS.`;
-            console.log('Added NO FALLBACK instruction - pokemon related query detected');
+            // When Pokemon data exists, the synopsis prompt should handle everything
+            console.log('Using synopsis prompt - Pokemon data available, no additional instructions needed');
         }
     
         try {
@@ -252,7 +254,7 @@ export class PokedexAiService extends RWSService {
     }
 
     private async *streamAIResponse(query: string, analysis: IQueryAnalysis, pokemonData?: any): AsyncGenerator<string, void, unknown> {
-        if (!PokedexSettingsService.isFreeMode(this.settings) && !this.settings.apiKey) {
+        if (!this.settings.apiKey) {
             throw new Error('pokedex.apiKeyRequired'.t());
         }
         
@@ -271,12 +273,16 @@ export class PokedexAiService extends RWSService {
 
         let systemPrompt = this.createSystemPrompt(analysis, pokemonData);
         
-        // If no pokemon keywords/poke and no pokemon data, instruct to use fallback
-        if (!hasPokemonKeyword && !hasPoke && !pokemonData) {
-            systemPrompt += `\n\nPytanie nie zawiera słów związanych z Pokemon i nie ma danych Pokemon - użyj fallback message.`;
-        } else {
-            systemPrompt += `\n\nTO PYTANIE ZAWIERA SŁOWA POKEMON - NIGDY NIE UŻYWAJ FALLBACK MESSAGE! Odpowiedz normalnie na pytanie o Pokemon/PokéMMO/grach Pokemon.\n\nWAŻNE: NIE UŻYWAJ MARKDOWN! Odpowiadaj TYLKO czystym HTML z klasami CSS.`;
+        // Only add instructions when NO Pokemon data exists
+        if (!pokemonData) {
+            // If no pokemon keywords/poke and no pokemon data, instruct to use fallback
+            if (!hasPokemonKeyword && !hasPoke) {
+                systemPrompt += `\n\nPytanie nie zawiera słów związanych z Pokemon i nie ma danych Pokemon - użyj fallback message.`;
+            } else {
+                systemPrompt += `\n\nTO PYTANIE ZAWIERA SŁOWA POKEMON - NIGDY NIE UŻYWAJ FALLBACK MESSAGE! Odpowiedz normalnie na pytanie o Pokemon/PokéMMO/grach Pokemon.\n\nWAŻNE: NIE UŻYWAJ MARKDOWN! Odpowiadaj TYLKO czystym HTML z klasami CSS.`;
+            }
         }
+        // When Pokemon data exists, the synopsis prompt should handle everything
 
         const model = this.generateModelObject(this.settings.model);
 
@@ -297,8 +303,8 @@ export class PokedexAiService extends RWSService {
             if (this.isRateLimitError(error)) {
                 console.warn('Rate limit hit in streamAIResponse:', error);
                 this.notificationService.showWarning('pokedx.rateLimitWait');
-                yield 'pokedx.rateLimitWait'.t();
-                return;
+                // Throw the error so the main component can handle it properly
+                throw new Error('pokedx.rateLimitWait'.t());
             } else {
                 throw error;
             }
@@ -307,18 +313,28 @@ export class PokedexAiService extends RWSService {
 
     private createSystemPrompt(analysis?: IQueryAnalysis, pokemonData?: any): string {
         if (pokemonData) {
-            // When we have Pokemon data, use the specialized synopsis prompt with enhanced context
+            // When we have Pokemon data, use the specialized synopsis prompt - NO POKEMON DATA IN AI RESPONSE
             let prompt = this.htmlFormattingService.createSynopsisPrompt(this.settings.language);
             
-            // Add generation context
+            prompt += `\n\nKONTEKST: Masz dostęp do kompletnych danych Pokemon o nazwie "${pokemonData.species || 'nieznany Pokemon'}". Wszystkie szczegółowe dane (statystyki, ruchy, ewolucje, typy) są już wyświetlone w prawym panelu dla użytkownika.`;
+            
+            // Add context for synopsis only - no data formatting
+            prompt += `\n\nWAŻNE: 
+- TWOJA ROLA: Tylko komentarz i ciekawostki o tym Pokemonie
+- NIE DUPLIKUJ danych już wyświetlonych w prawym panelu
+- SKUP SIĘ na strategiach, ciekawostkach, porównaniach
+- WYKORZYSTAJ dostępne dane do stworzenia angażującego komentarza
+- ZAWSZE odpowiadaj jakby znałeś tego Pokemona (nie pytaj o szczegóły)`;
+            
+            // Add generation context for commentary only
             if (pokemonData.generation) {
-                prompt += `\n\nGeneration Context: This Pokemon is from ${pokemonData.generation.name} (Generation ${pokemonData.generation.id}).`;
+                prompt += `\n\nKontekst generacji: Ten Pokemon pochodzi z ${pokemonData.generation.name} (Generacja ${pokemonData.generation.id}). Możesz wspomnieć o tym w kontekście historii gier Pokemon.`;
             }
             
-            // Add location context
+            // Add location context for tips only
             if (pokemonData.locations && pokemonData.locations.length > 0) {
                 const locationNames = pokemonData.locations.map((loc: any) => loc.name).join(', ');
-                prompt += `\n\nLocation Context: This Pokemon can be found in the following areas: ${locationNames}. Provide helpful tips about where to encounter this Pokemon.`;
+                prompt += `\n\nKontekst lokacji: Ten Pokemon można spotkać w następujących obszarach: ${locationNames}. Możesz dać wskazówki gdzie go znaleźć, ale NIE wyświetlaj ponownie tych danych.`;
             }
             
             return prompt;
@@ -380,7 +396,31 @@ export class PokedexAiService extends RWSService {
     }
 
     private isRateLimitError(error: any): boolean {
-        return error?.error?.code === 429 || error?.code === 429;
+        // Check for HTTP 429 status code
+        if (error?.error?.code === 429 || error?.code === 429 || error?.status === 429) {
+            return true;
+        }
+        
+        // Check for rate limit messages in error text
+        const errorMessage = error?.message || error?.error?.message || '';
+        const rateLimitKeywords = [
+            'rate limit',
+            'Rate limit exceeded',
+            'free-models-per-day',
+            'Too Many Requests',
+            '429'
+        ];
+        
+        const hasRateLimitKeyword = rateLimitKeywords.some(keyword => 
+            errorMessage.toLowerCase().includes(keyword.toLowerCase())
+        );
+        
+        // Check for OpenRouter specific rate limit error structure
+        if (error?.name === 'AI_RetryError' && errorMessage.includes('Rate limit exceeded')) {
+            return true;
+        }
+        
+        return hasRateLimitKeyword;
     }
 
     private sleep(ms: number): Promise<void> {

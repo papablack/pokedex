@@ -164,7 +164,7 @@ export class PokedexScreen extends RWSViewComponent {
                             border: 2px solid #5a67d8;
                         ">
                             <h4 style="margin: 0; text-transform: capitalize;">${pokemonName}</h4>
-                            <p style="margin: 5px 0 0; font-size: 0.85em; opacity: 0.9;">
+                            <p style="margin: 5px 0 0; font-size: 1.25em; opacity: 0.9;">
                                 ${'pokedex.clickToView'.t()}
                             </p>
                         </div>

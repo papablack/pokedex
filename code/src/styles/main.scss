@@ -7,7 +7,7 @@
     --pokedex-light: #f8f9fa;
     --font-main: 'Roboto', system-ui, -apple-system, sans-serif;
     --font-tech: 'Orbitron', monospace;
-    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+    --font-mono: 'JetBrains Mono', 'Handjet', monospace;
 }
 
 body {
@@ -52,7 +52,7 @@ body {
     }
     
     .toast-body {
-        font-size: 0.9rem;
+        font-size: 1.35emrem;
         font-weight: 500;
         
         i {

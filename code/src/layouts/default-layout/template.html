@@ -2,7 +2,7 @@
     <!-- App Title Bar with Drag and Close Button - Only show in Electron -->
     <div class="app-title-bar" :class="${x => x.isElectron ? '' : 'hidden'}">
         <button class="app-drag-btn" title="Drag Window">
-            <i class="fa fa-grip-horizontal"></i>
+            <i class="fa-solid fa-up-down-left-right"></i>
         </button>
         <button class="app-close-btn" @click="${x => x.closeApp()}" title="Close Application">
             <i class="fa fa-times"></i>

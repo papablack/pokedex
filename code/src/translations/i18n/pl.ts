@@ -64,5 +64,7 @@ export default {
     'pokedex.languageSelectTitle': 'Wybierz język odpowiedzi',
     'pokedex.temperatureSliderTitle': 'Dostosuj poziom kreatywności AI',
     'pokedex.streamingCheckboxTitle': 'Włącz/wyłącz strumieniowanie odpowiedzi',
-    'pokedx.rateLimitWait': 'Osiągnięto limit żądań. Poczekaj kilka minut i spróbuj ponownie.'
+    'pokedx.rateLimitWait': 'Osiągnięto limit żądań. Poczekaj kilka minut i spróbuj ponownie.',
+    'pokedx.rateLimitTitle': 'Limit Zapytań Osiągnięty',
+    'pokedx.rateLimitHelp': 'Spróbuj ponownie za kilka minut lub dodaj kredyty do swojego konta OpenRouter.'
 };

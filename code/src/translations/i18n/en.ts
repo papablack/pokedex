@@ -64,5 +64,7 @@ export default {
     'pokedex.languageSelectTitle': 'Select response language',
     'pokedex.temperatureSliderTitle': 'Adjust AI creativity level',
     'pokedex.streamingCheckboxTitle': 'Enable/disable response streaming',
-    'pokedx.rateLimitWait': 'Rate limit reached. Please wait a few minutes and try again.'
+    'pokedx.rateLimitWait': 'Rate limit reached. Please wait a few minutes and try again.',
+    'pokedx.rateLimitTitle': 'Rate Limit Reached',
+    'pokedx.rateLimitHelp': 'Try again in a few minutes or add credits to your OpenRouter account.'
 };

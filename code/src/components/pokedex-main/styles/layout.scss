@@ -138,7 +138,7 @@
         gap: 0.5rem;
         transition: all 0.3s ease;
         margin-right: 2px;
-        font-size: 0.9rem;
+        font-size: 1em;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -273,7 +273,9 @@
 // Pokemon Data Display
 .pokemon-data-display {
     color: white;
-    
+    font-family: 'Handjet', monospace !important;
+    font-size: 20px;
+
     .pokemon-info {
         .pokemon-header {
             display: flex;
@@ -289,8 +291,9 @@
                 -webkit-text-fill-color: transparent;
                 margin: 0 0 10px 0;
                 text-transform: capitalize;
-                font-size: 1.5rem;
+                font-size: 1.5em;
                 font-weight: bold;
+                font-family: 'Handjet', monospace !important;
             }
             
             .bulbapedia-link {
@@ -303,8 +306,9 @@
                     padding: 8px 15px;
                     border-radius: 20px;
                     text-decoration: none;
-                    font-size: 0.85rem;
+                    font-size: 1.25em;
                     font-weight: 600;
+                    font-family: 'Handjet', monospace !important;
                     border: 2px solid rgba(255, 255, 255, 0.2);
                     transition: all 0.3s ease;
                     box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3);
@@ -352,6 +356,7 @@
                 
                 .detail-label {
                     font-weight: bold;
+                    font-family: 'Handjet', monospace !important;
                     
                     &.number { color: #3498db; }
                     &.type { color: #27ae60; }
@@ -366,8 +371,9 @@
                     color: white;
                     padding: 2px 8px;
                     border-radius: 12px;
-                    font-size: 0.9em;
+                    font-size: 1.35em;
                     margin-right: 4px;
+                    font-family: 'Handjet', monospace !important;
                 }
             }
         }
@@ -380,11 +386,13 @@
                 border-bottom: 2px solid white;
                 padding-bottom: 5px;
                 margin-bottom: 15px;
+                font-family: 'Handjet', monospace !important;
             }
             
             h4 {
                 color: $pokedex-dark-blue;
                 margin-bottom: 10px;
+                font-family: 'Handjet', monospace !important;
                 
                 &.effective { color: $ai-facts-color; }
                 &.not-effective { color: $not-effective-color; }
@@ -407,6 +415,7 @@
                 border-radius: 8px;
                 text-align: center;
                 font-weight: bold;
+                font-family: 'Handjet', monospace !important;
                 
                 &.hp { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
                 &.attack { background: linear-gradient(135deg, #26de81, #20bf6b); }
@@ -414,6 +423,10 @@
                 &.sp-attack { background: linear-gradient(135deg, #ff9ff3, #f368e0); }
                 &.sp-defense { background: linear-gradient(135deg, #ff6348, #ff4757); }
                 &.speed { background: linear-gradient(135deg, #7bed9f, #70a1ff); }
+
+                strong {
+                    color: $pokedex-dark;
+                }
             }
         }
         
@@ -424,6 +437,7 @@
             border-radius: 5px;
             color: #2c3e50;
             margin-bottom: 20px;
+            font-family: 'Handjet', monospace !important;
         }
         
         .effectiveness-grid {
@@ -439,7 +453,8 @@
                 .effectiveness-badge {
                     padding: 4px 8px;
                     border-radius: 12px;
-                    font-size: 0.85em;
+                    font-size: 0.9em;
+                    font-family: 'Handjet', monospace !important;
                     
                     &.strong {
                         background: #d5f5d5;
@@ -461,14 +476,17 @@
             text-align: center;
             border: 2px solid #42a5f5;
             color: #2c3e50;
+            font-family: 'Handjet', monospace !important;
             
             .current-pokemon {
                 font-weight: bold;
                 color: #2c3e50;
+                font-family: 'Handjet', monospace !important;
             }
             
             .evolution-level {
                 color: #7f8c8d;
+                font-family: 'Handjet', monospace !important;
             }
         }
         
@@ -488,6 +506,7 @@
                     padding: 6px 12px;
                     border-radius: 16px;
                     font-size: 0.9em;
+                    font-family: 'Handjet', monospace !important;
                 }
             }
         }
@@ -502,8 +521,8 @@
                 color: white;
                 padding: 8px 16px;
                 border-radius: 20px;
-                font-size: 1em;
-                font-weight: bold;
+                font-size: 0.9em;                
+                font-family: 'Handjet', monospace !important;
             }
         }
         
@@ -521,6 +540,7 @@
                     padding: 4px 8px;
                     border-radius: 12px;
                     font-size: 0.9em;
+                    font-family: 'Handjet', monospace !important;
                     
                     &.legendary { background: #ff6b6b; color: #c0392b; }
                     &.mythical { background: #e1bee7; color: #7b1fa2; }
@@ -550,7 +570,7 @@
     color: rgba(255, 255, 255, 0.8);
     
     .map-icon {
-        font-size: 4rem;
+        font-size: 4em;
         color: #4caf50;
         margin-bottom: 1rem;
         opacity: 0.7;
@@ -558,12 +578,12 @@
     
     h4 {
         color: $generation-color;
-        font-size: 1.3rem;
+        font-size: 1.3em;
         margin-bottom: 0.5rem;
     }
     
     p {
-        font-size: 1rem;
+        font-size: 1em;
         margin-bottom: 2rem;
         max-width: 300px;
         line-height: 1.5;
@@ -589,7 +609,7 @@
         }
         
         span {
-            font-size: 0.9rem;
+            font-size: 1.35em;
             color: rgba(255, 255, 255, 0.7);
         }
     }
@@ -736,14 +756,14 @@
         color: rgba(255, 255, 255, 0.7);
         
         i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: 3em;
+            margin-bottom: 1em;
             display: block;
             opacity: 0.5;
         }
         
         span {
-            font-size: 0.9rem;
+            font-size: 1.35em;
         }
     }
     
@@ -828,5 +848,150 @@
         &.visible {
             width: 100%;
         }
+    }
+}
+
+// Game-like Pokemon move cards styling for right wing Pokemon data display
+.pokemon-data-display {
+    .moves-box {
+        background: transparent;
+        padding: 10px 0;
+        margin: 15px 0;
+    }
+
+    .moves-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 12px;
+        padding: 0;
+    }
+
+    .move-card {
+        background: #ffffff;
+        border: 3px solid #000000;
+        border-radius: 12px;
+        padding: 12px;
+        font-size: 19px;
+        box-shadow: 
+            0 4px 0 #000000,
+            0 4px 8px rgba(0, 0, 0, 0.3);
+        transition: all 0.2s ease;
+        position: relative;
+        
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 6px 0 #000000,
+                0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+        
+        &:active {
+            transform: translateY(0);
+            box-shadow: 
+                0 2px 0 #000000,
+                0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    }
+
+    .move-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        border-bottom: 2px solid #000000;
+        padding-bottom: 6px;
+    }
+
+    .move-name {
+        font-family: 'Handjet', monospace !important;
+        font-weight: 700;
+        font-size: 1em;
+        color: #000000;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        text-shadow: none !important;
+    }
+
+    .move-level {
+        font-family: 'Handjet', monospace !important;
+        font-weight: 900;
+        font-size: 0.85em;
+        background: #000000;
+        color: #ffffff;
+        padding: 2px 6px;
+        border-radius: 4px;
+        text-shadow: none !important;
+    }
+
+    .move-details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 8px;
+        
+        span {
+            font-family: 'Handjet', monospace !important;
+            font-weight: 400;
+            font-size: 0.80em;
+            padding: 2px 6px;
+            border: 2px solid #000000;
+            border-radius: 6px;
+            background: #f0f0f0;
+            color: #000000;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            text-shadow: none !important;
+            
+            &.move-type {
+                font-weight: 700;
+                color: #ffffff;
+            }
+            
+            &.move-category {
+                background: #e0e0e0;
+            }
+            
+            &.move-power {
+                background: #ffcccc;
+                color: #cc0000;
+                font-weight: 700;
+            }
+            
+            &.move-accuracy {
+                background: #ccffcc;
+                color: #006600;
+                font-weight: 700;
+            }
+            
+            &.move-pp {
+                background: #ccccff;
+                color: #0000cc;
+                font-weight: 700;
+            }
+        }
+    }
+
+    .move-description {
+    font-family: 'Handjet', monospace !important;
+        font-size: 1em;
+        color: #333333;
+        background: #f8f8f8;
+        border: 2px solid #cccccc;
+        border-radius: 6px;
+        padding: 6px;
+        line-height: 1.4;
+        text-shadow: none !important;
+    }
+
+    // Style the moves section header
+    .moves {
+        font-family: 'Handjet', monospace !important;
+        font-weight: 900;
+        font-size: 0.9em;
+        color: $dos-yellow;
+        text-shadow: 0 0 8px rgba(255, 255, 0, 0.7);
+        margin: 15px 0 10px 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 }

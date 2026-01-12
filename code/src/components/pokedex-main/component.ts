@@ -136,11 +136,21 @@ export class PokedexMain extends RWSViewComponent {
             
         } catch (error) {
             console.error('pokedex.searchError'.t(), error);
-            this.output = `<div class=\"text-danger\">
-                <strong>❌ ${'pokedex.error'.t()}:</strong> ${error.message}
-                <br><br>
-                <small>${'pokedex.checkApiKey'.t()}</small>
-            </div>`;
+            
+            // Check if this is a rate limit error
+            if (error.message && error.message.includes('pokedx.rateLimitWait'.t())) {
+                this.output = `<div class="ai-fallback-message">
+                    <h3 class="ai-fallback-title">⚠️ ${'pokedx.rateLimitTitle'.t()}</h3>
+                    <p class="ai-fallback-text">${'pokedx.rateLimitWait'.t()}</p>
+                    <p class="ai-fallback-text"><small>${'pokedx.rateLimitHelp'.t()}</small></p>
+                </div>`;
+            } else {
+                this.output = `<div class=\"text-danger\">
+                    <strong>❌ ${'pokedex.error'.t()}:</strong> ${error.message}
+                    <br><br>
+                    <small>${'pokedex.checkApiKey'.t()}</small>
+                </div>`;
+            }
             
             // Emit search error event
             Events.emit(PokedexEvents.SEARCH_ERROR, { query: queryToUse, error: error.message });
