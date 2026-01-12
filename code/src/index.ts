@@ -1,9 +1,5 @@
 import { getLanguage, setLanguage } from './application/globals/translations';
 
-if(!getLanguage()) {
-    setLanguage('pl'); 
-}
-
 import './application/globals/global-extensions';
 import RWSClient, { RWSContainer, RWSClientInstance, RWSPlugin, RWSViewComponent, NotifyLogType, NotifyUiType, ConfigServiceInstance, ConfigService, ApiService, ApiServiceInstance } from '@rws-framework/client';
 import { RWSBrowserRouter, BrowserRouterOpts  } from '@rws-framework/browser-router';
@@ -15,6 +11,7 @@ import './styles/main.scss';
 import './application/globals/directives'
 import NotificationService, { NotificationServiceInstance } from './services/notification.service';
 import { RWSModal } from '@rws-framework/components';
+import StorageService, { StorageServiceInstance } from './services/storage.service';
 
 RWSModal.injectStyles([
     '/css/modal.css'
@@ -22,6 +19,18 @@ RWSModal.injectStyles([
 
 async function initializeApp() {
     const theClient: RWSClientInstance = RWSContainer().get(RWSClient);
+    const storageService: StorageServiceInstance = RWSContainer().get(StorageService);  
+
+    // Initialize language asynchronously
+    const initLanguage = async () => {
+        const currentLang = await storageService.get('current_lang');
+        if (!currentLang) {
+            setLanguage('pl'); 
+        }
+    };
+
+    initLanguage().catch(console.error);
+
     const configService: ConfigServiceInstance = RWSContainer().get(ConfigService);  
     const notificationService: NotificationServiceInstance = RWSContainer().get(NotificationService);  
 
@@ -37,8 +46,9 @@ async function initializeApp() {
         initComponents(partedMode);
     });    
     
-    if(localStorage.getItem('_jwt')){
-        theClient.apiService.setToken(localStorage.getItem('_jwt') as string);
+    const jwt = await storageService.get('_jwt');
+    if(jwt){
+        theClient.apiService.setToken(jwt);
     }    
 
     theClient.setNotifier((message: string, logType?: NotifyLogType) => {

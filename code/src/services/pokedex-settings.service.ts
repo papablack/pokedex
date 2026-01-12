@@ -1,6 +1,7 @@
 import { RWSService, RWSInject } from '@rws-framework/client';
 import { IPokedexSettings } from '../types/pokedex.types';
 import SignalService, { SignalServiceInstance } from './signal.service';
+import StorageService, { StorageServiceInstance } from './storage.service';
 import { AIModelOption } from '@front/types/app.types';
 
 const FREE_KEY = 'c2stb3ItdjEtMTEzOWFkNDVlYmU2NDY1NDEwMDY2MTdlZTcxYmE5MjA5YjlmYzMxNjNlNDNhNjljOTZkMjgzNmIxZDBjM2M3MQoK';
@@ -20,26 +21,31 @@ export class PokedexSettingsService extends RWSService {
     };
 
     constructor(
-        @SignalService private signalService: SignalServiceInstance
+        @SignalService private signalService: SignalServiceInstance,
+        @StorageService private storageService: StorageServiceInstance
     ) {
         super();
         
-        // Initialize settings signal with current settings
-        const currentSettings = this.getSettings();
-        
+        // Initialize settings signal and load settings asynchronously
+        this.initializeSettings();
+    }
+
+    private async initializeSettings(): Promise<void> {
         try {
+            const currentSettings = await this.getSettings();
+            
             this.signalService.createSignal(this.SETTINGS_SIGNAL_KEY, {
                 initialValue: currentSettings
             });
         } catch (e) {
-            console.error('Failed to create signal:', e);
+            console.error('Failed to initialize settings:', e);
         }
     }
 
-    getSettings(): IPokedexSettings {
+    async getSettings(): Promise<IPokedexSettings> {
         
         try {
-            const saved = localStorage.getItem(this.STORAGE_KEY);
+            const saved = await this.storageService.get(this.STORAGE_KEY);
             
             if (saved && saved !== 'undefined' && saved !== 'null') {
                 const parsed = JSON.parse(saved);
@@ -72,16 +78,43 @@ export class PokedexSettingsService extends RWSService {
         return QUERY_MODEL;
     }
 
+    /**
+     * Synchronous version of getSettings for backward compatibility
+     * Note: This will return default settings if storage is not immediately available (e.g., Electron)
+     */
+    getSettingsSync(): IPokedexSettings {
+        try {
+            if (this.storageService.getStorageType() === 'localStorage') {
+                const saved = this.storageService.getSync(this.STORAGE_KEY);
+                
+                if (saved && saved !== 'undefined' && saved !== 'null') {
+                    const parsed = JSON.parse(saved);
+                    return { ...this.defaultSettings, ...parsed };
+                }
+            }
+        } catch (e) {
+            console.warn('Error loading settings synchronously, returning defaults:', e);
+        }
+
+        return { ...this.defaultSettings };
+    }
+
+    /**
+     * Get the settings signal for reactive updates
+     */
+    getSettingsSignal() {
+        return this.signalService.getSignal(this.SETTINGS_SIGNAL_KEY);
+    }
+
     static getFreeKey(): string {
         return atob(FREE_KEY).trim();
     }
 
-    saveSettings(settings: IPokedexSettings): void {
-        
+    async saveSettings(settings: IPokedexSettings): Promise<void> {
         try {
             const settingsJson = JSON.stringify(settings);
             
-            localStorage.setItem(this.STORAGE_KEY, settingsJson);
+            await this.storageService.set(this.STORAGE_KEY, settingsJson);
             
             // Emit settings change signal
             
@@ -98,9 +131,9 @@ export class PokedexSettingsService extends RWSService {
         }
     }
 
-    clearSettings(): void {
+    async clearSettings(): Promise<void> {
         try {
-            localStorage.removeItem(this.STORAGE_KEY);
+            await this.storageService.remove(this.STORAGE_KEY);
             // Emit settings change signal with default settings
             const defaultSettings = { ...this.defaultSettings };
             this.signalService.setSignalValue(this.SETTINGS_SIGNAL_KEY, defaultSettings);
@@ -109,23 +142,10 @@ export class PokedexSettingsService extends RWSService {
         }
     }
 
-    isConfigured(): boolean {
-        const settings = this.getSettings();
+    async isConfigured(): Promise<boolean> {
+        const settings = await this.getSettings();
         const configured = !!(settings.apiKey && settings.apiKey.trim());
         return configured;
-    }
-
-    /**
-     * Get the settings signal for reactive subscriptions
-     */
-    getSettingsSignal() {
-        if (this.signalService) {
-            const signal = this.signalService.getSignal<IPokedexSettings>(this.SETTINGS_SIGNAL_KEY);
-            return signal;
-        } else {
-            console.error('SignalService not available in getSettingsSignal!');
-            return null;
-        }
     }
 }
 

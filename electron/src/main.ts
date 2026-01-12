@@ -145,11 +145,58 @@ const createWindow = async (): Promise<void> => {
   });
 };
 
+// Storage file management
+const storageFilePath = path.join(rootDir, 'storage.json');
+
+const loadStorageData = (): Record<string, any> => {
+  try {
+    if (fs.existsSync(storageFilePath)) {
+      const data = fs.readFileSync(storageFilePath, 'utf-8');
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.error('Failed to load storage data:', error);
+  }
+  return {};
+};
+
+const saveStorageData = (data: Record<string, any>): void => {
+  try {
+    fs.writeFileSync(storageFilePath, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (error) {
+    console.error('Failed to save storage data:', error);
+  }
+};
+
 // IPC Handlers
 ipcMain.on('app-close', () => {
   if (mainWindow) {
     mainWindow.close();
   }
+});
+
+ipcMain.handle('storage-get', async (_event, key: string) => {
+  const data = loadStorageData();
+  return data[key] || null;
+});
+
+ipcMain.handle('storage-set', async (_event, key: string, value: any) => {
+  const data = loadStorageData();
+  data[key] = value;
+  saveStorageData(data);
+  return true;
+});
+
+ipcMain.handle('storage-remove', async (_event, key: string) => {
+  const data = loadStorageData();
+  delete data[key];
+  saveStorageData(data);
+  return true;
+});
+
+ipcMain.handle('storage-clear', async (_event) => {
+  saveStorageData({});
+  return true;
 });
 
 // This method will be called when Electron has finished initialization

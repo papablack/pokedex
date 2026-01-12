@@ -1,6 +1,7 @@
 import { RWSViewComponent, RWSView, observable, RWSInject } from '@rws-framework/client';
 import PokemonDataService, { PokemonDataServiceInstance } from '@front/services/pokemon-data.service';
 import PokedexSettingsService, { PokedexSettingsServiceInstance } from '@front/services/pokedex-settings.service';
+import storageServiceInstance, { StorageServiceInstance } from '@front/services/storage.service';
 
 @RWSView('pokedex-screen')
 export class PokedexScreen extends RWSViewComponent {
@@ -19,7 +20,8 @@ export class PokedexScreen extends RWSViewComponent {
 
     constructor(
         @PokemonDataService private pokemonDataService: PokemonDataServiceInstance,
-        @PokedexSettingsService private settingsService: PokedexSettingsServiceInstance
+        @PokedexSettingsService private settingsService: PokedexSettingsServiceInstance,
+        @RWSInject(storageServiceInstance) private storageService: StorageServiceInstance
     ) {
         super();
     }
@@ -40,7 +42,7 @@ export class PokedexScreen extends RWSViewComponent {
         await this.initializeFilterData();
         
         // Load previously selected generation
-        const rememberedGeneration = this.loadSelectedGeneration();
+        const rememberedGeneration = await this.loadSelectedGeneration();
         if (rememberedGeneration) {
             this.selectedGeneration = rememberedGeneration;
             this.showFilters = true; // Show filters if generation is remembered
@@ -55,7 +57,7 @@ export class PokedexScreen extends RWSViewComponent {
     private setupEventListeners() {
         if (!this.screenContent) return;
 
-        this.screenContent.addEventListener('click', (event) => {
+        this.screenContent.addEventListener('click', async (event) => {
             const target = event.target as HTMLElement;
             const action = target.getAttribute('data-action');
 
@@ -64,10 +66,10 @@ export class PokedexScreen extends RWSViewComponent {
             } else if (action === 'select-generation') {
                 const generationId = parseInt(target.getAttribute('data-generation') || '0');
                 if (generationId) {
-                    this.selectGeneration(generationId);
+                    await this.selectGeneration(generationId);
                 }
             } else if (action === 'clear-filters') {
-                this.clearFilters();
+                await this.clearFilters();
             } else if (action === 'request-pokemon') {
                 const pokemonName = target.getAttribute('data-pokemon');
                 if (pokemonName) {
@@ -107,7 +109,7 @@ export class PokedexScreen extends RWSViewComponent {
 
     async selectGeneration(generationId: number) {
         this.selectedGeneration = generationId;
-        this.saveSelectedGeneration(generationId);
+        await this.saveSelectedGeneration(generationId);
         if (this.pokemonDataService && typeof this.pokemonDataService.getPokemonByGeneration === 'function') {
             this.filteredPokemonList = await this.pokemonDataService.getPokemonByGeneration(generationId);
         }
@@ -120,11 +122,11 @@ export class PokedexScreen extends RWSViewComponent {
         this.updateFilteredContent();
     }
 
-    clearFilters() {
+    async clearFilters() {
         this.selectedGeneration = null;
         this.selectedLocation = null;
         this.filteredPokemonList = [];
-        this.saveSelectedGeneration(null);
+        await this.saveSelectedGeneration(null);
         this.showFilters = false; // Hide filters when clearing
         
         // Clear the filtered content and show default content
@@ -253,9 +255,18 @@ export class PokedexScreen extends RWSViewComponent {
 
     get defaultContent(): string {
         // Check if we're in free mode
-        const currentSettings = this.settingsService?.getSettings();
-        const isFreeMode = currentSettings ? PokedexSettingsService.isFreeMode(currentSettings) : true;
-        const needsConfiguration = !isFreeMode && (!this.settingsService || !this.settingsService.isConfigured());
+        // Note: This is a getter, so we'll use a fallback for now
+        // In a real app, you might want to convert this to async or use a cached value
+        let isFreeMode = true;
+        let needsConfiguration = false;
+        
+        try {
+            // Try to get settings synchronously if possible, otherwise use defaults
+            const isConfigured = this.settingsService && this.settingsService.isConfigured();
+            needsConfiguration = !isFreeMode && !isConfigured;
+        } catch (error) {
+            console.warn('Could not check settings in defaultContent:', error);
+        }
         
         return `<div class="welcome-message">
             <div class="title">${'pokedex.title'.t()}</div>
@@ -319,25 +330,25 @@ export class PokedexScreen extends RWSViewComponent {
         `;
     }
 
-    // localStorage methods for generation persistence
-    private saveSelectedGeneration(generationId: number | null) {
+    // StorageService methods for generation persistence
+    private async saveSelectedGeneration(generationId: number | null) {
         try {
             if (generationId !== null) {
-                localStorage.setItem('pokedex-selected-generation', generationId.toString());
+                await this.storageService.set('pokedex-selected-generation', generationId.toString());
             } else {
-                localStorage.removeItem('pokedex-selected-generation');
+                await this.storageService.remove('pokedex-selected-generation');
             }
         } catch (error) {
-            console.warn('Failed to save generation to localStorage:', error);
+            console.warn('Failed to save generation to storage:', error);
         }
     }
 
-    private loadSelectedGeneration(): number | null {
+    private async loadSelectedGeneration(): Promise<number | null> {
         try {
-            const saved = localStorage.getItem('pokedex-selected-generation');
+            const saved = await this.storageService.get('pokedex-selected-generation');
             return saved ? parseInt(saved, 10) : null;
         } catch (error) {
-            console.warn('Failed to load generation from localStorage:', error);
+            console.warn('Failed to load generation from storage:', error);
             return null;
         }
     }

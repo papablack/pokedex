@@ -21,6 +21,8 @@ export class PokedexMain extends RWSViewComponent {
     @observable pokemonData: any = null;
     @observable activeRightTab: string = 'data';
 
+    @observable isConnected: boolean = false;
+
     constructor(
         @RWSInject(PokedexAiService) private aiService: PokedexAiServiceInstance,
         @RWSInject(PokedexSettingsService) private settingsService: PokedexSettingsServiceInstance,
@@ -34,19 +36,26 @@ export class PokedexMain extends RWSViewComponent {
     async connectedCallback() {
         super.connectedCallback();
         
-        this.loadSettings();
+        await this.loadSettings();
         this.aiService.setSettings(this.settings);   
         
         // Subscribe to settings changes
         const settingsSignal = this.settingsService.getSettingsSignal();
-        settingsSignal.value$.subscribe(newSettings => {
+        settingsSignal.value$.subscribe((newSettings: IPokedexSettings) => {
             this.settings = newSettings;
             this.aiService.setSettings(newSettings);
+            this.checkConnection();
         });
         
         this.on('rws_modal:settings:close', () => {
             this.showSettings = false;
         });
+    }
+
+    async checkConnection() {        
+        const isFreeMode = PokedexSettingsServiceInstance.isFreeMode(this.settings);
+                
+        this.isConnected = isFreeMode || await this.settingsService.isConfigured();
     }
 
     switchRightTab(tab: string) {
@@ -68,27 +77,42 @@ export class PokedexMain extends RWSViewComponent {
         }
     }
 
-    private loadSettings() {
-        this.settings = this.settingsService.getSettings();
+    private async loadSettings() {
+        try {
+            this.settings = await this.settingsService.getSettings();
+        } catch (error) {
+            console.warn('Failed to load settings, using defaults:', error);
+            this.settings = this.settingsService.getSettingsSync();
+        }
     }
 
     toggleSettings() {
         this.showSettings = !this.showSettings;
     }
 
-    saveSettings(newSettings: IPokedexSettings) {
-        this.settingsService.saveSettings(newSettings);
-        this.showSettings = false;
-        
-        // Emit settings changed event
-        Events.emit(PokedexEvents.SETTINGS_CHANGED, newSettings);
-        
-        this.notificationService.showSuccess('pokedex.settingsSaved');
+    async saveSettings(newSettings: IPokedexSettings) {
+        try {
+            await this.settingsService.saveSettings(newSettings);
+            this.showSettings = false;
+            
+            // Emit settings changed event
+            Events.emit(PokedexEvents.SETTINGS_CHANGED, newSettings);
+            
+            this.notificationService.showSuccess('pokedex.settingsSaved');
+        } catch (error) {
+            console.error('Failed to save settings:', error);
+            this.notificationService.showError('Failed to save settings');
+        }
     }
 
-    clearSettings() {
-        this.settingsService.clearSettings();
-        this.notificationService.showWarning('pokedex.settingsCleared');
+    async clearSettings() {
+        try {
+            await this.settingsService.clearSettings();
+            this.notificationService.showWarning('pokedex.settingsCleared');
+        } catch (error) {
+            console.error('Failed to clear settings:', error);
+            this.notificationService.showError('Failed to clear settings');
+        }
     }
 
     async searchPokemon(searchQuery?: string) {
@@ -100,7 +124,7 @@ export class PokedexMain extends RWSViewComponent {
         }
 
         // Check if we're in free mode (using default free key) - allow operation
-        const currentSettings = this.settingsService.getSettings();
+        const currentSettings = await this.settingsService.getSettings();
         const isFreeMode = PokedexSettingsServiceInstance.isFreeMode(currentSettings);
         
         if (!isFreeMode && !this.settingsService.isConfigured()) {
@@ -251,17 +275,7 @@ export class PokedexMain extends RWSViewComponent {
 
     quickSearch(pokemonName: string) {
         this.searchPokemon(pokemonName);
-    }
-
-    get isConnected(): boolean {
-        if (!this.settingsService) return false;
-        
-        const currentSettings = this.settingsService.getSettings();
-        const isFreeMode = PokedexSettingsServiceInstance.isFreeMode(currentSettings);
-        
-        // Consider both configured custom API key and free mode as connected
-        return isFreeMode || this.settingsService.isConfigured();
-    }
+    }  
 
     // Event handlers for sub-components
     handleToggleSettings() {
@@ -274,16 +288,16 @@ export class PokedexMain extends RWSViewComponent {
         this.searchPokemon(searchQuery);
     }
 
-    handleSettingsSave(event: CustomEvent) {
+    async handleSettingsSave(event: CustomEvent) {
         // Try event.detail first, then fall back to event if detail is undefined
         const settingsData = event.detail || event;
         
-        this.saveSettings(settingsData);
+        await this.saveSettings(settingsData);
         this.showSettings = false;
     }
 
-    handleSettingsClear() {
-        this.clearSettings();
+    async handleSettingsClear() {
+        await this.clearSettings();
         this.showSettings = false;
     }
 

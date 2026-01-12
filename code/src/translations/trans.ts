@@ -1,8 +1,9 @@
-import { translations, TranslationType } from './i18n';  
+import { translations } from './i18n';
+import storageServiceInstance from '../services/storage.service';  
 
 export { getCurrency } from './currencies';
 
-export function getTranslations(lang: string): TranslationType 
+export function getTranslations(lang: string): Record<string, string> 
 {
     return translations[lang] || translations.en;
 }

@@ -1,9 +1,11 @@
 import { RWSViewComponent, RWSView, RWSInject, observable } from '@rws-framework/client';
 import PokedexSettingsService, { PokedexSettingsServiceInstance } from '../../services/pokedex-settings.service';
 import SignalService, { SignalServiceInstance } from '../../services/signal.service';
+import storageServiceInstance, { StorageServiceInstance } from '../../services/storage.service';
 import { IPokedexSettings } from '../../types/pokedex.types';
 import { getCurrentLanguage, langKey } from '../../translations/trans';
 import { AIModelOption } from '@front/types/app.types';
+import { setLanguage } from '@front/application/globals/translations';
 
 const availableModels: AIModelOption[] = [
     { value: PokedexSettingsServiceInstance.getFreeModel().value, label: PokedexSettingsServiceInstance.getFreeModel().label, free: true },
@@ -28,7 +30,8 @@ export class PokedexSettings extends RWSViewComponent {
 
     constructor(
         @RWSInject(PokedexSettingsService) private settingsService: PokedexSettingsServiceInstance,
-        @RWSInject(SignalService) private signalService: SignalServiceInstance
+        @RWSInject(SignalService) private signalService: SignalServiceInstance,
+        @RWSInject(storageServiceInstance) private storageService: StorageServiceInstance
     ) {
         super();
     }
@@ -37,7 +40,7 @@ export class PokedexSettings extends RWSViewComponent {
         super.connectedCallback();
         
         // Load settings and ensure free model is up to date
-        this.settings = this.settingsService.getSettings();
+        this.settings = await this.settingsService.getSettings();
         
         // If we're in free mode, make sure we're using the current free model
         if (PokedexSettingsServiceInstance.isFreeMode(this.settings)) {
@@ -54,7 +57,7 @@ export class PokedexSettings extends RWSViewComponent {
         const settingsSignal = this.settingsService.getSettingsSignal();
         
         if (settingsSignal) {
-            settingsSignal.value$.subscribe(newSettings => {
+            settingsSignal.value$.subscribe((newSettings: IPokedexSettings) => {
                 this.settings = newSettings;
                 // Ensure free model is current when settings change
                 if (PokedexSettingsServiceInstance.isFreeMode(this.settings)) {
@@ -92,16 +95,15 @@ export class PokedexSettings extends RWSViewComponent {
         };
     }
 
-    saveSettings() {
+    async saveSettings() {
         const currentLanguage = getCurrentLanguage();
         const newLanguage = this.tempSettings.language;
         
         // Check if language changed
         if (currentLanguage !== newLanguage) {
             // Update global language setting
-            if (typeof localStorage !== 'undefined') {
-                localStorage.setItem(langKey, newLanguage);
-            }
+            await this.storageService.set(langKey, newLanguage);
+            setLanguage(newLanguage);
             
             // Emit settings save event
             this.$emit('settings-save', this.tempSettings);

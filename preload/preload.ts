@@ -14,6 +14,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     initElectronLayout: () => {
         // Signal to the renderer that it should rebuild the layout with electron attribute
         window.dispatchEvent(new CustomEvent('electron-ready', { detail: { isDev } }));
+    },
+    storage: {
+        get: (key: string) => ipcRenderer.invoke('storage-get', key),
+        set: (key: string, value: any) => ipcRenderer.invoke('storage-set', key, value),
+        remove: (key: string) => ipcRenderer.invoke('storage-remove', key),
+        clear: () => ipcRenderer.invoke('storage-clear')
     }
 });
 

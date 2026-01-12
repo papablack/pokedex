@@ -6,4 +6,5 @@ node_modules/
 public/js/*
 public/css/generated/*
 .env
+storage.json
 component.debug.ts

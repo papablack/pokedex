@@ -176,7 +176,7 @@ export class PokemonDataService extends RWSService {
             evolutionLevel: null, // Would need more complex logic
             evolutions,
             preevolutions,
-            flavorTexts: this.getLocalizedFlavorTexts(species?.flavor_text_entries || []),
+            flavorTexts: await this.getLocalizedFlavorTexts(species?.flavor_text_entries || []),
             sprite: pokemon.sprites.front_default,
             shinySprite: pokemon.sprites.front_shiny,
             legendary: species?.is_legendary || false,
@@ -201,7 +201,13 @@ export class PokemonDataService extends RWSService {
     private async getAbilityDescription(abilityName: string): Promise<string> {
         try {
             const ability = await fetch(`https://pokeapi.co/api/v2/ability/${abilityName}/`).then(res => res.json());
-            const currentLang = getCurrentLanguage();
+            let currentLang: string;
+            try {
+                currentLang = await getCurrentLanguage();
+            } catch (error) {
+                console.warn('Failed to get current language, using default:', error);
+                currentLang = 'pl'; // fallback
+            }
             const langCode = this.getPokeApiLanguageCode(currentLang);
             
             // Try to find description in current language first
@@ -221,7 +227,7 @@ export class PokemonDataService extends RWSService {
     private async getMoveDescription(moveName: string): Promise<string> {
         try {
             const move = await fetch(`https://pokeapi.co/api/v2/move/${moveName}/`).then(res => res.json());
-            const currentLang = getCurrentLanguage();
+            const currentLang = await getCurrentLanguage();
             const langCode = this.getPokeApiLanguageCode(currentLang);
             
             // Try to find description in current language first
@@ -396,8 +402,14 @@ export class PokemonDataService extends RWSService {
         return this.htmlFormattingService.formatPokemonDataToHTML(pokemon, language);
     }
 
-    private getLocalizedFlavorTexts(flavorTextEntries: FlavorText[]): PokemonFlavorText[] {
-        const currentLang = getCurrentLanguage();
+    private async getLocalizedFlavorTexts(flavorTextEntries: FlavorText[]): Promise<PokemonFlavorText[]> {
+        let currentLang: string;
+        try {
+            currentLang = await getCurrentLanguage();
+        } catch (error) {
+            console.warn('Failed to get current language, using default:', error);
+            currentLang = 'pl'; // fallback
+        }
         const langCode = this.getPokeApiLanguageCode(currentLang);
         
         // Filter flavor texts by current language first
