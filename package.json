@@ -37,12 +37,8 @@
       "node_modules/**/*"
     ],
     "win": {
-      "target": "nsis",
+      "target": "portable",
       "icon": "public/icon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
     }
   }
 }

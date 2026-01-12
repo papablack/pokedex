@@ -62,5 +62,6 @@ export default {
     'pokedex.modelSelectTitle': 'Wybierz model AI do odpowiedzi',
     'pokedex.languageSelectTitle': 'Wybierz język odpowiedzi',
     'pokedex.temperatureSliderTitle': 'Dostosuj poziom kreatywności AI',
-    'pokedex.streamingCheckboxTitle': 'Włącz/wyłącz strumieniowanie odpowiedzi'
+    'pokedex.streamingCheckboxTitle': 'Włącz/wyłącz strumieniowanie odpowiedzi',
+    'pokedx.rateLimitWait': 'Osiągnięto limit żądań. Poczekaj kilka minut i spróbuj ponownie.'
 };

@@ -6,6 +6,7 @@ import { IPokedexSettings, IQueryAnalysis, IPokedexResponse } from '../types/pok
 import PokemonDataService, { PokemonDataServiceInstance } from './pokemon-data.service';
 import HtmlFormattingService, { HtmlFormattingServiceInstance } from './html-formatting.service';
 import { PokedexSettingsService } from './pokedex-settings.service';
+import NotificationService, { NotificationServiceInstance } from './notification.service';
 
 // Zod schema for structured query analysis
 const QueryAnalysisSchema = z.object({
@@ -22,7 +23,8 @@ export class PokedexAiService extends RWSService {
 
     constructor(
         @PokemonDataService private pokemonDataService: PokemonDataServiceInstance,
-        @HtmlFormattingService private htmlFormattingService: HtmlFormattingServiceInstance
+        @HtmlFormattingService private htmlFormattingService: HtmlFormattingServiceInstance,
+        @NotificationService private notificationService: NotificationServiceInstance
     ) {
         super();
     }
@@ -52,22 +54,29 @@ export class PokedexAiService extends RWSService {
 
     async analyzeQuery(query: string): Promise<IQueryAnalysis> {
         if (!this.settings.apiKey || !this.openRouterClient) {
-            // Simple fallback analysis without AI - rely mostly on game help keywords
+            // Simple fallback analysis without AI - try to detect basic Pokemon searches
             const isPokemonRelated = this.isGameHelpQuery(query.toLowerCase());
-            const potentialNames = this.extractPokemonNamesFromQuery(query.toLowerCase());
+            const queryWords = query.toLowerCase().split(/\s+/).map(word => word.replace(/[^\w]/g, ''));
+            
+            // Basic Pokemon name detection - check if query is likely a Pokemon name search
+            const isLikelyPokemonName = queryWords.length === 1 && queryWords[0].length >= 3 && queryWords[0].length <= 12;
+            const containsPokemonKeywords = ['pokemon', 'pokémon', 'poke'].some(keyword => query.toLowerCase().includes(keyword));
+            
+            // If it looks like a single Pokemon name or contains Pokemon keywords, treat as Pokemon search
+            const isPokemonSearch = isLikelyPokemonName || (containsPokemonKeywords && queryWords.length <= 3);
             
             return {
-                isPokemonSearch: potentialNames.length > 0,
-                pokemonNames: potentialNames,
+                isPokemonSearch,
+                pokemonNames: isPokemonSearch ? queryWords.filter(word => word.length >= 3) : [],
                 queryType: isPokemonRelated ? 'game_help' : 'general_discussion',
-                confidence: 0.3, // Low confidence since we don't have AI analysis
-                extractedPokemonName: potentialNames[0] || ''
+                confidence: 0.2, // Low confidence since we don't have AI analysis
+                extractedPokemonName: isPokemonSearch ? queryWords.find(word => word.length >= 3) || '' : ''
             };
         }
 
         try {
             const { object } = await generateObject({
-                model: this.generateModelObject(this.settings.model),
+                model: this.generateModelObject(PokedexSettingsService.getQueryModel().value),
                 schema: QueryAnalysisSchema,
                 messages: [
                     { 
@@ -81,17 +90,29 @@ export class PokedexAiService extends RWSService {
 
             return object;
         } catch (error) {
+            if (this.isRateLimitError(error)) {
+                console.warn('Rate limit hit in analyzeQuery:', error);
+                this.notificationService.showWarning('pokedx.rateLimitWait');
+                throw new Error('pokedex.rateLimitWait'.t());
+            }
             console.warn('Failed to analyze query with AI, using fallback:', error);
             // Enhanced fallback analysis
-            const isGameHelp = this.isGameHelpQuery(query.toLowerCase());
-            const potentialNames = this.extractPokemonNamesFromQuery(query.toLowerCase());
+            const isPokemonRelated = this.isGameHelpQuery(query.toLowerCase());
+            const queryWords = query.toLowerCase().split(/\s+/).map(word => word.replace(/[^\w]/g, ''));
+            
+            // Basic Pokemon name detection - check if query is likely a Pokemon name search
+            const isLikelyPokemonName = queryWords.length === 1 && queryWords[0].length >= 3 && queryWords[0].length <= 12;
+            const containsPokemonKeywords = ['pokemon', 'pokémon', 'poke'].some(keyword => query.toLowerCase().includes(keyword));
+            
+            // If it looks like a single Pokemon name or contains Pokemon keywords, treat as Pokemon search
+            const isPokemonSearch = isLikelyPokemonName || (containsPokemonKeywords && queryWords.length <= 3);
             
             return {
-                isPokemonSearch: !isGameHelp && potentialNames.length > 0,
-                pokemonNames: potentialNames,
-                queryType: isGameHelp ? 'game_help' : 'general_discussion',
-                confidence: 0.3, // Low confidence since we don't have AI analysis
-                extractedPokemonName: potentialNames[0] || ''
+                isPokemonSearch,
+                pokemonNames: isPokemonSearch ? queryWords.filter(word => word.length >= 3) : [],
+                queryType: isPokemonRelated ? 'game_help' : 'general_discussion',
+                confidence: 0.2, // Low confidence since we don't have AI analysis
+                extractedPokemonName: isPokemonSearch ? queryWords.find(word => word.length >= 3) || '' : ''
             };
         }
     }
@@ -102,15 +123,16 @@ export class PokedexAiService extends RWSService {
         console.log('Query analysis result:', analysis);
         let pokemonData = null;
 
-        // Always try to get Pokemon data if we have potential Pokemon names
-        if (analysis.pokemonNames.length > 0) {
+        // Only try to get Pokemon data if the query is specifically asking for Pokemon data/stats
+        if (analysis.isPokemonSearch && (analysis.extractedPokemonName || analysis.pokemonNames.length > 0)) {
             // Try extracted name first
             if (analysis.extractedPokemonName) {
                 pokemonData = await this.pokemonDataService.getPokemonData(analysis.extractedPokemonName);
+                console.log(`Trying extracted Pokemon name: ${analysis.extractedPokemonName}`);
             }
             
             // If no data found, try all mentioned names
-            if (!pokemonData) {
+            if (!pokemonData && analysis.pokemonNames.length > 0) {
                 for (const pokemonName of analysis.pokemonNames) {
                     pokemonData = await this.pokemonDataService.getPokemonData(pokemonName);
                     if (pokemonData) {
@@ -119,6 +141,8 @@ export class PokedexAiService extends RWSService {
                     }
                 }
             }
+        } else {
+            console.log('Query not eligible for PokeAPI search - isPokemonSearch:', analysis.isPokemonSearch, 'pokemonNames:', analysis.pokemonNames);
         }
 
         // Generate AI response (always, whether we have Pokemon data or not)
@@ -136,15 +160,16 @@ export class PokedexAiService extends RWSService {
         const analysis = await this.analyzeQuery(query);
         let pokemonData = null;
 
-        // Always try to get Pokemon data if we have potential Pokemon names
-        if (analysis.pokemonNames.length > 0) {
+        // Only try to get Pokemon data if the query is specifically asking for Pokemon data/stats
+        if (analysis.isPokemonSearch && (analysis.extractedPokemonName || analysis.pokemonNames.length > 0)) {
             // Try extracted name first
             if (analysis.extractedPokemonName) {
                 pokemonData = await this.pokemonDataService.getPokemonData(analysis.extractedPokemonName);
+                console.log(`Trying extracted Pokemon name: ${analysis.extractedPokemonName}`);
             }
             
             // If no data found, try all mentioned names
-            if (!pokemonData) {
+            if (!pokemonData && analysis.pokemonNames.length > 0) {
                 for (const pokemonName of analysis.pokemonNames) {
                     pokemonData = await this.pokemonDataService.getPokemonData(pokemonName);
                     if (pokemonData) {
@@ -153,6 +178,8 @@ export class PokedexAiService extends RWSService {
                     }
                 }
             }
+        } else {
+            console.log('Query not eligible for PokeAPI search - isPokemonSearch:', analysis.isPokemonSearch, 'pokemonNames:', analysis.pokemonNames);
         }
 
         // Stream AI response
@@ -198,16 +225,25 @@ export class PokedexAiService extends RWSService {
             console.log('Added NO FALLBACK instruction - pokemon related query detected');
         }
     
-        const { text } = await generateText({
-            model: this.generateModelObject(this.settings.model),
-            messages: [
-                { role: 'system', content: systemPrompt },
-                { role: 'user', content: query }
-            ],
-            temperature: this.settings.temperature,
-        });
+        try {
+            const { text } = await generateText({
+                model: this.generateModelObject(this.settings.model),
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: query }
+                ],
+                temperature: this.settings.temperature,
+            });
 
-        return text;
+            return text;
+        } catch (error) {
+            if (this.isRateLimitError(error)) {
+                console.warn('Rate limit hit in generateAIResponse:', error);
+                this.notificationService.showWarning('pokedex.rateLimitWait');
+                throw new Error('pokedx.rateLimitWait'.t());
+            }
+            throw error;
+        }
     }
 
     private async *streamAIResponse(query: string, analysis: IQueryAnalysis, pokemonData?: any): AsyncGenerator<string, void, unknown> {
@@ -239,17 +275,28 @@ export class PokedexAiService extends RWSService {
 
         const model = this.generateModelObject(this.settings.model);
 
-        const { textStream } = streamText({
-            model,
-            messages: [
-                { role: 'system', content: systemPrompt },
-                { role: 'user', content: query }
-            ],
-            temperature: this.settings.temperature,
-        });
+        try {
+            const { textStream } = streamText({
+                model,
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: query }
+                ],
+                temperature: this.settings.temperature,
+            });
 
-        for await (const chunk of textStream) {
-            yield chunk;
+            for await (const chunk of textStream) {
+                yield chunk;
+            }
+        } catch (error) {
+            if (this.isRateLimitError(error)) {
+                console.warn('Rate limit hit in streamAIResponse:', error);
+                this.notificationService.showWarning('pokedx.rateLimitWait');
+                yield 'pokedx.rateLimitWait'.t();
+                return;
+            } else {
+                throw error;
+            }
         }
     }
 
@@ -297,24 +344,6 @@ export class PokedexAiService extends RWSService {
         return basePrompt;
     }
 
-    private extractPokemonNamesFromQuery(query: string): string[] {
-        // Extract potential Pokemon names from query
-        const words = query.split(/\s+/);
-        const potentialNames: string[] = [];
-        
-        for (const word of words) {
-            // Clean the word of punctuation
-            const cleanWord = word.replace(/[^\w]/g, '').toLowerCase();
-            
-            // Just take words that are reasonable length - no language assumptions
-            if (cleanWord.length >= 3) {
-                potentialNames.push(cleanWord);
-            }
-        }
-        
-        return potentialNames;
-    }
-
     private isGameHelpQuery(query: string): boolean {
         const gameHelpKeywords = [
             'find', 'catch', 'where', 'location', 'route', 'area', 'region', 'johto', 'kanto', 'hoenn', 
@@ -345,11 +374,19 @@ export class PokedexAiService extends RWSService {
         return isPokemonRelated || isGameHelp;
     }
 
+    private isRateLimitError(error: any): boolean {
+        return error?.error?.code === 429 || error?.code === 429;
+    }
+
+    private sleep(ms: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     private generateModelObject(model: string) {
         if (!this.openRouterClient) {
             throw new Error('pokedex.clientNotInitialized'.t());
         }
-        return this.openRouterClient(this.settings.model);
+        return this.openRouterClient(model);
     }
 }
 

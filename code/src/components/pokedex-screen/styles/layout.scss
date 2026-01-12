@@ -357,18 +357,14 @@
     font-family: 'Courier New', monospace;
 }
 
-.ai-strategy {
-    border-left-color: $ai-strategy-color;
-    
+.ai-strategy {    
     .ai-section-title {
         color: $ai-strategy-color;
         text-shadow: 0 0 8px rgba(255, 165, 0, 0.7);
     }
 }
 
-.ai-facts {
-    border-left-color: $ai-facts-color;
-    
+.ai-facts {    
     .ai-section-title {
         color: $ai-facts-color;
         text-shadow: 0 0 8px rgba(144, 238, 144, 0.7);
@@ -468,8 +464,7 @@
 
 .ai-description-box {
     background: transparent;
-    padding: 8px 0;
-    border-left: 2px solid #74b9ff;
+    padding: 8px 0;    
     padding-left: 15px;
     margin-bottom: 15px;
     color: #74b9ff;
@@ -537,7 +532,6 @@
 .ai-evolution-info {
     background: transparent;
     padding: 8px 0;
-    border-left: 2px solid #55efc4;
     padding-left: 15px;
     color: #55efc4;
     font-family: 'Courier New', monospace;
@@ -547,8 +541,7 @@
 .ai-facts-section {
     margin-top: 15px;
     background: transparent;
-    padding: 8px 0;
-    border-left: 2px solid #fd79a8;
+    padding: 8px 0;    
     padding-left: 15px;
 }
 

@@ -4,8 +4,10 @@ import SignalService, { SignalServiceInstance } from './signal.service';
 import { AIModelOption } from '@front/types/app.types';
 
 const FREE_KEY = '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';
-const FREE_MODEL: AIModelOption = { value: 'openai/gpt-oss-120b:free', label: 'GPT OSS 120B (Free)', free: true };
-
+//const FREE_MODEL: AIModelOption = { value: 'openai/gpt-oss-120b:free', label: 'GPT OSS 120B (Free)', free: true };
+const FREE_MODEL: AIModelOption = { value: 'allenai/molmo-2-8b:free', label: 'Molmo2 (Free)', free: true };
+const QUERY_MODEL: AIModelOption = { value: 'mistralai/devstral-2512:free', label: 'Devstral 2 (Free)', free: true };
+//allenai/molmo-2-8b:free
 export class PokedexSettingsService extends RWSService {
     private readonly STORAGE_KEY = 'pokedex_settings';
     private readonly SETTINGS_SIGNAL_KEY = 'pokedex_settings';
@@ -64,6 +66,10 @@ export class PokedexSettingsService extends RWSService {
 
     static getFreeModel(): AIModelOption {
         return FREE_MODEL;
+    }
+
+    static getQueryModel(): AIModelOption {
+        return QUERY_MODEL;
     }
 
     static getFreeKey(): string {

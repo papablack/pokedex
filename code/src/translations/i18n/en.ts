@@ -62,5 +62,6 @@ export default {
     'pokedex.modelSelectTitle': 'Select AI model for responses',
     'pokedex.languageSelectTitle': 'Select response language',
     'pokedex.temperatureSliderTitle': 'Adjust AI creativity level',
-    'pokedex.streamingCheckboxTitle': 'Enable/disable response streaming'
+    'pokedex.streamingCheckboxTitle': 'Enable/disable response streaming',
+    'pokedx.rateLimitWait': 'Rate limit reached. Please wait a few minutes and try again.'
 };
