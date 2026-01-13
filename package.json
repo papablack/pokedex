@@ -16,6 +16,7 @@
     "electron:build": "yarn preload:build && tsc -p electron/tsconfig.json && electron-builder",
     "electron:dev": "yarn preload:build && tsc -p electron/tsconfig.json && electron .",
     "full:build": "yarn build && yarn preload:build && tsc -p electron/tsconfig.json && electron-builder",
+    "full:build:dir": "yarn build && yarn preload:build && tsc -p electron/tsconfig.json && electron-builder --dir",
     "full:dev": "yarn build && yarn preload:build && tsc -p electron/tsconfig.json && electron ."
   },
   "main": "dist/electron/main.js",
@@ -54,6 +55,10 @@
       "target": [
         {
           "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "dir",
           "arch": ["x64"]
         }
       ],
