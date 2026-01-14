@@ -18,6 +18,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
         // Signal to the renderer that it should rebuild the layout with electron attribute
         window.dispatchEvent(new CustomEvent('electron-ready', { detail: { isDev } }));
     },
+    openExternal: (url: string) => {
+        ipcRenderer.send('open-external-url', url);
+    },
     storage: {
         get: (key: string) => ipcRenderer.invoke('storage-get', key),
         set: (key: string, value: any) => ipcRenderer.invoke('storage-set', key, value),

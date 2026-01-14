@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron';
+import { ipcMain, shell } from 'electron';
 import { DebugLogger } from './debug';
 import { StorageManager } from './storage';
 import { WindowManager } from './window';
@@ -24,6 +24,16 @@ export class IPCManager {
             this.windowManager.closeWindow();
         });
 
+        // Open external URL handler
+        ipcMain.on('open-external-url', async (_event, url: string) => {
+            try {
+                await shell.openExternal(url);
+                DebugLogger.info(`Opened external URL: ${url}`);
+            } catch (error) {
+                DebugLogger.error(`Failed to open external URL: ${url} - ${error}`);
+            }
+        });
+
         // Storage handlers
         ipcMain.handle('storage-get', async (_event, key: string) => {
             return this.storage.get(key);
@@ -45,7 +55,9 @@ export class IPCManager {
     }
 
     cleanup(): void {
+        ipcMain.removeAllListeners('app-minimize');
         ipcMain.removeAllListeners('app-close');
+        ipcMain.removeAllListeners('open-external-url');
         ipcMain.removeHandler('storage-get');
         ipcMain.removeHandler('storage-set');
         ipcMain.removeHandler('storage-remove');

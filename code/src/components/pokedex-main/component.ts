@@ -6,6 +6,7 @@ import SignalService, { SignalServiceInstance } from '../../services/signal.serv
 import PokemonDataService, { PokemonDataServiceInstance } from '../../services/pokemon-data.service';
 import { Events, PokedexEvents } from '../../event/events';
 import { IPokedexSettings, IPokedexResponse } from '../../types/pokedex.types';
+import type { TransformedPokemonData } from '../../types/pokemon-data.types';
 import { PokedexScreen } from '../pokedex-screen/component';
 
 @RWSView('pokedex-main')
@@ -13,13 +14,12 @@ export class PokedexMain extends RWSViewComponent {
     @observable settings: IPokedexSettings;
     @observable query: string = '';
     @observable output: string = '';
-    @observable pokemonDataOutput: string = '';
     @observable aiOutput: string = '';
     @observable isGenerating: boolean = false;
     @observable showSettings: boolean = false;
     @observable contentReady: boolean = false;
     @observable rightWingVisible: boolean = false;
-    @observable pokemonData: any = null;
+    @observable pokemonData: TransformedPokemonData | null = null;
     @observable activeRightTab: string = 'data';
     @observable isStreaming: boolean = false;
 
@@ -167,7 +167,6 @@ export class PokedexMain extends RWSViewComponent {
         this.isStreaming = this.settings.streaming;
         this.contentReady = false;
         this.output = '';
-        this.pokemonDataOutput = '';
         this.aiOutput = '';
         
         // Update screen component states
@@ -239,10 +238,8 @@ export class PokedexMain extends RWSViewComponent {
         // Handle Pokemon data if found
         if (response.pokemonData) {
             this.pokemonData = response.pokemonData;
-            this.pokemonDataOutput = this.pokemonDataService.formatPokemonDataToHTML(response.pokemonData, this.settings.language);
         } else {
             this.pokemonData = null;
-            this.pokemonDataOutput = '';
         }
         
         // Handle AI response - ensure it only goes to main screen and not Pokemon data
@@ -288,11 +285,9 @@ export class PokedexMain extends RWSViewComponent {
         // Handle Pokemon data if found
         if (response.pokemonData) {
             this.pokemonData = response.pokemonData;
-            this.pokemonDataOutput = this.pokemonDataService.formatPokemonDataToHTML(response.pokemonData, this.settings.language);
             this.contentReady = true; // Show Pokemon data immediately in right wing only
         } else {
             this.pokemonData = null;
-            this.pokemonDataOutput = '';
         }
         
         // Stream AI response - ensure it never contains Pokemon data
@@ -337,6 +332,9 @@ export class PokedexMain extends RWSViewComponent {
             // Ensure main screen output only contains AI response, never Pokemon data
             this.output = this.aiOutput;
             
+            // Stop streaming state
+            this.isStreaming = false;
+            
             // Update screen component AFTER completing the conversation
             if (this.screen) {
                 this.screen.updateStreamingState(false);
@@ -348,6 +346,7 @@ export class PokedexMain extends RWSViewComponent {
         } else {
             // If no streaming response, stop loading here
             this.isGenerating = false;
+            this.isStreaming = false;
             if (!this.contentReady) {
                 this.contentReady = true;
             }
@@ -388,7 +387,6 @@ export class PokedexMain extends RWSViewComponent {
         // Reset UI state
         this.output = '';
         this.aiOutput = '';
-        this.pokemonDataOutput = '';
         this.contentReady = true; // Keep content area visible but empty
         
         // Update screen component to clear conversation history

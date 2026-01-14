@@ -14,7 +14,7 @@
     color: rgba(255, 255, 255, 0.9);
     font-weight: 600;
     font-size: 14px;
-    -webkit-app-region: no-drag; // Make title bar non-draggable by default
+    -webkit-app-region: drag; // Make entire title bar draggable
     z-index: 10000;
     position: fixed;
     top: 0;
@@ -22,10 +22,15 @@
     right: 0;
     transition: background-color 0.3s ease;
     gap: 10px; // Gap between drag button and right button group
+    cursor: grab; // Show grab cursor for the entire bar
     
     // Show subtle background on hover
     &:hover {
         background: rgba(0, 0, 0, 0.1);        
+    }
+
+    &:active {
+        cursor: grabbing; // Show grabbing cursor when dragging
     }
 
     &.hidden {
@@ -33,42 +38,48 @@
     }
 
     .app-drag-btn {
-        -webkit-app-region: drag; // Only this button is draggable
-        background: rgba(255, 255, 255, 0.1);
-        border: none;
-        color: white;
-        font-size: 16px;
-        width: 32px;
-        height: 32px;
-        border-radius: 4px;
+        // Drag button can be hidden or repurposed since whole bar is draggable
+        display: none; // Hide the separate drag button
+    }
+
+    .app-drag-icon {
         display: flex;
         align-items: center;
         justify-content: center;
+        width: 32px;
+        height: 32px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 14px;
+        -webkit-app-region: drag; // Ensure this icon area is draggable
         cursor: grab;
         transition: all 0.2s ease;
-        position: relative;
-        z-index: 10001;
-
+        border-radius: 4px;
+        
         &:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.1);
         }
-
+        
         &:active {
             cursor: grabbing;
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(0.95);
         }
-
+        
         i {
-            font-size: 14px;
+            font-size: 12px;
+            opacity: 0.8;
         }
+    }
+
+    .app-title-spacer {
+        flex: 1; // Takes up remaining space to push controls to the right
+        -webkit-app-region: drag; // Ensure this area is draggable
     }
 
     .app-controls {
         display: flex;
         align-items: center;
         gap: 10px; // 10px gap between minimize and close buttons
+        -webkit-app-region: no-drag; // Ensure the controls area is not draggable
     }
 
     .app-minimize-btn {

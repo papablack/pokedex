@@ -1,6 +1,5 @@
 import { RWSService, RWSInject } from '@rws-framework/client';
 import Pokedex from '@sherwinski/pokeapi-ts';
-import HtmlFormattingService, { HtmlFormattingServiceInstance } from './html-formatting.service';
 import { getCurrentLanguage } from '../translations/trans';
 
 // Import official PokeAPI types from pokenode-ts
@@ -40,9 +39,7 @@ import type {
 export class PokemonDataService extends RWSService {
     private pokedex: Pokedex;
 
-    constructor(
-        @HtmlFormattingService private htmlFormattingService: HtmlFormattingServiceInstance
-    ) {
+    constructor(    ) {
         super();
         this.pokedex = new Pokedex();
     }
@@ -154,7 +151,7 @@ export class PokemonDataService extends RWSService {
         }
 
         // Get moves data
-        const moves = await this.getPokemonMoves(pokemon);
+        const movesData = await this.getPokemonMoves(pokemon);
 
         return {
             num: pokemon.id,
@@ -194,7 +191,9 @@ export class PokemonDataService extends RWSService {
                 name: species.generation.name
             } : null,
             locations: locationData.locationAreas,
-            moves: moves
+            moves: movesData.levelUp,
+            tmMoves: movesData.tm,
+            hmMoves: movesData.hm
         };
     }
 
@@ -244,12 +243,14 @@ export class PokemonDataService extends RWSService {
         }
     }
 
-    private async getPokemonMoves(pokemon: Pokemon): Promise<PokemonMove[]> {
+    private async getPokemonMoves(pokemon: Pokemon): Promise<{ levelUp: PokemonMove[], tm: PokemonMove[], hm: PokemonMove[] }> {
         try {
-            const moves: PokemonMove[] = [];
+            const levelUpMoves: PokemonMove[] = [];
+            const tmMoves: PokemonMove[] = [];
+            const hmMoves: PokemonMove[] = [];
             
             // Get moves learned by level up (limit to most recent generation moves for performance)
-            const levelUpMoves = pokemon.moves
+            const levelUpMovesData = pokemon.moves
                 .filter((moveData) => {
                     return moveData.version_group_details.some((vgd) => 
                         vgd.move_learn_method.name === 'level-up'
@@ -267,8 +268,28 @@ export class PokemonDataService extends RWSService {
                     return aLevel - bLevel;
                 });
             
-            // Process each move with details
-            for (const moveData of levelUpMoves) {
+            // Get TM moves
+            const tmMovesData = pokemon.moves
+                .filter((moveData) => {
+                    return moveData.version_group_details.some((vgd) => 
+                        vgd.move_learn_method.name === 'machine'
+                    );
+                })
+                .slice(0, 15); // Limit to 15 TM moves for performance
+
+            // Get HM moves (if any exist)
+            const hmMovesData = pokemon.moves
+                .filter((moveData) => {
+                    return moveData.version_group_details.some((vgd) => 
+                        vgd.move_learn_method.name === 'machine' && 
+                        // HMs are typically identified by specific machine numbers or move names
+                        // This is a simplified check - in reality you might need more complex logic
+                        ['cut', 'fly', 'surf', 'strength', 'flash', 'rock-smash', 'waterfall', 'dive'].includes(moveData.move.name)
+                    );
+                });
+            
+            // Process level-up moves
+            for (const moveData of levelUpMovesData) {
                 try {
                     const moveUrl = moveData.move.url;
                     const moveResponse = await fetch(moveUrl);
@@ -278,7 +299,7 @@ export class PokemonDataService extends RWSService {
                         vgd.move_learn_method.name === 'level-up'
                     );
                     
-                    moves.push({
+                    levelUpMoves.push({
                         name: this.capitalizePokemonName(move.name),
                         type: move.type?.name || 'unknown',
                         category: move.damage_class?.name || 'status',
@@ -294,11 +315,52 @@ export class PokemonDataService extends RWSService {
                     console.warn(`Failed to fetch move details: ${moveData.move.name}`);
                 }
             }
+
+            // Process TM moves
+            for (const moveData of tmMovesData) {
+                try {
+                    const moveUrl = moveData.move.url;
+                    const moveResponse = await fetch(moveUrl);
+                    const move = await moveResponse.json() as Move;
+                    
+                    // Check if it's actually an HM move
+                    const isHMMove = ['cut', 'fly', 'surf', 'strength', 'flash', 'rock-smash', 'waterfall', 'dive'].includes(move.name);
+                    
+                    const moveEntry = {
+                        name: this.capitalizePokemonName(move.name),
+                        type: move.type?.name || 'unknown',
+                        category: move.damage_class?.name || 'status',
+                        power: move.power,
+                        accuracy: move.accuracy,
+                        pp: move.pp,
+                        priority: move.priority,
+                        levelLearned: 0, // TMs/HMs don't have level requirements
+                        learnMethod: isHMMove ? 'hm' : 'tm',
+                        description: await this.getMoveDescription(move.name)
+                    };
+
+                    if (isHMMove) {
+                        hmMoves.push(moveEntry);
+                    } else {
+                        tmMoves.push(moveEntry);
+                    }
+                } catch (err) {
+                    console.warn(`Failed to fetch TM/HM move details: ${moveData.move.name}`);
+                }
+            }
             
-            return moves;
+            return {
+                levelUp: levelUpMoves,
+                tm: tmMoves,
+                hm: hmMoves
+            };
         } catch (error) {
             console.warn('Failed to fetch moves:', error);
-            return [];
+            return {
+                levelUp: [],
+                tm: [],
+                hm: []
+            };
         }
     }
 
@@ -310,38 +372,72 @@ export class PokemonDataService extends RWSService {
         const evolutions: PokemonEvolution[] = [];
         const preevolutions: PokemonEvolution[] = [];
         
-        const traverseChain = (node: ChainLink, isPreEvolution = false): void => {
+        // Helper to get evolution method details
+        const getEvolutionMethod = (details: any): string | null => {
+            if (!details || details.length === 0) return null;
+            
+            const detail = details[0];
+            if (detail.item) {
+                return this.capitalizePokemonName(detail.item.name);
+            }
+            if (detail.trigger?.name === 'level-up' && detail.min_level) {
+                return `Lv ${detail.min_level}`;
+            }
+            if (detail.trigger?.name === 'trade') {
+                return 'Trade';
+            }
+            if (detail.min_happiness) {
+                return `Happiness ${detail.min_happiness}`;
+            }
+            return null;
+        };
+        
+        // Find the current Pokemon in the tree
+        const findCurrentNode = (node: ChainLink, ancestors: ChainLink[] = []): { found: ChainLink, ancestors: ChainLink[] } | null => {
             if (node.species.name === currentPokemonName) {
-                // Found current Pokemon, everything after this is evolution
-                node.evolves_to?.forEach((evo: ChainLink) => {
-                    evolutions.push({
-                        species: this.capitalizePokemonName(evo.species.name),
-                        evolutionLevel: evo.evolution_details[0]?.min_level || null
-                    });
-                    traverseChain(evo, false);
+                return { found: node, ancestors };
+            }
+            
+            for (const evolution of node.evolves_to || []) {
+                const result = findCurrentNode(evolution, [...ancestors, node]);
+                if (result) return result;
+            }
+            
+            return null;
+        };
+        
+        // Recursively collect all evolutions from a node
+        const collectEvolutions = (node: ChainLink): void => {
+            if (!node.evolves_to || node.evolves_to.length === 0) return;
+            
+            for (const evo of node.evolves_to) {
+                evolutions.push({
+                    species: this.capitalizePokemonName(evo.species.name),
+                    evolutionLevel: evo.evolution_details[0]?.min_level || null,
+                    evolutionMethod: getEvolutionMethod(evo.evolution_details)
                 });
-            } else if (isPreEvolution) {
+                
+                // Recursively get further evolutions
+                collectEvolutions(evo);
+            }
+        };
+        
+        const result = findCurrentNode(chain.chain);
+        
+        if (result) {
+            // Add all ancestors as pre-evolutions
+            for (const ancestor of result.ancestors) {
                 preevolutions.push({
-                    species: this.capitalizePokemonName(node.species.name),
-                    evolutionLevel: null
+                    species: this.capitalizePokemonName(ancestor.species.name),
+                    evolutionLevel: null,
+                    evolutionMethod: null
                 });
             }
             
-            // Check if current Pokemon is in the evolves_to
-            node.evolves_to?.forEach((evo: ChainLink) => {
-                if (evo.species.name === currentPokemonName) {
-                    // Current node is a pre-evolution
-                    preevolutions.push({
-                        species: this.capitalizePokemonName(node.species.name),
-                        evolutionLevel: null
-                    });
-                } else {
-                    traverseChain(evo, false);
-                }
-            });
-        };
+            // Collect all evolutions (including branching and further stages)
+            collectEvolutions(result.found);
+        }
         
-        traverseChain(chain.chain, true);
         return { evolutions, preevolutions };
     }
 
@@ -398,10 +494,6 @@ export class PokemonDataService extends RWSService {
         }
     }
 
-    formatPokemonDataToHTML(pokemon: TransformedPokemonData | null, language: string = 'pl'): string {
-        return this.htmlFormattingService.formatPokemonDataToHTML(pokemon, language);
-    }
-
     private async getLocalizedFlavorTexts(flavorTextEntries: FlavorText[]): Promise<PokemonFlavorText[]> {
         let currentLang: string;
         try {
@@ -426,8 +518,7 @@ export class PokemonDataService extends RWSService {
         }
         
         return filteredEntries.map((entry) => ({
-            flavor: entry.flavor_text.replace(/\n|\f/g, ' '), // Clean up newlines and form feeds
-            game: entry.version.name
+            flavor: entry.flavor_text.replace(/\n|\f/g, ' '), // Clean up newlines and form feeds            
         }));
     }
 

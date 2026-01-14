@@ -83,5 +83,22 @@ export default {
     'pokedex.clearConversation': 'Clear Conversation',
     'pokedex.streamingStopped': 'Streaming stopped',
     'pokedex.conversationCleared': 'Conversation cleared - starting fresh',
-    'pokedex.responseInterrupted': 'Response was interrupted'
+    'pokedex.responseInterrupted': 'Response was interrupted',
+    'pokemon.stats': 'Stats',
+    'pokemon.attack': 'Attack',
+    'pokemon.defense': 'Defense',
+    'pokemon.spattack': 'Sp. Attack',
+    'pokemon.spdefense': 'Sp. Defense',
+    'pokemon.speed': 'Speed',
+    'pokemon.abilities': 'Abilities',
+    'pokemon.moves.levelup': 'Moves (Level-up)',
+    'pokemon.moves.tm': 'TM Moves',
+    'pokemon.moves.hm': 'HM Moves',
+    'pokemon.evolution': 'Evolution',
+    'pokemon.locations': 'Locations',
+    'pokemon.generation': 'Generation',
+    'pokemon.description': 'Description',
+    'pokemon.typeEffectiveness': 'Type Effectiveness',
+    'pokemon.strongAgainst': 'Strong Against',
+    'pokemon.weakAgainst': 'Weak Against'
 };

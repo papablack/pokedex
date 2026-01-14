@@ -1,9 +1,10 @@
 <div id="root_layout">
-    <!-- App Title Bar with Drag, Minimize and Close Buttons - Only show in Electron -->
+    <!-- App Title Bar with Drag Icon, Minimize and Close Buttons - Only show in Electron -->
     <div class="app-title-bar" :class="${x => x.isElectron ? '' : 'hidden'}">
-        <button class="app-drag-btn" title="Drag Window">
+        <div class="app-drag-icon">
             <i class="fa-solid fa-up-down-left-right"></i>
-        </button>
+        </div>
+        <div class="app-title-spacer"></div> <!-- Spacer for centering controls -->
         <div class="app-controls">
             <button class="app-minimize-btn" @click="${x => x.minimizeApp()}" title="Minimize Application">
                 <i class="fa fa-minus"></i>

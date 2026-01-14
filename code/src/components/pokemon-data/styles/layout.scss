@@ -1,0 +1,771 @@
+@import "@workspace/styles/includes.scss";
+@import "@workspace/styles/colors.scss";
+
+.pokemon-container {
+    font-family: 'Handjet', monospace;
+    color: $dos-green;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 15px 0;
+    overflow-x: hidden;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.pokemon-header {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid $dos-green;
+    padding-bottom: 15px;
+}
+
+.pokemon-images {
+    display: flex;
+    gap: 10px;
+}
+
+.pokemon-sprite, .pokemon-shiny-sprite {
+    img {
+        width: 96px;
+        height: 96px;
+        image-rendering: pixelated;
+        border: 2px solid $dos-green;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+    }
+}
+
+.pokemon-basic-info {
+    flex: 1;
+}
+
+.pokemon-name {
+    font-family: 'Orbitron', 'Handjet', monospace !important;
+    font-weight: 900;
+    font-size: 28px;
+    color: $dos-yellow;
+    text-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+    margin: 0 0 10px 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.pokemon-types {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.type-badge {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 2px solid #000;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.pokemon-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.pokemon-number {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 18px;
+    color: $dos-cyan;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.bulbapedia-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #2c5aa0 0%, #1e3a66 100%);
+    border: 2px solid $dos-cyan;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    
+    &:hover {
+        background: linear-gradient(135deg, #3a6ec2 0%, #2c5aa0 100%);
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+        transform: translateY(-2px);
+        border-color: $dos-yellow;
+    }
+    
+    &:active {
+        transform: translateY(0);
+        box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+    }
+    
+    .bulbapedia-icon {
+        width: 20px;
+        height: 20px;
+        image-rendering: auto;
+        filter: brightness(1.2);
+    }
+    
+    i.fa {
+        font-size: 12px;
+        color: $dos-cyan;
+    }
+}
+
+.pokemon-section {
+    margin: 20px 0;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid rgba(116, 185, 255, 0.3);
+
+    h4 {
+        font-family: 'Orbitron', 'Handjet', monospace !important;
+        font-weight: 900;
+        font-size: 20px;
+        color: $dos-yellow;
+        text-shadow: 0 0 8px rgba(255, 255, 0, 0.7);
+        margin: 0 0 15px 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+}
+
+.stats-box {
+    display: grid;
+    gap: 10px;
+}
+
+.stat-item {
+    display: grid;
+    grid-template-columns: 100px 50px 1fr;
+    align-items: center;
+    gap: 15px;
+}
+
+.stat-name {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    color: $dos-green;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: 16px;
+    color: $dos-yellow;
+    text-align: right;
+}
+
+.stat-bar {
+    height: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stat-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+    border-radius: 3px;
+    
+    &.hp {
+        background: #FF5959 !important;
+    }
+    
+    &.attack {
+        background: #F08030 !important;
+    }
+    
+    &.defense {
+        background: #F8D030 !important;
+    }
+    
+    &.sp-attack {
+        background: #6890F0 !important;
+    }
+    
+    &.sp-defense {
+        background: #78C850 !important;
+    }
+    
+    &.speed {
+        background: #F85888 !important;
+    }
+}
+
+.effectiveness-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.effectiveness-column {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 12px;
+    
+    h5 {
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        font-size: 16px;
+        margin: 0 0 10px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        
+        &.effective-title {
+            color: #4CAF50;
+            text-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        }
+        
+        &.weak-title {
+            color: #FF5252;
+            text-shadow: 0 0 5px rgba(255, 82, 82, 0.5);
+        }
+    }
+}
+
+.effectiveness-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.effectiveness-badge {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 13px;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    transition: all 0.2s ease;
+    
+    &.strong {
+        box-shadow: 0 0 8px rgba(76, 175, 80, 0.4);
+        
+        &:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 12px rgba(76, 175, 80, 0.6);
+        }
+    }
+    
+    &.weak {
+        opacity: 0.85;
+        box-shadow: 0 0 8px rgba(255, 82, 82, 0.4);
+        
+        &:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 12px rgba(255, 82, 82, 0.6);
+        }
+    }
+}
+
+.abilities-box {
+    display: grid;
+    gap: 10px;
+}
+
+.ability-card {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid $dos-green;
+    border-radius: 8px;
+    padding: 10px;
+
+    &.hidden-ability {
+        border-color: $dos-yellow;
+        background: rgba(255, 255, 0, 0.1);
+    }
+}
+
+.ability-name {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 18px;
+    color: $dos-yellow;
+    display: block;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.ability-desc {
+    font-size: 16px;
+    color: $dos-green;
+    line-height: 1.4;
+}
+
+.moves-box {
+    .moves-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 12px;
+        padding: 0;
+    }
+}
+
+.move-card {
+    background: #ffffff;
+    border: 3px solid #000000;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 
+        0 4px 0 #000000,
+        0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+    position: relative;
+    
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 
+            0 6px 0 #000000,
+            0 6px 12px rgba(0, 0, 0, 0.4);
+    }
+    
+    &:active {
+        transform: translateY(0);
+        box-shadow: 
+            0 2px 0 #000000,
+            0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    &.tm-move {
+        border-color: #4169E1;
+        background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
+        
+        &:hover {
+            box-shadow: 
+                0 6px 0 #4169E1,
+                0 6px 12px rgba(65, 105, 225, 0.4);
+        }
+        
+        &:active {
+            box-shadow: 
+                0 2px 0 #4169E1,
+                0 2px 4px rgba(65, 105, 225, 0.2);
+        }
+        
+        .move-header {
+            border-bottom-color: #4169E1;
+        }
+    }
+
+    &.hm-move {
+        border-color: #DC143C;
+        background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
+        
+        &:hover {
+            box-shadow: 
+                0 6px 0 #DC143C,
+                0 6px 12px rgba(220, 20, 60, 0.4);
+        }
+        
+        &:active {
+            box-shadow: 
+                0 2px 0 #DC143C,
+                0 2px 4px rgba(220, 20, 60, 0.2);
+        }
+        
+        .move-header {
+            border-bottom-color: #DC143C;
+        }
+    }
+}
+
+.move-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    border-bottom: 2px solid #000000;
+    padding-bottom: 6px;
+}
+
+.move-name {
+    font-family: 'Orbitron', 'Handjet', monospace !important;
+    font-weight: 700;
+    font-size: 18px;
+    color: #000000;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: none !important;
+}
+
+.move-level {
+    font-family: 'Orbitron', 'Handjet', monospace !important;
+    font-weight: 900;
+    font-size: 16px;
+    background: #000000;
+    color: #ffffff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-shadow: none !important;
+}
+
+.tm-badge {
+    background: linear-gradient(45deg, #4169E1, #6495ED) !important;
+    color: #ffffff !important;
+    font-weight: 900;
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 2px solid #000080;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+.hm-badge {
+    background: linear-gradient(45deg, #DC143C, #FF6347) !important;
+    color: #ffffff !important;
+    font-weight: 900;
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 2px solid #8B0000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+.move-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+    
+    span {
+        font-family: 'Orbitron', 'Handjet', monospace !important;
+        font-weight: 400;
+        font-size: 13px;
+        padding: 2px 6px;
+        border: 2px solid #000000;
+        border-radius: 6px;
+        background: #f0f0f0;
+        color: #000000;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        text-shadow: none !important;
+        
+        &.move-type {
+            font-weight: 700;
+            color: #ffffff;
+        }
+        
+        &.move-category {
+            background: #e0e0e0;
+        }
+        
+        &.move-power {
+            background: #ffcccc;
+            color: #cc0000;
+            font-weight: 700;
+        }
+        
+        &.move-accuracy {
+            background: #ccffcc;
+            color: #006600;
+            font-weight: 700;
+        }
+        
+        &.move-pp {
+            background: #ccccff;
+            color: #0000cc;
+            font-weight: 700;
+        }
+    }
+}
+
+.move-description {
+    font-family: 'Orbitron', 'Handjet', monospace !important;
+    font-weight: 400;
+    font-size: 14px;
+    color: #333333;
+    background: #f8f8f8;
+    border: 2px solid #cccccc;
+    border-radius: 6px;
+    padding: 6px;
+    line-height: 1.4;
+    text-shadow: none !important;
+}
+
+.evolution-box {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid $dos-cyan;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.evolution-chain {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.evolution-pokemon {
+    color: $dos-cyan;
+    padding: 4px 8px;
+    border: 1px solid $dos-cyan;
+    border-radius: 4px;
+    background: rgba(0, 255, 255, 0.1);
+}
+
+.current-pokemon {
+    color: $dos-yellow;
+    padding: 4px 8px;
+    border: 2px solid $dos-yellow;
+    border-radius: 4px;
+    background: rgba(255, 255, 0, 0.2);
+    font-weight: 900;
+}
+
+.evolution-arrow {
+    color: $dos-green;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.evolution-level {
+    font-size: 12px;
+    color: $dos-green;
+}
+
+.locations-box {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.location-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.location-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    
+    &:hover {
+        background: rgba(0, 255, 255, 0.15);
+        border-color: $dos-cyan;
+        transform: translateX(4px);
+    }
+}
+
+.location-pin {
+    font-size: 18px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 4px rgba(0, 255, 255, 0.8));
+}
+
+.location-name {
+    font-family: 'Orbitron', monospace;
+    font-weight: 600;
+    font-size: 15px;
+    color: $dos-green;
+    text-transform: capitalize;
+    flex: 1;
+    letter-spacing: 0.5px;
+}
+
+.generation-box {
+    text-align: center;
+}
+
+.generation-badge {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: 18px;
+    color: $dos-yellow;
+    background: rgba(255, 255, 0, 0.1);
+    border: 2px solid $dos-yellow;
+    padding: 8px 16px;
+    border-radius: 8px;
+    display: inline-block;
+    text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+}
+
+.description-box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(116, 185, 255, 0.3);
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.flavor-text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: $dos-green;
+    margin-bottom: 10px;
+    font-style: italic;
+}
+
+.flavor-game {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 12px;
+    color: $dos-cyan;
+    text-align: right;
+    text-transform: uppercase;
+}
+
+.evolution-method {
+    font-size: 11px;
+    color: $dos-green;
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+// Responsive Media Queries
+@media (max-width: 768px) {
+    .pokemon-container {
+        padding: 15px;
+    }
+    
+    .pokemon-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .pokemon-images {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .pokemon-sprite, .pokemon-shiny-sprite {
+        img {
+            width: 80px;
+            height: 80px;
+        }
+    }
+    
+    .pokemon-name {
+        font-size: 22px;
+        letter-spacing: 1px;
+        word-break: break-word;
+    }
+    
+    .pokemon-types {
+        flex-wrap: wrap;
+    }
+    
+    .stat-item {
+        grid-template-columns: 80px 45px 1fr;
+        gap: 10px;
+    }
+    
+    .stat-name {
+        font-size: 12px;
+    }
+    
+    .stat-value {
+        font-size: 14px;
+    }
+    
+    .effectiveness-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .moves-box .moves-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .evolution-chain {
+        font-size: 14px;
+        justify-content: center;
+    }
+    
+    .evolution-pokemon, .current-pokemon {
+        font-size: 13px;
+        padding: 3px 6px;
+        word-break: break-word;
+    }
+    
+    .evolution-method {
+        font-size: 10px;
+        display: block;
+        margin-top: 2px;
+    }
+    
+    .pokemon-section {
+        padding: 12px;
+        
+        h4 {
+            font-size: 18px;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .pokemon-container {
+        padding: 10px;
+        margin: 10px 0;
+    }
+    
+    .pokemon-name {
+        font-size: 18px;
+    }
+    
+    .type-badge {
+        font-size: 12px;
+        padding: 3px 8px;
+    }
+    
+    .stat-item {
+        grid-template-columns: 70px 40px 1fr;
+        gap: 8px;
+    }
+    
+    .move-name {
+        font-size: 15px;
+    }
+    
+    .move-details {
+        gap: 4px;
+        
+        span {
+            font-size: 11px;
+            padding: 2px 4px;
+        }
+    }
+    
+    .ability-name {
+        font-size: 14px;
+    }
+    
+    .ability-desc {
+        font-size: 13px;
+    }
+}

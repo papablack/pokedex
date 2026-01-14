@@ -56,7 +56,7 @@
         <div class="wing-content">
             <!-- Data Tab -->
             <div class="tab-panel ${x => x.activeRightTab === 'data' ? 'active' : ''}" data-tab="data">
-                <div class="pokemon-data-display" :innerHTML="${x => x.pokemonDataOutput}"></div>
+                <pokemon-data :pokemonData="${x => x.pokemonData}"></pokemon-data>
             </div>
             
             <!-- Map Tab -->

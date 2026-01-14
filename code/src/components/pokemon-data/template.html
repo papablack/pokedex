@@ -1,0 +1,301 @@
+<div class="pokemon-container" style="display: ${x => x.pokemonData ? 'block' : 'none'}">
+    <!-- Main Pokemon Info -->
+    <div class="pokemon-header">
+        <div class="pokemon-images">
+            <div class="pokemon-sprite">
+                <img :src="${x => x.pokemonData?.sprite || ''}" alt="${x => x.pokemonData?.species || ''} sprite" 
+                     style="display: ${x => x.pokemonData?.sprite ? 'block' : 'none'}">
+            </div>
+            <div class="pokemon-shiny-sprite">
+                <img :src="${x => x.pokemonData?.shinySprite || ''}" alt="${x => x.pokemonData?.species || ''} shiny sprite"
+                     style="display: ${x => x.pokemonData?.shinySprite ? 'block' : 'none'}">
+            </div>
+        </div>
+        <div class="pokemon-basic-info">
+            <h2 class="pokemon-name">${x => x.pokemonData?.species || 'Unknown Pokemon'}</h2>
+            <div class="pokemon-types">
+                ${repeat(x => x.pokemonData?.types || [], html`
+                    <span class="type-badge" :style="${(type, c) => `background: ${c.parent.getTypeColor(type.name)};`}">
+                        ${type => type.name}
+                    </span>
+                `)}
+            </div>
+            <div class="pokemon-meta">
+                <div class="pokemon-number">#${x => x.pokemonData?.num || '???'}</div>
+                <a href="#" target="_blank" class="bulbapedia-button" @click="${(x, c) => x.openBulbapedia(c.event)}" title="View on Bulbapedia">
+                    <img src="/img/bulbapedia.png" alt="Bulbapedia" class="bulbapedia-icon">
+                    <i class="fa fa-external-link"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pokemon Stats -->
+    ${when(x => x.pokemonData?.baseStats, html`
+        <div class="pokemon-section">
+            <h4 class="stats">📊 ${'pokemon.stats'.t()}:</h4>
+            <div class="stats-box">
+                <div class="stat-item">
+                    <span class="stat-name">HP</span>
+                    <span class="stat-value">${x => x.pokemonData?.baseStats?.hp || 0}</span>
+                    <div class="stat-bar">
+                        <div class="stat-fill hp" :style="${x => `width: ${Math.min((x.pokemonData?.baseStats?.hp || 0) / 255 * 100, 100)}%;`}"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-name">${'pokemon.attack'.t()}</span>
+                    <span class="stat-value">${x => x.pokemonData?.baseStats?.attack || 0}</span>
+                    <div class="stat-bar">
+                        <div class="stat-fill attack" :style="${x => `width: ${Math.min((x.pokemonData?.baseStats?.attack || 0) / 255 * 100, 100)}%;`}"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-name">${'pokemon.defense'.t()}</span>
+                    <span class="stat-value">${x => x.pokemonData?.baseStats?.defense || 0}</span>
+                    <div class="stat-bar">
+                        <div class="stat-fill defense" :style="${x => `width: ${Math.min((x.pokemonData?.baseStats?.defense || 0) / 255 * 100, 100)}%;`}"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-name">${'pokemon.spattack'.t()}</span>
+                    <span class="stat-value">${x => x.pokemonData?.baseStats?.specialattack || 0}</span>
+                    <div class="stat-bar">
+                        <div class="stat-fill sp-attack" :style="${x => `width: ${Math.min((x.pokemonData?.baseStats?.specialattack || 0) / 255 * 100, 100)}%;`}"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-name">${'pokemon.spdefense'.t()}</span>
+                    <span class="stat-value">${x => x.pokemonData?.baseStats?.specialdefense || 0}</span>
+                    <div class="stat-bar">
+                        <div class="stat-fill sp-defense" :style="${x => `width: ${Math.min((x.pokemonData?.baseStats?.specialdefense || 0) / 255 * 100, 100)}%;`}"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-name">${'pokemon.speed'.t()}</span>
+                    <span class="stat-value">${x => x.pokemonData?.baseStats?.speed || 0}</span>
+                    <div class="stat-bar">
+                        <div class="stat-fill speed" :style="${x => `width: ${Math.min((x.pokemonData?.baseStats?.speed || 0) / 255 * 100, 100)}%;`}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `)}
+
+    <!-- Type Effectiveness -->
+    ${when(x => x.pokemonData?.types && x.pokemonData.types.length > 0, html`
+        <div class="pokemon-section">
+            <h4 class="effectiveness">⚔️ ${'pokemon.typeEffectiveness'.t()}:</h4>
+            <div class="effectiveness-grid">
+                ${when(x => x.getTypeEffectiveness().strongAgainst.length > 0, html`
+                    <div class="effectiveness-column">
+                        <h5 class="effective-title">✅ ${'pokemon.strongAgainst'.t()}:</h5>
+                        <div class="effectiveness-badges">
+                            ${repeat(x => x.getTypeEffectiveness().strongAgainst, html`
+                                <span class="effectiveness-badge strong" :style="${(type, c) => `background: ${c.parent.getTypeColor(type)};`}">
+                                    ${type => type}
+                                </span>
+                            `)}
+                        </div>
+                    </div>
+                `)}
+                ${when(x => x.getTypeEffectiveness().weakAgainst.length > 0, html`
+                    <div class="effectiveness-column">
+                        <h5 class="weak-title">❌ ${'pokemon.weakAgainst'.t()}:</h5>
+                        <div class="effectiveness-badges">
+                            ${repeat(x => x.getTypeEffectiveness().weakAgainst, html`
+                                <span class="effectiveness-badge weak" :style="${(type, c) => `background: ${c.parent.getTypeColor(type)};`}">
+                                    ${type => type}
+                                </span>
+                            `)}
+                        </div>
+                    </div>
+                `)}
+            </div>
+        </div>
+    `)}
+
+    <!-- Pokemon Abilities -->
+    ${when(x => x.pokemonData?.abilities, html`
+        <div class="pokemon-section">
+            <h4 class="abilities">⚡ ${'pokemon.abilities'.t()}:</h4>
+            <div class="abilities-box">
+                ${when(x => x.pokemonData?.abilities?.first, html`
+                    <div class="ability-card">
+                        <span class="ability-name">${x => x.pokemonData?.abilities?.first?.name || ''}</span>
+                        <div class="ability-desc">${x => x.pokemonData?.abilities?.first?.desc || ''}</div>
+                    </div>
+                `)}
+                ${when(x => x.pokemonData?.abilities?.second, html`
+                    <div class="ability-card">
+                        <span class="ability-name">${x => x.pokemonData?.abilities?.second?.name || ''}</span>
+                        <div class="ability-desc">${x => x.pokemonData?.abilities?.second?.desc || ''}</div>
+                    </div>
+                `)}
+                ${when(x => x.pokemonData?.abilities?.hidden, html`
+                    <div class="ability-card hidden-ability">
+                        <span class="ability-name">${x => x.pokemonData?.abilities?.hidden?.name || ''} (Hidden)</span>
+                        <div class="ability-desc">${x => x.pokemonData?.abilities?.hidden?.desc || ''}</div>
+                    </div>
+                `)}
+            </div>
+        </div>
+    `)}
+
+    <!-- Evolution Chain -->
+    ${when(x => (x.pokemonData?.evolutions && x.pokemonData.evolutions.length > 0) || (x.pokemonData?.preevolutions && x.pokemonData.preevolutions.length > 0), html`
+        <div class="pokemon-section">
+            <h4 class="evolution">🔄 ${'pokemon.evolution'.t()}:</h4>
+            <div class="evolution-box">
+                <div class="evolution-chain">
+                    ${repeat(x => x.pokemonData?.preevolutions || [], html`
+                        <span class="evolution-pokemon">${evo => evo.species}</span>
+                        <span class="evolution-arrow">→</span>
+                    `)}
+                    <span class="current-pokemon">${x => x.pokemonData?.species || 'Unknown'}</span>
+                    ${repeat(x => x.pokemonData?.evolutions || [], html`
+                        <span class="evolution-arrow">→</span>
+                        <span class="evolution-pokemon">
+                            ${evo => evo.species}
+                            ${when(evo => evo.evolutionMethod, html`
+                                <span class="evolution-method">(${evo => evo.evolutionMethod})</span>
+                            `)}
+                        </span>
+                    `)}
+                </div>
+            </div>
+        </div>
+    `)}
+
+    <!-- Level-up Moves -->
+    ${when(x => x.pokemonData?.moves && x.pokemonData.moves.length > 0, html`
+        <div class="pokemon-section">
+            <h4 class="moves">⚡ ${'pokemon.moves.levelup'.t()}:</h4>
+            <div class="moves-box">
+                <div class="moves-grid">
+                    ${repeat(x => x.pokemonData?.moves?.slice(0, 12) || [], html`
+                        <div class="move-card">
+                            <div class="move-header">
+                                <span class="move-name">${move => move.name}</span>
+                                <span class="move-level">Lv.${move => move.levelLearned}</span>
+                            </div>
+                            <div class="move-details">
+                                <span class="move-type" :style="${(move, c) => `background: ${c.parent.getTypeColor(move.type)};`}">${move => move.type}</span>
+                                <span class="move-category">${move => move.category}</span>
+                                ${when(move => move.power, html`<span class="move-power">💥 ${move => move.power}</span>`)}
+                                ${when(move => move.accuracy, html`<span class="move-accuracy">🎯 ${move => move.accuracy}%</span>`)}
+                                <span class="move-pp">PP: ${move => move.pp || '?'}</span>
+                            </div>
+                            <div class="move-description">
+                                ${move => move.description || 'No description available'}
+                            </div>
+                        </div>
+                    `)}
+                </div>
+            </div>
+        </div>
+    `)}
+
+    <!-- TM Moves -->
+    ${when(x => x.pokemonData?.tmMoves && x.pokemonData.tmMoves.length > 0, html`
+        <div class="pokemon-section">
+            <h4 class="moves">💾 ${'pokemon.moves.tm'.t()}:</h4>
+            <div class="moves-box">
+                <div class="moves-grid">
+                    ${repeat(x => x.pokemonData?.tmMoves?.slice(0, 12) || [], html`
+                        <div class="move-card tm-move">
+                            <div class="move-header">
+                                <span class="move-name">${move => move.name}</span>
+                                <span class="move-level tm-badge">TM</span>
+                            </div>
+                            <div class="move-details">
+                                <span class="move-type" :style="${(move, c) => `background: ${c.parent.getTypeColor(move.type)};`}">${move => move.type}</span>
+                                <span class="move-category">${move => move.category}</span>
+                                ${when(move => move.power, html`<span class="move-power">💥 ${move => move.power}</span>`)}
+                                ${when(move => move.accuracy, html`<span class="move-accuracy">🎯 ${move => move.accuracy}%</span>`)}
+                                <span class="move-pp">PP: ${move => move.pp || '?'}</span>
+                            </div>
+                            <div class="move-description">
+                                ${move => move.description || 'No description available'}
+                            </div>
+                        </div>
+                    `)}
+                </div>
+            </div>
+        </div>
+    `)}
+
+    <!-- HM Moves -->
+    ${when(x => x.pokemonData?.hmMoves && x.pokemonData.hmMoves.length > 0, html`
+        <div class="pokemon-section">
+            <h4 class="moves">🔧 ${'pokemon.moves.hm'.t()}:</h4>
+            <div class="moves-box">
+                <div class="moves-grid">
+                    ${repeat(x => x.pokemonData?.hmMoves || [], html`
+                        <div class="move-card hm-move">
+                            <div class="move-header">
+                                <span class="move-name">${move => move.name}</span>
+                                <span class="move-level hm-badge">HM</span>
+                            </div>
+                            <div class="move-details">
+                                <span class="move-type" :style="${(move, c) => `background: ${c.parent.getTypeColor(move.type)};`}">${move => move.type}</span>
+                                <span class="move-category">${move => move.category}</span>
+                                ${when(move => move.power, html`<span class="move-power">💥 ${move => move.power}</span>`)}
+                                ${when(move => move.accuracy, html`<span class="move-accuracy">🎯 ${move => move.accuracy}%</span>`)}
+                                <span class="move-pp">PP: ${move => move.pp || '?'}</span>
+                            </div>
+                            <div class="move-description">
+                                ${move => move.description || 'No description available'}
+                            </div>
+                        </div>
+                    `)}
+                </div>
+            </div>
+        </div>
+    `)}
+
+    <!-- Locations -->
+    ${when(x => x.pokemonData?.locations && x.pokemonData.locations.length > 0, html`
+        <div class="pokemon-section">
+            <h4 class="locations">📍 ${'pokemon.locations'.t()}:</h4>
+            <div class="locations-box">
+                <ul class="location-list">
+                    ${repeat(x => x.pokemonData?.locations || [], html`
+                        <li class="location-item">
+                            <span class="location-pin">📍</span>
+                            <span class="location-name">${location => location.name || location}</span>
+                        </li>
+                    `)}
+                </ul>
+            </div>
+        </div>
+    `)}
+
+    <!-- Generation -->
+    ${when(x => x.pokemonData?.generation, html`
+        <div class="pokemon-section">
+            <h4 class="generation">🎮 ${'pokemon.generation'.t()}:</h4>
+            <div class="generation-box">
+                <span class="generation-badge">
+                    ${x => x.pokemonData?.generation?.name?.replace('-', ' ')?.toUpperCase() || ''} (#${x => x.pokemonData?.generation?.id || ''})
+                </span>
+            </div>
+        </div>
+    `)}
+
+    <!-- Flavor Text -->
+    ${when(x => x.pokemonData?.flavorTexts && x.pokemonData.flavorTexts.length > 0, html`
+        <div class="pokemon-section">
+            <h4 class="description">📖 ${'pokemon.description'.t()}:</h4>
+            <div class="description-box">
+                <div class="flavor-text">
+                    ${x => x.pokemonData?.flavorTexts?.[0]?.flavor || 'No description available'}
+                </div>
+                ${when(x => x.pokemonData?.flavorTexts?.[0]?.game, html`
+                    <div class="flavor-game">
+                        - ${x => x.pokemonData?.flavorTexts?.[0]?.game || ''}
+                    </div>
+                `)}
+            </div>
+        </div>
+    `)}
+</div>

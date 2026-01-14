@@ -49,11 +49,11 @@ export interface PokemonMove {
 export interface PokemonEvolution {
     species: string;
     evolutionLevel: number | null;
+    evolutionMethod?: string | null;
 }
 
 export interface PokemonFlavorText {
-    flavor: string;
-    game: string;
+    flavor: string;    
 }
 
 export interface PokemonGeneration {
@@ -94,6 +94,8 @@ export interface TransformedPokemonData {
     generation: PokemonGeneration | null;
     locations: LocationArea[];
     moves: PokemonMove[];
+    tmMoves: PokemonMove[];
+    hmMoves: PokemonMove[];
 }
 
 export interface GenerationData {
