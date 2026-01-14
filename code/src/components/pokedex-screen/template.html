@@ -13,7 +13,7 @@
 <div class="screen-container">
     <div class="main-screen">
         <div class="screen-content" 
-             style="visibility: ${x => x.contentReady || !x.isGenerating || x.conversationHistory.length > 0 ? 'visible' : 'hidden'}; overflow-y: auto; max-height: 400px;">
+             style="visibility: ${x => x.contentReady || !x.isGenerating || x.conversationHistory.length > 0 ? 'visible' : 'hidden'};">
             
             <!-- Conversation History - Only show completed entries -->
             <div class="conversation-history">
@@ -83,11 +83,7 @@
         
         <!-- Loading Animation -->
         <div class="loading-animation" style="display: ${x => x.isGenerating ? 'block' : 'none'}">
-            <div class="pokeball-loader">
-                <div class="pokeball-top"></div>
-                <div class="pokeball-bottom"></div>
-                <div class="pokeball-center"></div>
-            </div>
+            <pokeball-loader></pokeball-loader>
             <div class="loading-text">${'pokedex.analyzing'.t()}...</div>
         </div>
     </div>

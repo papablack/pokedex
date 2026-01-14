@@ -9,6 +9,7 @@ import { PokedexScreen } from '../components/pokedex-screen/component';
 import { PokedexInput } from '../components/pokedex-input/component';
 import { DebugContainer } from '../components/debug-container/component';
 import { PokeTag } from '@front/components/poke-tag/component';
+import { PokeballLoader } from '@front/components/pokedex-loader/component';
 
 
 export default (parted: boolean): void => {
@@ -24,6 +25,7 @@ export default (parted: boolean): void => {
     PokedexInput;
     DebugContainer;
     PokeTag;
+    PokeballLoader;
 
     RWSClientInstance.defineAllComponents();
 };
