@@ -83,6 +83,26 @@
     display: flex;
     flex-direction: column;
     min-height: 100%;
+    overflow: hidden; // Prevent overflow from breaking flex layout
+    
+    // Header stays at top
+    pokedex-header {
+        flex-shrink: 0;
+    }
+    
+    // Screen stretches to fill available space
+    pokedex-screen {
+        flex: 1;
+        min-height: 0; // Important for flex overflow handling
+        display: flex;
+        flex-direction: column;
+    }
+    
+    // Input stays at bottom
+    pokedex-input {
+        flex-shrink: 0;
+        margin-bottom: 1em;
+    }
 }
 
 .pokedex-right-wing {

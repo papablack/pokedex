@@ -181,6 +181,12 @@ export class WindowManager {
         return this.mainWindow;
     }
 
+    minimizeWindow(): void {
+        if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+            this.mainWindow.minimize();
+        }
+    }
+
     closeWindow(): void {
         if (this.mainWindow) {
             this.mainWindow.close();

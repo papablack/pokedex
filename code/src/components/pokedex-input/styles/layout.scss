@@ -1,5 +1,10 @@
 @import '@workspace/styles/includes.scss';
 
+:host {
+    display: block;
+    flex-shrink: 0; // Prevent input from shrinking
+}
+
 .input-section {
     padding: 1.5rem;
     border-radius: 0 0 15px 15px;

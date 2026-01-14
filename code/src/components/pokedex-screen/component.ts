@@ -369,21 +369,9 @@ export class PokedexScreen extends RWSViewComponent {
     updateConversationHistory() {
         if (this.aiService && this.aiService.hasConversationHistory()) {
             const newHistory = this.aiService.getConversationHistory();
-            console.log('📋 Updating conversation history from AI service');
-            console.log('📋 Previous history length:', this.conversationHistory.length);
-            console.log('📋 New history length:', newHistory.length);
-            
             // Force update by creating new array reference
             this.conversationHistory = [...newHistory];
-            
-            console.log('📋 Conversation history updated:', this.conversationHistory.length, 'entries');
-            
-            // Log each entry for debugging
-            this.conversationHistory.forEach((entry, i) => {
-                console.log(`  Entry ${i}: Query="${entry.query.substring(0, 30)}..." Response="${entry.response ? entry.response.substring(0, 30) + '...' : 'EMPTY'}"`);
-            });
         } else {
-            console.log('📋 No conversation history available from AI service - clearing display');
             // Clear the conversation history display when there's no history
             this.conversationHistory = [];
         }
@@ -391,31 +379,25 @@ export class PokedexScreen extends RWSViewComponent {
     
     // Update completed conversation history when conversation history changes
     conversationHistoryChanged() {
-        console.log('🔄 conversationHistoryChanged triggered');
         this.completedConversationHistory = this.conversationHistory.filter(e => e.response && e.response.trim() !== '');
-        console.log('🔄 Completed entries:', this.completedConversationHistory.length);
     }
 
     // Update current streaming response
     updateStreamingResponse(response: string) {
-        console.log('🎬 Screen: Updating streaming response, length:', response.length);
         this.currentStreamingResponse = response;
     }
 
     // Update streaming state
     updateStreamingState(isStreaming: boolean) {
-        console.log('🎬 Screen: Updating streaming state:', isStreaming);
         this.isStreaming = isStreaming;
         if (!isStreaming) {
             this.currentStreamingResponse = '';
-            console.log('🎬 Screen: Streaming ended, refreshing history');
             this.updateConversationHistory(); // Refresh history when streaming ends
         }
     }
 
     // Update generation state
     updateGeneratingState(isGenerating: boolean) {
-        console.log('🎬 Screen: Updating generating state:', isGenerating);
         this.isGenerating = isGenerating;
     }
 

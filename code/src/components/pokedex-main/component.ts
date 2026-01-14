@@ -51,11 +51,6 @@ export class PokedexMain extends RWSViewComponent {
         // Get reference to screen component
         setTimeout(() => {
             this.screen = this.shadowRoot?.querySelector('pokedex-screen') as PokedexScreen;
-            if (this.screen) {
-                console.log('✅ Screen component reference obtained');
-            } else {
-                console.warn('⚠️ Failed to get screen component reference');
-            }
         }, 100);
         
         // Subscribe to settings changes
@@ -154,7 +149,6 @@ export class PokedexMain extends RWSViewComponent {
 
         // If currently generating/streaming, interrupt and start new search
         if (this.isGenerating || this.isStreaming) {
-            console.log('🔄 New search during streaming - interrupting current stream');
             this.aiService.interruptStreaming(this.currentPartialResponse);
             // Stop current generation/streaming states
             this.isGenerating = false;
@@ -281,7 +275,6 @@ export class PokedexMain extends RWSViewComponent {
             // Update conversation history immediately after AI service adds user message
             // This happens on first yield, ensuring user message is visible before streaming starts
             if (this.screen) {
-                console.log('📋 Updating conversation history to show user message');
                 this.screen.updateConversationHistory();
                 // Make content visible to show the user message
                 this.contentReady = true;
@@ -305,16 +298,10 @@ export class PokedexMain extends RWSViewComponent {
         // Stream AI response - ensure it never contains Pokemon data
         if (response.streamingResponse) {
             let isFirstChunk = true;
-            console.log('🎬 Starting UI streaming loop');
             
             for await (const chunk of response.streamingResponse) {
-                console.log('🎬 UI received chunk:', chunk.substring(0, 30) + '...');
-                console.log('🎬 Current isGenerating:', this.isGenerating);
-                console.log('🎬 Current isStreaming:', this.isStreaming);
-                
                 // Check if we should stop (user interrupted)
                 if (!this.isGenerating && !this.isStreaming) {
-                    console.log('🎬 UI STOPPING - User interrupted');
                     break;
                 }
                 
@@ -341,12 +328,9 @@ export class PokedexMain extends RWSViewComponent {
                     this.contentReady = true; // Show content on first AI chunk
                 }
             }
-            console.log('🎬 UI streaming loop ended');
-            console.log('🎬 Final aiText length:', aiText.length);
             
             // Complete the conversation entry FIRST with the accumulated AI response
             this.aiService.completeConversationEntry(aiText, response.pokemonData);
-            console.log('🎬 Completed conversation entry in AI service');
             
             // Remove cursor after completion
             this.aiOutput = aiText;
@@ -356,9 +340,7 @@ export class PokedexMain extends RWSViewComponent {
             // Update screen component AFTER completing the conversation
             if (this.screen) {
                 this.screen.updateStreamingState(false);
-                console.log('🎬 About to update conversation history in screen');
                 this.screen.updateConversationHistory();
-                console.log('🎬 Conversation history updated in screen');
             }
             
             // Update hasConversation flag
@@ -393,10 +375,6 @@ export class PokedexMain extends RWSViewComponent {
     }
 
     handleInterrupt() {
-        console.log('🗑️ PokedexMain: handleInterrupt (clear all) called');
-        console.log('🗑️ Current streaming state:', this.isStreaming);
-        console.log('🗑️ Current generating state:', this.isGenerating);
-        
         // Interrupt current streaming if active
         this.aiService.interruptStreaming(this.currentPartialResponse);
         
@@ -423,15 +401,10 @@ export class PokedexMain extends RWSViewComponent {
         // Update hasConversation flag
         this.hasConversation = false;
         
-        console.log('🗑️ Clear complete - all data and conversation cleared');
         this.notificationService.showInfo('pokedex.conversationCleared');
     }
 
     handleStopStreaming() {
-        console.log('⏹️ PokedexMain: handleStopStreaming called');
-        console.log('⏹️ Current streaming state:', this.isStreaming);
-        console.log('⏹️ Current partial response length:', this.currentPartialResponse.length);
-        
         // Stop streaming but preserve conversation and data
         this.aiService.interruptStreaming(this.currentPartialResponse);
         
@@ -446,7 +419,6 @@ export class PokedexMain extends RWSViewComponent {
             this.screen.updateConversationHistory();
         }
         
-        console.log('⏹️ Streaming stopped, data preserved');
         this.notificationService.showInfo('pokedex.streamingStopped');
     }
 

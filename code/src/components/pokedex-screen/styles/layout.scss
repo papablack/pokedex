@@ -1,6 +1,16 @@
 @import '@workspace/styles/colors';
 
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0; // Important for flex overflow handling
+}
+
 .screen-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     position: relative;
     background: linear-gradient(145deg, #2d3436, #636e72);
     border-radius: 15px;
@@ -9,14 +19,16 @@
     box-shadow: 
         inset 0 4px 8px rgba(0, 0, 0, 0.3),
         0 4px 8px rgba(0, 0, 0, 0.1);
+    min-height: 0; // Important for flex overflow
 }
 
 .main-screen {
+    flex: 1; // Stretch to fill container
+    display: flex;
+    flex-direction: column;
     background: linear-gradient(145deg, #0d1421, #1a2332);
     border: 6px solid #333;
     border-radius: 12px;
-    min-height: 350px;
-    max-height: 450px;
     padding: 1rem;
     position: relative;
     overflow: hidden;

@@ -21,6 +21,7 @@
     left: 0;
     right: 0;
     transition: background-color 0.3s ease;
+    gap: 10px; // Gap between drag button and right button group
     
     // Show subtle background on hover
     &:hover {
@@ -55,6 +56,44 @@
 
         &:active {
             cursor: grabbing;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0.95);
+        }
+
+        i {
+            font-size: 14px;
+        }
+    }
+
+    .app-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px; // 10px gap between minimize and close buttons
+    }
+
+    .app-minimize-btn {
+        -webkit-app-region: no-drag; // Make the minimize button clickable
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: white;
+        font-size: 16px;
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+        z-index: 10001;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        &:active {
             background: rgba(255, 255, 255, 0.3);
             transform: scale(0.95);
         }

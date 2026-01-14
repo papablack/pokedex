@@ -66,58 +66,28 @@ export class PokedexAiService extends RWSService {
     }
 
     addUserMessage(query: string) {
-        console.log('💬 addUserMessage called with:', query);
-        console.log('💬 Current conversation history before:', this.conversationHistory.length);
-        
         // Find the last entry
         const lastEntry = this.conversationHistory[this.conversationHistory.length - 1];
-        console.log('💬 Last entry before adding:', lastEntry);
         
-        // If there's an incomplete entry (only query, no response), we need to handle interruption
+        // If there's an incomplete entry (only query, no response), mark as interrupted
         if (lastEntry && !lastEntry.response) {
-            console.log('💬 Found incomplete entry - this means we\'re interrupting a previous request');
-            // Only mark as interrupted if no partial response was already stored
             if (!lastEntry.response || lastEntry.response.trim() === '') {
                 lastEntry.response = '[INTERRUPTED]';
-                console.log('💬 Marked previous entry as interrupted (no partial content)');
-            } else {
-                console.log('💬 Previous entry already has partial response content');
             }
         }
         
         // Always add new conversation entry for the new query
-        console.log('💬 Adding new conversation entry for new query');
         this.conversationHistory.push({ query, response: '', pokemonData: undefined });
-        
-        console.log('💬 Added user message to conversation:', query);
-        console.log('💬 Current conversation length:', this.conversationHistory.length);
-        console.log('💬 Full conversation history:');
-        this.conversationHistory.forEach((entry, i) => {
-            console.log(`  ${i}: Query: "${entry.query.substring(0, 50)}..." | Response: "${entry.response ? entry.response.substring(0, 50) + '...' : 'EMPTY'}"`);
-        });
     }
 
     completeConversationEntry(response: string, pokemonData?: TransformedPokemonData) {
-        console.log('📝 completeConversationEntry called');
-        console.log('📝 Response length:', response.length);
-        console.log('📝 Current conversation history length:', this.conversationHistory.length);
-        
         const lastEntry = this.conversationHistory[this.conversationHistory.length - 1];
-        console.log('📝 Last entry:', lastEntry ? `Query: "${lastEntry.query.substring(0, 30)}..." Response: "${lastEntry.response ? lastEntry.response.substring(0, 30) + '...' : 'EMPTY'}"` : 'NO ENTRY');
         
         if (lastEntry && !lastEntry.response) {
-            console.log('📝 Assigning response to last entry');
             lastEntry.response = response;
             if (pokemonData) {
                 lastEntry.pokemonData = pokemonData;
             }
-            console.log('✅ Completed conversation entry externally');
-            console.log('📝 Full conversation after completion:');
-            this.conversationHistory.forEach((entry, i) => {
-                console.log(`  ${i}: Query: "${entry.query.substring(0, 30)}..." | Response: "${entry.response ? entry.response.substring(0, 30) + '...' : 'EMPTY'}"`);
-            });
-        } else {
-            console.warn('⚠️ Could not complete entry - lastEntry exists:', !!lastEntry, 'lastEntry.response:', lastEntry?.response);
         }
     }
 
@@ -126,26 +96,17 @@ export class PokedexAiService extends RWSService {
     }
 
     interruptStreaming(partialResponse?: string) {
-        console.log('🚫 AI Service: interruptStreaming called');
-        console.log('🚫 Partial response length:', partialResponse?.length || 0);
-        console.log('🚫 Current controller exists:', !!this.currentStreamingController);
-        
         // Store partial response in conversation if provided
         if (partialResponse && partialResponse.trim() !== '') {
             const lastEntry = this.conversationHistory[this.conversationHistory.length - 1];
             if (lastEntry && !lastEntry.response) {
                 lastEntry.response = partialResponse.trim();
-                console.log('🚫 Stored partial response in conversation:', partialResponse.substring(0, 100) + '...');
             }
         }
         
         if (this.currentStreamingController) {
-            console.log('🚫 Aborting streaming controller');
             this.currentStreamingController.abort();
             this.currentStreamingController = null;
-            console.log('🚫 Controller aborted and cleared');
-        } else {
-            console.log('🚫 No active streaming controller to abort');
         }
     }
 
@@ -247,14 +208,11 @@ export class PokedexAiService extends RWSService {
     }
 
     async *streamResponse(query: string, preservePokemonData?: TransformedPokemonData): AsyncGenerator<IPokedexResponse, void, unknown> {
-        console.log('🎬 Starting streamResponse for query:', query);
-        
         // Add user message to conversation history first
         this.addUserMessage(query);
         
         // Set up controller for this streaming request
         this.currentStreamingController = new AbortController();
-        console.log('🎬 Created new streaming controller');
         
         try {
             // First analyze the query
@@ -298,12 +256,8 @@ export class PokedexAiService extends RWSService {
                 streamingResponse
             };
         } catch (error) {
-            console.error('🎬 Error in streamResponse:', error);
+            console.error('Error in streamResponse:', error);
             throw error;
-        } finally {
-            // Only clear the controller if it's still the current one
-            // This prevents clearing a new controller that was created for a new request
-            console.log('🎬 Streaming completed/aborted, checking controller cleanup');
         }
     }
 

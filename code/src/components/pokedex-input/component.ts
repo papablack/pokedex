@@ -23,12 +23,10 @@ export class PokedexInput extends RWSViewComponent {
     }
 
     handleInterrupt() {
-        console.log('🔴 PokedexInput: Interrupt button clicked');
         this.$emit('interrupt');
     }
 
     handleStop() {
-        console.log('🛑 PokedexInput: Stop button clicked');
         this.$emit('stop-streaming');
     }
 

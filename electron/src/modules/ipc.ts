@@ -14,9 +14,13 @@ export class IPCManager {
     }
 
     private setupHandlers(): void {
+        // App minimize handler
+        ipcMain.on('app-minimize', () => {
+            this.windowManager.minimizeWindow();
+        });
+
         // App close handler
         ipcMain.on('app-close', () => {
-            DebugLogger.info('Received app-close IPC message');
             this.windowManager.closeWindow();
         });
 

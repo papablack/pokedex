@@ -186,6 +186,22 @@ class DefaultLayout extends RWSViewComponent {
         return isElectron;
     }
     
+    // Method to minimize the Electron app
+    minimizeApp() {
+        if (this.isElectron) {
+            try {
+                if ((window as any).electronAPI && (window as any).electronAPI.minimizeApp) {
+                    (window as any).electronAPI.minimizeApp();
+                } else if ((window as any).require) {
+                    const { ipcRenderer } = (window as any).require('electron');
+                    ipcRenderer.send('app-minimize');
+                }
+            } catch (error) {
+                console.error('Failed to minimize app:', error);
+            }
+        }
+    }
+    
     // Method to close the Electron app
     closeApp() {
         console.log('Close button clicked, isElectron:', this.isElectron);
