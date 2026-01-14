@@ -1,0 +1,55 @@
+<template 
+    class="${x => x.isExpanded ? 'expanded' : 'collapsed'} ${x => x.isVisible ? 'visible' : 'hidden'}"
+>
+    <!-- Header with controls -->
+    <div class="debug-header">
+        <div class="debug-title">
+            <i class="fa fa-bug"></i>
+            <span>${'debug.title'.t()}</span>
+            <span class="log-count">(${x => x.debugLogs.length})</span>
+        </div>
+        <div class="debug-controls">
+            <button 
+                class="btn-debug-control btn-clear" 
+                @click="${x => x.clearLogs()}"
+                title="${'debug.clearLogs'.t()}"
+            >
+                <i class="fa fa-trash"></i>
+            </button>
+            <button 
+                class="btn-debug-control btn-expand" 
+                @click="${x => x.toggleExpanded()}"
+                title="${x => x.isExpanded ? 'debug.minimize'.t() : 'debug.maximize'.t()}"
+            >
+                <i class="fa ${x => x.isExpanded ? 'fa-compress' : 'fa-expand'}"></i>
+            </button>
+            <button 
+                class="btn-debug-control btn-close" 
+                @click="${x => x.toggleVisibility()}"
+                title="${'debug.hide'.t()}"
+            >
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Log content -->
+    <div class="debug-log-content ${x => x.isExpanded ? 'expanded' : 'collapsed'}">
+        ${repeat(x => x.debugLogs, html`
+            <div class="debug-log-entry ${(x, c) => c.parent.getLogLevelClass(x.level)}">
+                <span class="log-timestamp">${(x, c) => c.parent.formatTimestamp(x.timestamp)}</span>
+                ${when(x => x.source, html`
+                    <span class="log-source">[${x => x.source}]</span>
+                `)}
+                <span class="log-level log-level-${x => x.level}">${x => x.level.toUpperCase()}</span>
+                <span class="log-message">${x => x.message}</span>
+            </div>
+        `)}
+        ${when(x => x.debugLogs.length === 0, html`
+            <div class="debug-empty">
+                <i class="fa fa-info-circle"></i>
+                <span>${'debug.noLogs'.t()}</span>
+            </div>
+        `)}
+    </div>
+</template>

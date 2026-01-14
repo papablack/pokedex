@@ -56,6 +56,20 @@
        newLayout.setAttribute('is-electron', 'true');
        document.body.insertBefore(newLayout, document.body.firstChild);
    });
+   
+   // Listen for debug logs from Electron
+   window.addEventListener('electron-debug-log', (event) => {
+       const { message, level, source } = event.detail;
+       // Use DefaultLayout static method to add debug log
+       if (window.DefaultLayout && window.DefaultLayout.addDebugLog) {
+           window.DefaultLayout.addDebugLog(message, level, source);
+       } else {
+           // Fallback: dispatch custom event that components can listen to
+           window.dispatchEvent(new CustomEvent('add-debug-log', {
+               detail: { message, level, source }
+           }));
+       }
+   });
    </script>
    </script>
 </body>

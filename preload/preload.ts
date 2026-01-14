@@ -20,7 +20,22 @@ contextBridge.exposeInMainWorld('electronAPI', {
         set: (key: string, value: any) => ipcRenderer.invoke('storage-set', key, value),
         remove: (key: string) => ipcRenderer.invoke('storage-remove', key),
         clear: () => ipcRenderer.invoke('storage-clear')
+    },
+    debug: {
+        addLog: (message: string, level: string, source: string) => {
+            // Send debug log to renderer via custom event
+            window.dispatchEvent(new CustomEvent('electron-debug-log', {
+                detail: { message, level, source }
+            }));
+        }
     }
+});
+
+// Listen for debug logs from main process
+ipcRenderer.on('debug-log', (event, { message, level, source }) => {
+    window.dispatchEvent(new CustomEvent('electron-debug-log', {
+        detail: { message, level, source }
+    }));
 });
 
 // Initialize electron layout when DOM is loaded

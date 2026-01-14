@@ -7,6 +7,8 @@ import { listenRouter } from './listeners/router';
 import { listenNotify } from './listeners/notify';
 import { NotifyType } from '@front/types/app.types';
 import NotificationService, { NotificationServiceInstance } from '@front/services/notification.service';
+import SignalService, { SignalServiceInstance } from '@front/services/signal.service';
+import { DebugContainer, IDebugLog } from '@front/components/debug-container/component';
 
 @RWSView('default-layout', { ignorePackaging: true })
 class DefaultLayout extends RWSViewComponent {
@@ -22,6 +24,7 @@ class DefaultLayout extends RWSViewComponent {
 
     constructor(
         @RWSInject(NotificationService) private notificationService: NotificationServiceInstance,
+        @RWSInject(SignalService) private signalService: SignalServiceInstance
     ) {
         super();
         DefaultLayout.instance = this;
@@ -96,6 +99,32 @@ class DefaultLayout extends RWSViewComponent {
         const message = messageKey.endsWith('.t()') ? messageKey : `${messageKey}`.t();
         DefaultLayout.addNotify(message, 'info');
     }
+
+    // Debug logging methods
+    static addDebugLog(message: string, level: 'info' | 'warn' | 'error' | 'debug' = 'info', source?: string) {
+        DefaultLayout.instance.addDebugLog(message, level, source);
+    }
+    
+    static debugInfo(message: string, source?: string) {
+        DefaultLayout.instance.addDebugLog(message, 'info', source);
+    }
+    
+    static debugWarn(message: string, source?: string) {
+        DefaultLayout.instance.addDebugLog(message, 'warn', source);
+    }
+    
+    static debugError(message: string, source?: string) {
+        DefaultLayout.instance.addDebugLog(message, 'error', source);
+    }
+    
+    static debugLog(message: string, source?: string) {
+        DefaultLayout.instance.addDebugLog(message, 'debug', source);
+    }
+
+    // Instance debug methods
+    addDebugLog(message: string, level: 'info' | 'warn' | 'error' | 'debug' = 'info', source?: string) {
+        DebugContainer.add(this.signalService, message, level, source);
+    }    
 
     // Pokemon-specific static methods
     static searchStarted(pokemonName: string) {
@@ -180,5 +209,10 @@ class DefaultLayout extends RWSViewComponent {
 }
 
 DefaultLayout.defineComponent();
+
+// Make DefaultLayout globally accessible for debug logging
+if (typeof window !== 'undefined') {
+    (window as any).DefaultLayout = DefaultLayout;
+}
 
 export { DefaultLayout };

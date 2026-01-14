@@ -1,5 +1,11 @@
 export default {
     'route.dashboard': 'Dashboard',
+    'debug.title': 'Debug Console',
+    'debug.clearLogs': 'Clear Logs',
+    'debug.maximize': 'Maximize',
+    'debug.minimize': 'Minimize',
+    'debug.hide': 'Hide',
+    'debug.noLogs': 'No debug logs available',
     'pokedex.title': 'AI POKEDEX v1.0',
     'pokedex.welcome': 'Welcome Trainer!',
     'pokedex.instructions': 'Enter a Pokémon name or ask a question, and I\'ll provide all the information!',

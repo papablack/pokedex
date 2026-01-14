@@ -1,0 +1,282 @@
+:host {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.95);
+    border: 2px solid #333;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    z-index: 9999;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);    
+}
+
+:host(.hidden) {
+    display: none;
+}
+
+:host(.collapsed) {
+    width: 300px;
+    height: 200px;
+}
+
+:host(.expanded) {
+    position: fixed;
+    top: 30px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    width: auto;
+    height: auto;
+}
+
+.debug-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid #333;        
+
+        .debug-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #00ff88;
+            font-weight: bold;
+
+            .fa-bug {
+                color: #ff6b6b;
+            }
+
+            .log-count {
+                color: #888;
+                font-weight: normal;
+            }
+        }
+
+        .debug-controls {
+            display: flex;
+            gap: 4px;
+
+            .btn-debug-control {
+                background: transparent;
+                border: 1px solid #555;
+                color: #ccc;
+                padding: 4px 8px;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-size: 12px;
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.1);
+                    color: #fff;
+                }
+
+                &.btn-clear {
+                    &:hover {
+                        color: #ff6b6b;
+                        border-color: #ff6b6b;
+                    }
+                }
+
+                &.btn-expand {
+                    &:hover {
+                        color: #00ff88;
+                        border-color: #00ff88;
+                    }
+                }
+
+                &.btn-close {
+                    &:hover {
+                        color: #ffaa44;
+                        border-color: #ffaa44;
+                    }
+                }
+            }
+        }
+}
+
+.debug-log-content {
+    overflow-y: auto;
+    padding: 8px;
+    height: calc(100% - 42px);
+    color: #ccc;
+    line-height: 1.4;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #555;
+        border-radius: 3px;
+
+        &:hover {
+            background: #777;
+        }
+    }
+
+    .debug-log-entry {
+        margin-bottom: 4px;
+        padding: 2px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+        word-break: break-word;
+        flex-wrap: wrap;
+
+        .log-timestamp {
+            color: #888;
+            flex-shrink: 0;
+            font-size: 10px;
+            min-width: 70px;
+        }
+
+        .log-source {
+            color: #66d9ef;
+            flex-shrink: 0;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .log-level {
+            flex-shrink: 0;
+            font-weight: bold;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-size: 10px;
+            min-width: 40px;
+            text-align: center;
+
+            &.log-level-info {
+                background: rgba(0, 123, 255, 0.3);
+                color: #007bff;
+            }
+
+            &.log-level-warn {
+                background: rgba(255, 193, 7, 0.3);
+                color: #ffc107;
+            }
+
+            &.log-level-error {
+                background: rgba(220, 53, 69, 0.3);
+                color: #dc3545;
+            }
+
+            &.log-level-debug {
+                background: rgba(108, 117, 125, 0.3);
+                color: #6c757d;
+            }
+        }
+
+        .log-message {
+            flex-basis: 100%;
+            margin-left: 0;
+            padding-top: 2px;
+            white-space: pre-wrap;
+        }
+
+        &.log-info {
+            border-left: 3px solid #007bff;
+            padding-left: 6px;
+        }
+
+        &.log-warn {
+            border-left: 3px solid #ffc107;
+            padding-left: 6px;
+        }
+
+        &.log-error {
+            border-left: 3px solid #dc3545;
+            padding-left: 6px;
+            background: rgba(220, 53, 69, 0.05);
+        }
+
+        &.log-debug {
+            border-left: 3px solid #6c757d;
+            padding-left: 6px;
+            opacity: 0.7;
+        }
+    }
+
+    // Expanded state - show everything in one line
+    &.expanded .debug-log-entry {
+        flex-wrap: nowrap;
+
+        .log-message {
+            flex: 1;
+            flex-basis: auto;
+            margin-left: 0;
+            padding-top: 0;
+        }
+}
+
+// Expanded state - show everything in one line  
+:host(.expanded) .debug-log-entry {
+    flex-wrap: nowrap;
+
+    .log-message {
+        flex: 1;
+        flex-basis: auto;
+        margin-left: 0;
+        padding-top: 0;
+    }
+}
+
+    .debug-empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: #666;
+        font-style: italic;
+        padding: 20px;
+        text-align: center;
+
+        .fa-info-circle {
+            color: #888;
+        }
+    }
+}
+
+// Mobile responsiveness
+@media (max-width: 768px) {
+    :host(.collapsed) {
+        width: 280px;
+        height: 180px;
+        bottom: 10px;
+        right: 10px;
+    }
+
+    :host(.expanded) {
+        top: 30px;
+        left: 5px;
+        right: 5px;
+        bottom: 5px;
+    }
+
+    :host .debug-header {
+        padding: 6px 10px;
+
+        .debug-title {
+            font-size: 11px;
+        }
+
+        .debug-controls .btn-debug-control {
+            padding: 3px 6px;
+            font-size: 11px;
+        }
+    }
+
+    :host .debug-log-content {
+        font-size: 11px;
+    }
+}

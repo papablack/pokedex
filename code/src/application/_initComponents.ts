@@ -7,6 +7,7 @@ import { PokedexSettings } from '../components/pokedex-settings/component';
 import { PokedexHeader } from '../components/pokedex-header/component';
 import { PokedexScreen } from '../components/pokedex-screen/component';
 import { PokedexInput } from '../components/pokedex-input/component';
+import { DebugContainer } from '../components/debug-container/component';
 
 
 export default (parted: boolean): void => {
@@ -20,6 +21,7 @@ export default (parted: boolean): void => {
     PokedexHeader;
     PokedexScreen;
     PokedexInput;
+    DebugContainer;
 
     RWSClientInstance.defineAllComponents();
 };
