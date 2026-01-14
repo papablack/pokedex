@@ -9,7 +9,7 @@
     font-size: 12px;
     z-index: 9999;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);    
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 :host(.hidden) {
@@ -32,71 +32,71 @@
 }
 
 .debug-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid #333;
+
+    .debug-title {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding: 8px 12px;
-        background: rgba(255, 255, 255, 0.1);
-        border-bottom: 1px solid #333;        
+        gap: 8px;
+        color: #00ff88;
+        font-weight: bold;
 
-        .debug-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #00ff88;
-            font-weight: bold;
-
-            .fa-bug {
-                color: #ff6b6b;
-            }
-
-            .log-count {
-                color: #888;
-                font-weight: normal;
-            }
+        .fa-bug {
+            color: #ff6b6b;
         }
 
-        .debug-controls {
-            display: flex;
-            gap: 4px;
+        .log-count {
+            color: #888;
+            font-weight: normal;
+        }
+    }
 
-            .btn-debug-control {
-                background: transparent;
-                border: 1px solid #555;
-                color: #ccc;
-                padding: 4px 8px;
-                border-radius: 4px;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                font-size: 12px;
+    .debug-controls {
+        display: flex;
+        gap: 4px;
 
+        .btn-debug-control {
+            background: transparent;
+            border: 1px solid #555;
+            color: #ccc;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 12px;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
+
+            &.btn-clear {
                 &:hover {
-                    background: rgba(255, 255, 255, 0.1);
-                    color: #fff;
+                    color: #ff6b6b;
+                    border-color: #ff6b6b;
                 }
+            }
 
-                &.btn-clear {
-                    &:hover {
-                        color: #ff6b6b;
-                        border-color: #ff6b6b;
-                    }
+            &.btn-expand {
+                &:hover {
+                    color: #00ff88;
+                    border-color: #00ff88;
                 }
+            }
 
-                &.btn-expand {
-                    &:hover {
-                        color: #00ff88;
-                        border-color: #00ff88;
-                    }
-                }
-
-                &.btn-close {
-                    &:hover {
-                        color: #ffaa44;
-                        border-color: #ffaa44;
-                    }
+            &.btn-close {
+                &:hover {
+                    color: #ffaa44;
+                    border-color: #ffaa44;
                 }
             }
         }
+    }
 }
 
 .debug-log-content {
@@ -217,19 +217,8 @@
             margin-left: 0;
             padding-top: 0;
         }
-}
-
-// Expanded state - show everything in one line  
-:host(.expanded) .debug-log-entry {
-    flex-wrap: nowrap;
-
-    .log-message {
-        flex: 1;
-        flex-basis: auto;
-        margin-left: 0;
-        padding-top: 0;
     }
-}
+
 
     .debug-empty {
         display: flex;

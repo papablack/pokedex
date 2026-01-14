@@ -1,5 +1,6 @@
 import { BrowserWindow, shell } from 'electron';
 import * as path from 'path';
+import * as fs from 'fs';
 import { DebugLogger } from './debug';
 import { ExpressServer } from './server';
 
@@ -25,6 +26,35 @@ export class WindowManager {
 
         // Create the browser window
         DebugLogger.info('Creating BrowserWindow...');
+        
+        // Determine correct preload path for different build scenarios
+        const preloadPaths = [
+            path.join(this.rootDir, 'public', 'js', 'preload.js'),  // New location in public
+            path.join(this.rootDir, 'preload', 'dist', 'preload.js'), // Old development path
+            path.join(this.rootDir, 'dist', 'preload.js'),           // Alternative path
+            path.join(__dirname, '..', '..', 'preload', 'dist', 'preload.js'), // Relative to electron dist
+        ];
+        
+        let preloadPath = '';
+        for (const testPath of preloadPaths) {
+            console.log('Testing preload path:', testPath);
+            DebugLogger.info(`Testing preload path: ${testPath}`);
+            
+            if (fs.existsSync(testPath)) {
+                preloadPath = testPath;
+                console.log('Found preload script at:', preloadPath);
+                DebugLogger.info(`Found preload script at: ${preloadPath}`);
+                break;
+            }
+        }
+        
+        if (!preloadPath) {
+            // Fallback to the expected path even if file doesn't exist
+            preloadPath = path.join(this.rootDir, 'preload', 'dist', 'preload.js');
+            console.warn('Preload script not found, using fallback path:', preloadPath);
+            DebugLogger.error(`Preload script not found, using fallback path: ${preloadPath}`);
+        }
+        
         this.mainWindow = new BrowserWindow({
             width: 1200,
             height: 900,
@@ -34,8 +64,9 @@ export class WindowManager {
             webPreferences: {
                 nodeIntegration: false,
                 contextIsolation: true,
-                webSecurity: true,
-                preload: path.join(this.rootDir, 'dist', 'preload.js')
+                webSecurity: false, // Disable for DevTools in packaged apps
+                devTools: true, // Explicitly enable DevTools
+                preload: preloadPath
             },
             icon: path.join(this.rootDir, 'public', 'icon.png'),
             show: true,
@@ -44,41 +75,48 @@ export class WindowManager {
 
         // Set main window for debug logger
         DebugLogger.setMainWindow(this.mainWindow);
-
-        console.log('Window created');
         DebugLogger.info('BrowserWindow created successfully');
 
         // Force window to show and focus
         this.mainWindow.show();
         this.mainWindow.focus();
-        console.log('Window forced to show and focus');
         DebugLogger.info('Window shown and focused');
 
         // Load the app using HTTP instead of file protocol
-        console.log(`Loading URL: http://localhost:${port}`);
         DebugLogger.info(`Loading application URL: http://localhost:${port}`);
         try {
             await this.mainWindow.loadURL(`http://localhost:${port}`);
-            console.log('URL loaded successfully');
             DebugLogger.info('Application URL loaded successfully');
             
             // Force open dev tools immediately if DEV=1 is set
             if (process.env.DEV === '1' || this.isDev) {
-                console.log('Forcing DevTools open immediately (DEV=1 or isDev=true)');
                 DebugLogger.info('Opening DevTools (development mode)');
+                
+                // Force DevTools open with multiple attempts
                 this.mainWindow.webContents.openDevTools();
                 
-                // Also try after a short delay in case it needs DOM to be ready
+                // Multiple fallback attempts
                 setTimeout(() => {
                     if (this.mainWindow && !this.mainWindow.isDestroyed()) {
-                        console.log('Opening DevTools again after delay');
-                        DebugLogger.info('Reopening DevTools after delay');
                         this.mainWindow.webContents.openDevTools();
                     }
                 }, 1000);
+                
+                setTimeout(() => {
+                    if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+                        this.mainWindow.webContents.openDevTools();
+                    }
+                }, 3000);
             }
+            
+            // Send isDev status to renderer
+            this.mainWindow.webContents.once('dom-ready', () => {
+                if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+                    this.mainWindow.webContents.send('dev-mode-status', this.isDev);
+                    DebugLogger.info(`Sent dev mode status to renderer: ${this.isDev}`);
+                }
+            });
         } catch (error) {
-            console.error('Failed to load URL:', error);
             DebugLogger.error(`Failed to load application URL: ${error}`);
         }
 
@@ -91,16 +129,13 @@ export class WindowManager {
 
         // Show window when ready to prevent visual flash
         this.mainWindow.once('ready-to-show', () => {
-            console.log('Window ready to show');
             DebugLogger.info('Window ready-to-show event triggered');
             if (this.mainWindow) {
                 this.mainWindow.show();
-                console.log('Window shown');
                 DebugLogger.info('Window displayed successfully');
                 
                 // Focus on window and open dev tools in dev mode
-                if (this.isDev) {
-                    console.log('Opening DevTools again in ready-to-show (DEV mode)');
+                if (this.isDev || process.env.DEV === '1') {
                     DebugLogger.info('Opening DevTools in development mode');
                     this.mainWindow.webContents.openDevTools();
                 }

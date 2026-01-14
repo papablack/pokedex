@@ -61,7 +61,7 @@
    window.addEventListener('electron-debug-log', (event) => {
        const { message, level, source } = event.detail;
        // Use DefaultLayout static method to add debug log
-       if (window.DefaultLayout && window.DefaultLayout.addDebugLog) {
+       if (window.DefaultLayout && window.DefaultLayout.instance && window.DefaultLayout.addDebugLog) {
            window.DefaultLayout.addDebugLog(message, level, source);
        } else {
            // Fallback: dispatch custom event that components can listen to
@@ -70,7 +70,12 @@
            }));
        }
    });
-   </script>
+
+   // Listen for dev mode status from Electron
+   window.addEventListener('dev-mode-changed', (event) => {
+       // Forward to any components that need to know about dev mode
+       console.log('Dev mode changed:', event.detail.isDev);
+   });
    </script>
 </body>
 </html>

@@ -1,12 +1,38 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { app } from 'electron';
 import { DebugLogger } from './debug';
 
 export class StorageManager {
     private storageFilePath: string;
 
     constructor(rootDir: string) {
-        this.storageFilePath = path.join(rootDir, 'storage.json');
+        // Determine the best location for storage file
+        let storageDir: string;
+        
+        if (app.isPackaged) {
+            // In packaged app, store next to the executable
+            storageDir = path.dirname(process.execPath);
+            DebugLogger.info(`Packaged app detected, storage directory: ${storageDir}`);
+        } else {
+            // In development, use the rootDir
+            storageDir = rootDir;
+            DebugLogger.info(`Development mode, storage directory: ${storageDir}`);
+        }
+        
+        this.storageFilePath = path.join(storageDir, 'storage.json');
+        DebugLogger.info(`Storage file path: ${this.storageFilePath}`);
+        
+        // Create directory if it doesn't exist
+        try {
+            const dir = path.dirname(this.storageFilePath);
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, { recursive: true });
+                DebugLogger.info(`Created storage directory: ${dir}`);
+            }
+        } catch (error) {
+            DebugLogger.error(`Failed to create storage directory: ${error}`);
+        }
     }
 
     loadData(): Record<string, any> {

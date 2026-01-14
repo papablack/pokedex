@@ -13,7 +13,8 @@ interface IDebugLog {
 class DebugContainer extends RWSViewComponent {
     @observable isExpanded: boolean = false;
     @observable debugLogs: IDebugLog[] = [];
-    @observable isVisible: boolean = false;
+    @observable isVisible: boolean = false; // Start hidden, show only in dev mode
+    @observable isDev: boolean = false;
 
     // Static instance for global access
     private static instance: DebugContainer | null = null;
@@ -28,6 +29,9 @@ class DebugContainer extends RWSViewComponent {
     async connectedCallback() {
         super.connectedCallback();
         
+        // Check if we're in development mode
+        this.checkDevMode();
+        
         // Subscribe to debug logs signal
         const debugSignal = this.signalService.getSignal<IDebugLog[]>('debug-logs', {
             initialValue: []
@@ -35,10 +39,6 @@ class DebugContainer extends RWSViewComponent {
         
         debugSignal.value$.subscribe((logs: IDebugLog[]) => {
             this.debugLogs = logs;
-            // Auto-show container when logs are added
-            if (logs.length > 0 && !this.isVisible) {
-                this.isVisible = true;
-            }
         });
         
         // Listen for global debug log events (fallback for when DefaultLayout isn't ready)
@@ -46,6 +46,45 @@ class DebugContainer extends RWSViewComponent {
             const { message, level, source } = event.detail;
             this.addLog(message, level, source);
         });
+
+        // Listen for dev mode changes from Electron
+        window.addEventListener('dev-mode-changed', (event: CustomEvent) => {
+            this.isDev = event.detail.isDev;
+            this.isVisible = this.isDev;
+        });
+
+        // Add keyboard shortcut to toggle debug container (Ctrl+Shift+D)
+        window.addEventListener('keydown', (event) => {
+            if (event.ctrlKey && event.shiftKey && event.key === 'D' && this.isDev) {
+                event.preventDefault();
+                this.toggleVisibility();
+            }
+        });
+
+        // Add initial log to show container is working (only in dev mode)
+        if (this.isDev) {
+            setTimeout(() => {
+                this.addLog('Debug container initialized', 'info', 'frontend');
+            }, 1000);
+        }
+    }
+
+    private checkDevMode() {
+        // Check if we're in Electron and development mode
+        if (typeof window !== 'undefined' && (window as any).electronAPI) {
+            const electronAPI = (window as any).electronAPI;
+            if (typeof electronAPI.isDev === 'function') {
+                this.isDev = electronAPI.isDev();
+            } else {
+                this.isDev = electronAPI.isDev || false;
+            }
+        } else {
+            // Fallback for non-Electron environments (web dev)
+            this.isDev = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+        }
+        
+        // Only show in dev mode
+        this.isVisible = this.isDev;
     }
 
     // Instance method to add log
@@ -125,6 +164,27 @@ class DebugContainer extends RWSViewComponent {
                 logContent.scrollTop = logContent.scrollHeight;
             }
         }, 10);
+    }
+
+    // Static method to toggle debug container visibility
+    static toggleVisibility() {
+        if (DebugContainer.instance) {
+            DebugContainer.instance.toggleVisibility();
+        }
+    }
+
+    // Static method to show debug container
+    static show() {
+        if (DebugContainer.instance) {
+            DebugContainer.instance.isVisible = true;
+        }
+    }
+
+    // Static method to hide debug container
+    static hide() {
+        if (DebugContainer.instance) {
+            DebugContainer.instance.isVisible = false;
+        }
     }
 }
 

@@ -32,9 +32,10 @@ class ElectronApp {
     private setupAppEvents(): void {
         // This method will be called when Electron has finished initialization
         app.whenReady().then(async () => {
-            DebugLogger.info('Electron app is ready');
+            DebugLogger.info('Electron app is ready in');
             await this.windowManager.createWindow();
             DebugLogger.info('Window creation completed');
+            DebugLogger.info('Root dir: ' + this.rootDir);
             MenuManager.createMenu();
             DebugLogger.info('Application menu created');
 

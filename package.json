@@ -39,9 +39,9 @@
     },
     "files": [
       "dist/electron/**/*",
-      "preload/dist/**/*", 
       "public/**/*",
-      "electron/icon.ico"
+      "electron/icon.ico",
+      ".env"
     ],
     "includeSubNodeModules": true,
     "extraFiles": [
@@ -49,6 +49,10 @@
         "from": "public",
         "to": "public",
         "filter": ["**/*"]
+      },
+      {
+        "from": ".env",
+        "to": ".env"
       }
     ],
     "win": {
