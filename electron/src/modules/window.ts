@@ -139,6 +139,24 @@ export class WindowManager {
                     DebugLogger.info('Opening DevTools in development mode');
                     this.mainWindow.webContents.openDevTools();
                 }
+                
+                // Send isDev status to renderer after window is shown
+                setTimeout(() => {
+                    if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+                        this.mainWindow.webContents.send('dev-mode-status', this.isDev);
+                        DebugLogger.info(`Sent dev mode status to renderer: ${this.isDev}`);
+                        
+                        // Show debug container in dev mode
+                        if (this.isDev) {
+                            setTimeout(() => {
+                                if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+                                    this.mainWindow.webContents.send('show-debug-container');
+                                    DebugLogger.info('Sent show-debug-container event to renderer');
+                                }
+                            }, 1000);
+                        }
+                    }
+                }, 500);
             }
         });
 

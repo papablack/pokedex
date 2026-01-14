@@ -13,8 +13,6 @@ interface IDebugLog {
 class DebugContainer extends RWSViewComponent {
     @observable isExpanded: boolean = false;
     @observable debugLogs: IDebugLog[] = [];
-    @observable isVisible: boolean = false; // Start hidden, show only in dev mode
-    @observable isDev: boolean = false;
 
     // Static instance for global access
     private static instance: DebugContainer | null = null;
@@ -28,9 +26,6 @@ class DebugContainer extends RWSViewComponent {
 
     async connectedCallback() {
         super.connectedCallback();
-        
-        // Check if we're in development mode
-        this.checkDevMode();
         
         // Subscribe to debug logs signal
         const debugSignal = this.signalService.getSignal<IDebugLog[]>('debug-logs', {
@@ -47,44 +42,18 @@ class DebugContainer extends RWSViewComponent {
             this.addLog(message, level, source);
         });
 
-        // Listen for dev mode changes from Electron
-        window.addEventListener('dev-mode-changed', (event: CustomEvent) => {
-            this.isDev = event.detail.isDev;
-            this.isVisible = this.isDev;
-        });
-
-        // Add keyboard shortcut to toggle debug container (Ctrl+Shift+D)
+        // Add keyboard shortcut to toggle expanded state (Ctrl+Shift+D)
         window.addEventListener('keydown', (event) => {
-            if (event.ctrlKey && event.shiftKey && event.key === 'D' && this.isDev) {
+            if (event.ctrlKey && event.shiftKey && event.key === 'D') {
                 event.preventDefault();
-                this.toggleVisibility();
+                this.toggleExpanded();
             }
         });
 
-        // Add initial log to show container is working (only in dev mode)
-        if (this.isDev) {
-            setTimeout(() => {
-                this.addLog('Debug container initialized', 'info', 'frontend');
-            }, 1000);
-        }
-    }
-
-    private checkDevMode() {
-        // Check if we're in Electron and development mode
-        if (typeof window !== 'undefined' && (window as any).electronAPI) {
-            const electronAPI = (window as any).electronAPI;
-            if (typeof electronAPI.isDev === 'function') {
-                this.isDev = electronAPI.isDev();
-            } else {
-                this.isDev = electronAPI.isDev || false;
-            }
-        } else {
-            // Fallback for non-Electron environments (web dev)
-            this.isDev = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-        }
-        
-        // Only show in dev mode
-        this.isVisible = this.isDev;
+        // Add initial log to show container is working
+        setTimeout(() => {
+            this.addLog('Debug container initialized', 'info', 'frontend');
+        }, 1000);
     }
 
     // Instance method to add log

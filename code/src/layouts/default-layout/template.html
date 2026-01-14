@@ -36,5 +36,7 @@
             </div>
         </div>
     </main>
-    <debug-container></debug-container>
+    ${when(x => x.showDebugContainer, html`
+        <debug-container></debug-container>
+    `)}
 </div>

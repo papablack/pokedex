@@ -39,6 +39,15 @@ ipcRenderer.on('dev-mode-status', (event, devMode) => {
     }));
 });
 
+// Listen for debug container visibility commands
+ipcRenderer.on('show-debug-container', () => {
+    window.dispatchEvent(new CustomEvent('show-debug-container'));
+});
+
+ipcRenderer.on('hide-debug-container', () => {
+    window.dispatchEvent(new CustomEvent('hide-debug-container'));
+});
+
 // Listen for debug logs from main process
 ipcRenderer.on('debug-log', (event, { message, level, source }) => {
     window.dispatchEvent(new CustomEvent('electron-debug-log', {

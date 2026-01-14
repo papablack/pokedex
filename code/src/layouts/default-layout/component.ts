@@ -1,4 +1,4 @@
-import { RWSViewComponent, RWSView, observable, RWSInject, RWSEvents, attr, ApiService, ApiServiceInstance } from '@rws-framework/client';
+import { RWSViewComponent, RWSView, observable, RWSInject, RWSEvents, attr, ApiService, ApiServiceInstance, when } from '@rws-framework/client';
 
 import { RouterComponent, _ROUTING_EVENT_NAME, IRoutingEvent } from '@rws-framework/browser-router';
 RouterComponent;
@@ -17,6 +17,7 @@ class DefaultLayout extends RWSViewComponent {
     @observable currentPage: string;
     @observable currentUrl: string = '/';
     @observable notifications: NotifyType[] = [];
+    @observable showDebugContainer: boolean = false;
     @attr({ mode: 'boolean'}) isElectron: boolean = false;
 
     // Static instance for global access
@@ -43,6 +44,18 @@ class DefaultLayout extends RWSViewComponent {
 
         listenRouter.bind(this)();
         listenNotify.bind(this)(); 
+        
+        // Listen for debug container show/hide from Electron main process
+        if (this.isElectron && (window as any).electronAPI) {
+            // Listen for IPC events via preload
+            window.addEventListener('show-debug-container', () => {
+                this.showDebugContainer = true;
+            });
+            
+            window.addEventListener('hide-debug-container', () => {
+                this.showDebugContainer = false;
+            });
+        }
         
         this.$emit('app-started');
     }
