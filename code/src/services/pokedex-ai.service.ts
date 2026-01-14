@@ -2,11 +2,13 @@ import { RWSService, RWSInject } from '@rws-framework/client';
 import { createOpenRouter, OpenRouterProvider } from '@openrouter/ai-sdk-provider';
 import { generateText, streamText, generateObject } from 'ai';
 import { z } from 'zod';
-import { IPokedexSettings, IQueryAnalysis, IPokedexResponse } from '../types/pokedex.types';
+import { IPokedexSettings, IQueryAnalysis, IPokedexResponse, IConversationEntry } from '../types/pokedex.types';
+import { TransformedPokemonData } from '../types/pokemon-data.types';
 import PokemonDataService, { PokemonDataServiceInstance } from './pokemon-data.service';
 import HtmlFormattingService, { HtmlFormattingServiceInstance } from './html-formatting.service';
 import { PokedexSettingsService } from './pokedex-settings.service';
 import NotificationService, { NotificationServiceInstance } from './notification.service';
+import AIPromptService, { AIPromptServiceInstance } from './ai-prompt.service';
 
 // Zod schema for structured query analysis
 const QueryAnalysisSchema = z.object({
@@ -20,11 +22,14 @@ const QueryAnalysisSchema = z.object({
 export class PokedexAiService extends RWSService {
     private settings: IPokedexSettings = {} as IPokedexSettings;
     private openRouterClient: OpenRouterProvider;
+    private conversationHistory: IConversationEntry[] = [];
+    private currentStreamingController: AbortController | null = null;
 
     constructor(
         @PokemonDataService private pokemonDataService: PokemonDataServiceInstance,
         @HtmlFormattingService private htmlFormattingService: HtmlFormattingServiceInstance,
-        @NotificationService private notificationService: NotificationServiceInstance
+        @NotificationService private notificationService: NotificationServiceInstance,
+        @AIPromptService private aiPromptService: AIPromptServiceInstance,
     ) {
         super();
     }
@@ -52,26 +57,109 @@ export class PokedexAiService extends RWSService {
         this.instantiateClient();
     }
 
+    addConversationEntry(query: string, response: string, pokemonData?: TransformedPokemonData) {
+        this.conversationHistory.push({ query, response, pokemonData });
+        // Keep only the last 5 entries to avoid context length issues
+        if (this.conversationHistory.length > 5) {
+            this.conversationHistory = this.conversationHistory.slice(-5);
+        }
+    }
+
+    addUserMessage(query: string) {
+        console.log('💬 addUserMessage called with:', query);
+        console.log('💬 Current conversation history before:', this.conversationHistory.length);
+        
+        // Find the last entry
+        const lastEntry = this.conversationHistory[this.conversationHistory.length - 1];
+        console.log('💬 Last entry before adding:', lastEntry);
+        
+        // If there's an incomplete entry (only query, no response), we need to handle interruption
+        if (lastEntry && !lastEntry.response) {
+            console.log('💬 Found incomplete entry - this means we\'re interrupting a previous request');
+            // Only mark as interrupted if no partial response was already stored
+            if (!lastEntry.response || lastEntry.response.trim() === '') {
+                lastEntry.response = '[INTERRUPTED]';
+                console.log('💬 Marked previous entry as interrupted (no partial content)');
+            } else {
+                console.log('💬 Previous entry already has partial response content');
+            }
+        }
+        
+        // Always add new conversation entry for the new query
+        console.log('💬 Adding new conversation entry for new query');
+        this.conversationHistory.push({ query, response: '', pokemonData: undefined });
+        
+        console.log('💬 Added user message to conversation:', query);
+        console.log('💬 Current conversation length:', this.conversationHistory.length);
+        console.log('💬 Full conversation history:');
+        this.conversationHistory.forEach((entry, i) => {
+            console.log(`  ${i}: Query: "${entry.query.substring(0, 50)}..." | Response: "${entry.response ? entry.response.substring(0, 50) + '...' : 'EMPTY'}"`);
+        });
+    }
+
+    completeConversationEntry(response: string, pokemonData?: TransformedPokemonData) {
+        console.log('📝 completeConversationEntry called');
+        console.log('📝 Response length:', response.length);
+        console.log('📝 Current conversation history length:', this.conversationHistory.length);
+        
+        const lastEntry = this.conversationHistory[this.conversationHistory.length - 1];
+        console.log('📝 Last entry:', lastEntry ? `Query: "${lastEntry.query.substring(0, 30)}..." Response: "${lastEntry.response ? lastEntry.response.substring(0, 30) + '...' : 'EMPTY'}"` : 'NO ENTRY');
+        
+        if (lastEntry && !lastEntry.response) {
+            console.log('📝 Assigning response to last entry');
+            lastEntry.response = response;
+            if (pokemonData) {
+                lastEntry.pokemonData = pokemonData;
+            }
+            console.log('✅ Completed conversation entry externally');
+            console.log('📝 Full conversation after completion:');
+            this.conversationHistory.forEach((entry, i) => {
+                console.log(`  ${i}: Query: "${entry.query.substring(0, 30)}..." | Response: "${entry.response ? entry.response.substring(0, 30) + '...' : 'EMPTY'}"`);
+            });
+        } else {
+            console.warn('⚠️ Could not complete entry - lastEntry exists:', !!lastEntry, 'lastEntry.response:', lastEntry?.response);
+        }
+    }
+
+    clearConversation() {
+        this.conversationHistory = [];
+    }
+
+    interruptStreaming(partialResponse?: string) {
+        console.log('🚫 AI Service: interruptStreaming called');
+        console.log('🚫 Partial response length:', partialResponse?.length || 0);
+        console.log('🚫 Current controller exists:', !!this.currentStreamingController);
+        
+        // Store partial response in conversation if provided
+        if (partialResponse && partialResponse.trim() !== '') {
+            const lastEntry = this.conversationHistory[this.conversationHistory.length - 1];
+            if (lastEntry && !lastEntry.response) {
+                lastEntry.response = partialResponse.trim();
+                console.log('🚫 Stored partial response in conversation:', partialResponse.substring(0, 100) + '...');
+            }
+        }
+        
+        if (this.currentStreamingController) {
+            console.log('🚫 Aborting streaming controller');
+            this.currentStreamingController.abort();
+            this.currentStreamingController = null;
+            console.log('🚫 Controller aborted and cleared');
+        } else {
+            console.log('🚫 No active streaming controller to abort');
+        }
+    }
+
+    hasConversationHistory(): boolean {
+        return this.conversationHistory.length > 0;
+    }
+
+    getConversationHistory() {
+        return [...this.conversationHistory]; // Return a copy
+    }
+
     async analyzeQuery(query: string): Promise<IQueryAnalysis> {
         if (!this.settings.apiKey || !this.openRouterClient) {
-            // Simple fallback analysis without AI - try to detect basic Pokemon searches
-            const isPokemonRelated = this.isGameHelpQuery(query.toLowerCase());
-            const queryWords = query.toLowerCase().split(/\s+/).map(word => word.replace(/[^\w]/g, ''));
-            
-            // Basic Pokemon name detection - check if query is likely a Pokemon name search
-            const isLikelyPokemonName = queryWords.length === 1 && queryWords[0].length >= 3 && queryWords[0].length <= 12;
-            const containsPokemonKeywords = ['pokemon', 'pokémon', 'poke'].some(keyword => query.toLowerCase().includes(keyword));
-            
-            // If it looks like a single Pokemon name or contains Pokemon keywords, treat as Pokemon search
-            const isPokemonSearch = isLikelyPokemonName || (containsPokemonKeywords && queryWords.length <= 3);
-            
-            return {
-                isPokemonSearch,
-                pokemonNames: isPokemonSearch ? queryWords.filter(word => word.length >= 3) : [],
-                queryType: isPokemonRelated ? 'game_help' : 'general_discussion',
-                confidence: 0.2, // Low confidence since we don't have AI analysis
-                extractedPokemonName: isPokemonSearch ? queryWords.find(word => word.length >= 3) || '' : ''
-            };
+            throw Error('pokedex.apiKeyRequired'.t());
         }
 
         try {
@@ -81,7 +169,7 @@ export class PokedexAiService extends RWSService {
                 messages: [
                     { 
                         role: 'system', 
-                        content: 'Analyze user queries about Pokemon. Determine if they want specific Pokemon data/stats, game help (locations, how to find, where to catch, evolution methods), or general discussion about Pokemon-related topics. Be precise about Pokemon names mentioned. \n\nPOKEMON-RELATED CONTENT INCLUDES:\n- Official Pokemon games (Red, Blue, Gold, Silver, etc.)\n- Fan-made Pokemon games (PokéMMO, ROM hacks, fan games)\n- Pokemon mechanics, strategies, competitive play\n- Pokemon lore, characters, regions\n- Pokemon community, culture, memes\n- Anything involving Pokemon creatures, universe, or games\n\nGame help includes questions about WHERE to find Pokemon, HOW to catch them, WHEN they evolve, WHAT items are needed, etc.\n\nONLY classify as non-Pokemon if the question is completely unrelated to Pokemon universe (weather, politics, other franchises).' 
+                        content: this.aiPromptService.getQueryAnalysisSystemPrompt()
                     },
                     { role: 'user', content: query }
                 ],
@@ -95,48 +183,38 @@ export class PokedexAiService extends RWSService {
                 this.notificationService.showWarning('pokedx.rateLimitWait');
                 throw new Error('pokedex.rateLimitWait'.t());
             }
-            console.warn('Failed to analyze query with AI, using fallback:', error);
-            // Enhanced fallback analysis
-            const isPokemonRelated = this.isGameHelpQuery(query.toLowerCase());
-            const queryWords = query.toLowerCase().split(/\s+/).map(word => word.replace(/[^\w]/g, ''));
-            
-            // Basic Pokemon name detection - check if query is likely a Pokemon name search
-            const isLikelyPokemonName = queryWords.length === 1 && queryWords[0].length >= 3 && queryWords[0].length <= 12;
-            const containsPokemonKeywords = ['pokemon', 'pokémon', 'poke'].some(keyword => query.toLowerCase().includes(keyword));
-            
-            // If it looks like a single Pokemon name or contains Pokemon keywords, treat as Pokemon search
-            const isPokemonSearch = isLikelyPokemonName || (containsPokemonKeywords && queryWords.length <= 3);
-            
-            return {
-                isPokemonSearch,
-                pokemonNames: isPokemonSearch ? queryWords.filter(word => word.length >= 3) : [],
-                queryType: isPokemonRelated ? 'game_help' : 'general_discussion',
-                confidence: 0.2, // Low confidence since we don't have AI analysis
-                extractedPokemonName: isPokemonSearch ? queryWords.find(word => word.length >= 3) || '' : ''
-            };
+            throw new Error('Failed to analyze query: ' + error.message);
         }
     }
 
-    async generateResponse(query: string): Promise<IPokedexResponse> {
+    async generateResponse(query: string, preservePokemonData?: TransformedPokemonData): Promise<IPokedexResponse> {
+        // Add user message to conversation history first
+        this.addUserMessage(query);
+        
         // First analyze the query
         const analysis = await this.analyzeQuery(query);
         console.log('Query analysis result:', analysis);
-        let pokemonData = null;
+        let pokemonData: TransformedPokemonData | null = preservePokemonData || null; // Start with existing pokemon data
 
-        // Only try to get Pokemon data if the query is specifically asking for Pokemon data/stats
+        // Only try to get NEW Pokemon data if the query is specifically asking for Pokemon data/stats
+        // AND we found a different pokemon name
         if (analysis.isPokemonSearch && (analysis.extractedPokemonName || analysis.pokemonNames.length > 0)) {
             // Try extracted name first
             if (analysis.extractedPokemonName) {
-                pokemonData = await this.pokemonDataService.getPokemonData(analysis.extractedPokemonName);
+                const newPokemonData = await this.pokemonDataService.getPokemonData(analysis.extractedPokemonName);
                 console.log(`Trying extracted Pokemon name: ${analysis.extractedPokemonName}`);
+                if (newPokemonData) {
+                    pokemonData = newPokemonData; // Update to new pokemon data
+                }
             }
             
             // If no data found, try all mentioned names
             if (!pokemonData && analysis.pokemonNames.length > 0) {
                 for (const pokemonName of analysis.pokemonNames) {
-                    pokemonData = await this.pokemonDataService.getPokemonData(pokemonName);
-                    if (pokemonData) {
+                    const newPokemonData = await this.pokemonDataService.getPokemonData(pokemonName);
+                    if (newPokemonData) {
                         console.log(`Found Pokemon data for: ${pokemonName}`);
+                        pokemonData = newPokemonData; // Update to new pokemon data
                         break;
                     }
                 }
@@ -148,6 +226,19 @@ export class PokedexAiService extends RWSService {
         // Generate AI response (always, whether we have Pokemon data or not)
         const aiResponse = await this.generateAIResponse(query, analysis, pokemonData);
 
+        // Complete the conversation entry with the AI response
+        const lastEntry = this.conversationHistory[this.conversationHistory.length - 1];
+        if (lastEntry && !lastEntry.response) {
+            lastEntry.response = aiResponse;
+            if (pokemonData) {
+                lastEntry.pokemonData = pokemonData;
+            }
+            console.log('✅ Completed conversation entry with AI response (non-streaming)');
+        } else {
+            // Fallback: add as new entry if no incomplete entry found
+            this.addConversationEntry(query, aiResponse, pokemonData);
+        }
+
         return {
             analysis,
             pokemonData,
@@ -155,45 +246,68 @@ export class PokedexAiService extends RWSService {
         };
     }
 
-    async *streamResponse(query: string): AsyncGenerator<IPokedexResponse, void, unknown> {
-        // First analyze the query
-        const analysis = await this.analyzeQuery(query);
-        let pokemonData = null;
+    async *streamResponse(query: string, preservePokemonData?: TransformedPokemonData): AsyncGenerator<IPokedexResponse, void, unknown> {
+        console.log('🎬 Starting streamResponse for query:', query);
+        
+        // Add user message to conversation history first
+        this.addUserMessage(query);
+        
+        // Set up controller for this streaming request
+        this.currentStreamingController = new AbortController();
+        console.log('🎬 Created new streaming controller');
+        
+        try {
+            // First analyze the query
+            const analysis = await this.analyzeQuery(query);
+            let pokemonData: TransformedPokemonData | null = preservePokemonData || null; // Start with existing pokemon data
 
-        // Only try to get Pokemon data if the query is specifically asking for Pokemon data/stats
-        if (analysis.isPokemonSearch && (analysis.extractedPokemonName || analysis.pokemonNames.length > 0)) {
-            // Try extracted name first
-            if (analysis.extractedPokemonName) {
-                pokemonData = await this.pokemonDataService.getPokemonData(analysis.extractedPokemonName);
-                console.log(`Trying extracted Pokemon name: ${analysis.extractedPokemonName}`);
-            }
-            
-            // If no data found, try all mentioned names
-            if (!pokemonData && analysis.pokemonNames.length > 0) {
-                for (const pokemonName of analysis.pokemonNames) {
-                    pokemonData = await this.pokemonDataService.getPokemonData(pokemonName);
-                    if (pokemonData) {
-                        console.log(`Found Pokemon data for: ${pokemonName}`);
-                        break;
+            // Only try to get NEW Pokemon data if the query is specifically asking for Pokemon data/stats
+            // AND we found a different pokemon name
+            if (analysis.isPokemonSearch && (analysis.extractedPokemonName || analysis.pokemonNames.length > 0)) {
+                // Try extracted name first
+                if (analysis.extractedPokemonName) {
+                    const newPokemonData = await this.pokemonDataService.getPokemonData(analysis.extractedPokemonName);
+                    console.log(`Trying extracted Pokemon name: ${analysis.extractedPokemonName}`);
+                    if (newPokemonData) {
+                        pokemonData = newPokemonData; // Update to new pokemon data
                     }
                 }
+                
+                // If no data found, try all mentioned names
+                if (!pokemonData && analysis.pokemonNames.length > 0) {
+                    for (const pokemonName of analysis.pokemonNames) {
+                        const newPokemonData = await this.pokemonDataService.getPokemonData(pokemonName);
+                        if (newPokemonData) {
+                            console.log(`Found Pokemon data for: ${pokemonName}`);
+                            pokemonData = newPokemonData; // Update to new pokemon data
+                            break;
+                        }
+                    }
+                }
+            } else {
+                console.log('Query not eligible for PokeAPI search - isPokemonSearch:', analysis.isPokemonSearch, 'pokemonNames:', analysis.pokemonNames);
             }
-        } else {
-            console.log('Query not eligible for PokeAPI search - isPokemonSearch:', analysis.isPokemonSearch, 'pokemonNames:', analysis.pokemonNames);
-        }
 
-        // Stream AI response
-        const streamingResponse = this.streamAIResponse(query, analysis, pokemonData);
-        
-        // Yield the response structure with streaming generator
-        yield {
-            analysis,
-            pokemonData,
-            streamingResponse
-        };
+            // Stream AI response
+            const streamingResponse = this.streamAIResponse(query, analysis, pokemonData);
+            
+            // Yield the response structure with streaming generator
+            yield {
+                analysis,
+                pokemonData,
+                streamingResponse
+            };
+        } catch (error) {
+            console.error('🎬 Error in streamResponse:', error);
+            throw error;
+        } finally {
+            // Only clear the controller if it's still the current one
+            // This prevents clearing a new controller that was created for a new request
+            console.log('🎬 Streaming completed/aborted, checking controller cleanup');
+        }
     }
 
-    private async generateAIResponse(query: string, analysis: IQueryAnalysis, pokemonData?: any): Promise<string> {
+    private async generateAIResponse(query: string, analysis: IQueryAnalysis, pokemonData?: TransformedPokemonData): Promise<string> {
         if (!this.settings.apiKey) {
             throw new Error('pokedex.apiKeyRequired'.t());
         }
@@ -203,7 +317,7 @@ export class PokedexAiService extends RWSService {
         }
 
         // Check if query contains pokemon-related keywords - especially "poke"
-        const pokemonKeywords = ['poke', 'pokemon', 'pokémon', 'pokemmo', 'pokeball'];
+        const pokemonKeywords = this.aiPromptService.getPokemonKeywords();
         const hasPokemonKeyword = pokemonKeywords.some(keyword => 
             query.toLowerCase().includes(keyword.toLowerCase())
         );
@@ -221,10 +335,10 @@ export class PokedexAiService extends RWSService {
         if (!pokemonData) {
             // If no pokemon keywords/poke and no pokemon data, instruct to use fallback
             if (!hasPokemonKeyword && !hasPoke) {
-                systemPrompt += `\n\nPytanie nie zawiera słów związanych z Pokemon i nie ma danych Pokemon - użyj fallback message.`;
+                systemPrompt += this.aiPromptService.getFallbackInstruction();
                 console.log('Added fallback instruction to system prompt');
             } else {
-                systemPrompt += `\n\nTO PYTANIE ZAWIERA SŁOWA POKEMON - NIGDY NIE UŻYWAJ FALLBACK MESSAGE! Odpowiedz normalnie na pytanie o Pokemon/PokéMMO/grach Pokemon.\n\nWAŻNE: NIE UŻYWAJ MARKDOWN! Odpowiadaj TYLKO czystym HTML z klasami CSS.`;
+                systemPrompt += this.aiPromptService.getNonFallbackInstruction();
                 console.log('Added NO FALLBACK instruction - pokemon related query detected');
             }
         } else {
@@ -233,12 +347,36 @@ export class PokedexAiService extends RWSService {
         }
     
         try {
+            // Build messages with conversation history
+            const messages: any[] = [
+                { role: 'system', content: systemPrompt }
+            ];
+
+            // Add conversation history (excluding current incomplete entry)
+            for (const entry of this.conversationHistory.slice(0, -1)) {
+                // Always include the user message
+                messages.push({ role: 'user', content: entry.query });
+                
+                // Only include assistant response if it's complete (not interrupted or empty)
+                if (entry.response && entry.response !== '[INTERRUPTED]' && entry.response.trim() !== '') {
+                    messages.push({ role: 'assistant', content: entry.response });
+                }
+                // If interrupted or incomplete, we skip the assistant response but keep the user message
+            }
+
+            // Add current query
+            messages.push({ role: 'user', content: query });
+
+            console.log('💬 Generate messages being sent to AI:');
+            messages.forEach((msg, i) => {
+                console.log(`  ${i}: ${msg.role} - ${msg.content.substring(0, 100)}...`);
+            });
+            console.log(`💬 Total messages: ${messages.length}`);
+            console.log(`💬 Conversation history length: ${this.conversationHistory.length}`);
+
             const { text } = await generateText({
                 model: this.generateModelObject(this.settings.model),
-                messages: [
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: query }
-                ],
+                messages,
                 temperature: this.settings.temperature,
             });
 
@@ -253,7 +391,7 @@ export class PokedexAiService extends RWSService {
         }
     }
 
-    private async *streamAIResponse(query: string, analysis: IQueryAnalysis, pokemonData?: any): AsyncGenerator<string, void, unknown> {
+    private async *streamAIResponse(query: string, analysis: IQueryAnalysis, pokemonData?: TransformedPokemonData): AsyncGenerator<string, void, unknown> {
         if (!this.settings.apiKey) {
             throw new Error('pokedex.apiKeyRequired'.t());
         }
@@ -263,7 +401,7 @@ export class PokedexAiService extends RWSService {
         }
 
         // Check if query contains pokemon-related keywords - especially "poke"
-        const pokemonKeywords = ['poke', 'pokemon', 'pokémon', 'pokemmo', 'pokeball'];
+        const pokemonKeywords = this.aiPromptService.getPokemonKeywords();
         const hasPokemonKeyword = pokemonKeywords.some(keyword => 
             query.toLowerCase().includes(keyword.toLowerCase())
         );
@@ -277,9 +415,9 @@ export class PokedexAiService extends RWSService {
         if (!pokemonData) {
             // If no pokemon keywords/poke and no pokemon data, instruct to use fallback
             if (!hasPokemonKeyword && !hasPoke) {
-                systemPrompt += `\n\nPytanie nie zawiera słów związanych z Pokemon i nie ma danych Pokemon - użyj fallback message.`;
+                systemPrompt += this.aiPromptService.getFallbackInstruction();
             } else {
-                systemPrompt += `\n\nTO PYTANIE ZAWIERA SŁOWA POKEMON - NIGDY NIE UŻYWAJ FALLBACK MESSAGE! Odpowiedz normalnie na pytanie o Pokemon/PokéMMO/grach Pokemon.\n\nWAŻNE: NIE UŻYWAJ MARKDOWN! Odpowiadaj TYLKO czystym HTML z klasami CSS.`;
+                systemPrompt += this.aiPromptService.getNonFallbackInstruction();
             }
         }
         // When Pokemon data exists, the synopsis prompt should handle everything
@@ -287,13 +425,38 @@ export class PokedexAiService extends RWSService {
         const model = this.generateModelObject(this.settings.model);
 
         try {
+            // Build messages with conversation history
+            const messages: any[] = [
+                { role: 'system', content: systemPrompt }
+            ];
+
+            // Add conversation history (excluding current incomplete entry)
+            for (const entry of this.conversationHistory.slice(0, -1)) {
+                // Always include the user message
+                messages.push({ role: 'user', content: entry.query });
+                
+                // Only include assistant response if it's complete (not interrupted or empty)
+                if (entry.response && entry.response !== '[INTERRUPTED]' && entry.response.trim() !== '') {
+                    messages.push({ role: 'assistant', content: entry.response });
+                }
+                // If interrupted or incomplete, we skip the assistant response but keep the user message
+            }
+
+            // Add current query
+            messages.push({ role: 'user', content: query });
+
+            console.log('💬 Stream messages being sent to AI:');
+            messages.forEach((msg, i) => {
+                console.log(`  ${i}: ${msg.role} - ${msg.content.substring(0, 100)}...`);
+            });
+            console.log(`💬 Total messages: ${messages.length}`);
+            console.log(`💬 Conversation history length: ${this.conversationHistory.length}`);
+
             const stream = streamText({
                 model,
-                messages: [
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: query }
-                ],
+                messages,
                 temperature: this.settings.temperature,
+                abortSignal: this.currentStreamingController?.signal,
             });
 
             for await (const chunk of stream.textStream) {
@@ -312,30 +475,28 @@ export class PokedexAiService extends RWSService {
         }
     }
 
-    private createSystemPrompt(analysis?: IQueryAnalysis, pokemonData?: any): string {
+    private createSystemPrompt(analysis?: IQueryAnalysis, pokemonData?: TransformedPokemonData): string {
         if (pokemonData) {
             // When we have Pokemon data, use the specialized synopsis prompt - NO POKEMON DATA IN AI RESPONSE
             let prompt = this.htmlFormattingService.createSynopsisPrompt(this.settings.language);
             
-            prompt += `\n\nKONTEKST: Masz dostęp do kompletnych danych Pokemon o nazwie "${pokemonData.species || 'nieznany Pokemon'}". Wszystkie szczegółowe dane (statystyki, ruchy, ewolucje, typy) są już wyświetlone w prawym panelu dla użytkownika.`;
+            prompt += this.aiPromptService.getSynopsisPromptContext(pokemonData.species || 'nieznany Pokemon');
             
             // Add context for synopsis only - no data formatting
-            prompt += `\n\nWAŻNE: 
-- TWOJA ROLA: Tylko komentarz i ciekawostki o tym Pokemonie
-- NIE DUPLIKUJ danych już wyświetlonych w prawym panelu
-- SKUP SIĘ na strategiach, ciekawostkach, porównaniach
-- WYKORZYSTAJ dostępne dane do stworzenia angażującego komentarza
-- ZAWSZE odpowiadaj jakby znałeś tego Pokemona (nie pytaj o szczegóły)`;
+            prompt += this.aiPromptService.getSynopsisInstructions();
             
             // Add generation context for commentary only
             if (pokemonData.generation) {
-                prompt += `\n\nKontekst generacji: Ten Pokemon pochodzi z ${pokemonData.generation.name} (Generacja ${pokemonData.generation.id}). Możesz wspomnieć o tym w kontekście historii gier Pokemon.`;
+                prompt += this.aiPromptService.getGenerationContext(
+                    pokemonData.generation.name, 
+                    pokemonData.generation.id
+                );
             }
             
             // Add location context for tips only
             if (pokemonData.locations && pokemonData.locations.length > 0) {
                 const locationNames = pokemonData.locations.map((loc: any) => loc.name).join(', ');
-                prompt += `\n\nKontekst lokacji: Ten Pokemon można spotkać w następujących obszarach: ${locationNames}. Możesz dać wskazówki gdzie go znaleźć, ale NIE wyświetlaj ponownie tych danych.`;
+                prompt += this.aiPromptService.getLocationContext(locationNames);
             }
             
             return prompt;
@@ -346,54 +507,15 @@ export class PokedexAiService extends RWSService {
         // Add modified behavior based on pokemon-related detection in the main generateResponse
         
         if (analysis && analysis.queryType === 'game_help') {
-            basePrompt += `\n\nContext: The user is asking for game help or strategy advice. Focus on providing detailed location information, evolution requirements, gameplay tips, and practical advice about Pokemon games, locations, strategies, or gameplay mechanics.`;
+            basePrompt += this.aiPromptService.getGameHelpContext();
         } else if (analysis && analysis.queryType === 'general_discussion') {
-            basePrompt += `\n\nContext: The user wants to discuss Pokemon in general. Be conversational and engaging while providing interesting information about Pokemon lore, comparisons, and general knowledge.`;
+            basePrompt += this.aiPromptService.getGeneralDiscussionContext();
         }
         
         // Add generation awareness for all prompts
-        basePrompt += `\n\nGeneration Knowledge: When discussing Pokemon, always mention which generation they are from if relevant. The generations are:
-        - Generation I (Kanto): Red, Blue, Yellow
-        - Generation II (Johto): Gold, Silver, Crystal  
-        - Generation III (Hoenn): Ruby, Sapphire, Emerald
-        - Generation IV (Sinnoh): Diamond, Pearl, Platinum
-        - Generation V (Unova): Black, White, Black 2, White 2
-        - Generation VI (Kalos): X, Y
-        - Generation VII (Alola): Sun, Moon, Ultra Sun, Ultra Moon
-        - Generation VIII (Galar): Sword, Shield
-        - Generation IX (Paldea): Scarlet, Violet`;
+        basePrompt += this.aiPromptService.getGenerationKnowledge();
         
         return basePrompt;
-    }
-
-    private isGameHelpQuery(query: string): boolean {
-        const gameHelpKeywords = [
-            'find', 'catch', 'where', 'location', 'route', 'area', 'region', 'johto', 'kanto', 'hoenn', 
-            'sinnoh', 'unova', 'kalos', 'alola', 'galar', 'paldea', 'how to', 'evolve', 'evolution',
-            'level up', 'trade', 'stone', 'item', 'obtain', 'get', 'encounter', 'spawn', 'appear',
-            'forest', 'cave', 'city', 'town', 'gym', 'elite four', 'champion', 'safari', 'game corner',
-            'slot', 'prize', 'fishing', 'surfing', 'rock smash', 'headbutt', 'time', 'day', 'night',
-            'morning', 'evening', 'season', 'weather', 'rare', 'shiny', 'legendary', 'mythical',
-            'generation', 'gen', 'version', 'game', 'red', 'blue', 'yellow', 'gold', 'silver', 'crystal',
-            'ruby', 'sapphire', 'emerald', 'diamond', 'pearl', 'platinum', 'black', 'white', 
-            'sword', 'shield', 'scarlet', 'violet', 'sun', 'moon', 'ultra', 'lets go', 'arceus',
-            'legends', 'brilliant', 'shining', 'move', 'tm', 'hm', 'ability', 'nature', 'iv', 'ev',
-            'breeding', 'egg', 'hatch', 'wild', 'trainer', 'battle', 'competitive', 'strategy',
-            'pokemmo', 'mmo', 'pokemon mmo', 'fan game', 'rom hack', 'hack', 'emulator', 'online',
-            'multiplayer', 'server', 'community', 'what is', 'explain', 'about'
-        ];
-        
-        // Check for Pokemon-related content regardless of game help keywords
-        const pokemonRelatedKeywords = [
-            'pokemon', 'pokémon', 'pokedex', 'pokeball', 'poke', 'trainer', 'gym', 'battle',
-            'pokemmo', 'mmo', 'fan game', 'rom', 'hack', 'emulator'
-        ];
-        
-        const isPokemonRelated = pokemonRelatedKeywords.some(keyword => query.includes(keyword));
-        const isGameHelp = gameHelpKeywords.some(keyword => query.includes(keyword));
-        
-        // If it's Pokemon-related, it should be treated as valid content
-        return isPokemonRelated || isGameHelp;
     }
 
     private isRateLimitError(error: any): boolean {
@@ -404,13 +526,7 @@ export class PokedexAiService extends RWSService {
         
         // Check for rate limit messages in error text
         const errorMessage = error?.message || error?.error?.message || '';
-        const rateLimitKeywords = [
-            'rate limit',
-            'Rate limit exceeded',
-            'free-models-per-day',
-            'Too Many Requests',
-            '429'
-        ];
+        const rateLimitKeywords = this.aiPromptService.getRateLimitKeywords();
         
         const hasRateLimitKeyword = rateLimitKeywords.some(keyword => 
             errorMessage.toLowerCase().includes(keyword.toLowerCase())

@@ -2,11 +2,19 @@ import { RWSViewComponent, RWSView, observable, RWSInject } from '@rws-framework
 import PokemonDataService, { PokemonDataServiceInstance } from '@front/services/pokemon-data.service';
 import PokedexSettingsService, { PokedexSettingsServiceInstance } from '@front/services/pokedex-settings.service';
 import storageServiceInstance, { StorageServiceInstance } from '@front/services/storage.service';
+import PokedexAiService, { PokedexAiServiceInstance } from '@front/services/pokedex-ai.service';
+
+interface ConversationEntry {
+    query: string;
+    response: string;
+    pokemonData?: any;
+}
 
 @RWSView('pokedex-screen')
 export class PokedexScreen extends RWSViewComponent {
     @observable output: string = '';
     @observable isGenerating: boolean = false;
+    @observable isStreaming: boolean = false;
     @observable contentReady: boolean = false;
     @observable selectedGeneration: number | null = null;
     @observable selectedLocation: string | null = null;
@@ -14,14 +22,18 @@ export class PokedexScreen extends RWSViewComponent {
     @observable locations: any[] = [];
     @observable filteredPokemonList: string[] = [];
     @observable showFilters: boolean = false;
+    @observable conversationHistory: ConversationEntry[] = [];
+    @observable completedConversationHistory: ConversationEntry[] = [];
+    @observable currentStreamingResponse: string = '';
     
     private autoScrollEnabled: boolean = true;
     private screenContent: HTMLElement | null = null;
 
     constructor(
-        @PokemonDataService private pokemonDataService: PokemonDataServiceInstance,
-        @PokedexSettingsService private settingsService: PokedexSettingsServiceInstance,
-        @RWSInject(storageServiceInstance) private storageService: StorageServiceInstance
+        @RWSInject(PokemonDataService) private pokemonDataService: PokemonDataServiceInstance,
+        @RWSInject(PokedexSettingsService) private settingsService: PokedexSettingsServiceInstance,
+        @RWSInject(storageServiceInstance) private storageService: StorageServiceInstance,
+        @RWSInject(PokedexAiService) private aiService: PokedexAiServiceInstance
     ) {
         super();
     }
@@ -351,6 +363,116 @@ export class PokedexScreen extends RWSViewComponent {
             console.warn('Failed to load generation from storage:', error);
             return null;
         }
+    }
+
+    // Update conversation history from AI service
+    updateConversationHistory() {
+        if (this.aiService && this.aiService.hasConversationHistory()) {
+            const newHistory = this.aiService.getConversationHistory();
+            console.log('📋 Updating conversation history from AI service');
+            console.log('📋 Previous history length:', this.conversationHistory.length);
+            console.log('📋 New history length:', newHistory.length);
+            
+            // Force update by creating new array reference
+            this.conversationHistory = [...newHistory];
+            
+            console.log('📋 Conversation history updated:', this.conversationHistory.length, 'entries');
+            
+            // Log each entry for debugging
+            this.conversationHistory.forEach((entry, i) => {
+                console.log(`  Entry ${i}: Query="${entry.query.substring(0, 30)}..." Response="${entry.response ? entry.response.substring(0, 30) + '...' : 'EMPTY'}"`);
+            });
+        } else {
+            console.log('📋 No conversation history available from AI service - clearing display');
+            // Clear the conversation history display when there's no history
+            this.conversationHistory = [];
+        }
+    }
+    
+    // Update completed conversation history when conversation history changes
+    conversationHistoryChanged() {
+        console.log('🔄 conversationHistoryChanged triggered');
+        this.completedConversationHistory = this.conversationHistory.filter(e => e.response && e.response.trim() !== '');
+        console.log('🔄 Completed entries:', this.completedConversationHistory.length);
+    }
+
+    // Update current streaming response
+    updateStreamingResponse(response: string) {
+        console.log('🎬 Screen: Updating streaming response, length:', response.length);
+        this.currentStreamingResponse = response;
+    }
+
+    // Update streaming state
+    updateStreamingState(isStreaming: boolean) {
+        console.log('🎬 Screen: Updating streaming state:', isStreaming);
+        this.isStreaming = isStreaming;
+        if (!isStreaming) {
+            this.currentStreamingResponse = '';
+            console.log('🎬 Screen: Streaming ended, refreshing history');
+            this.updateConversationHistory(); // Refresh history when streaming ends
+        }
+    }
+
+    // Update generation state
+    updateGeneratingState(isGenerating: boolean) {
+        console.log('🎬 Screen: Updating generating state:', isGenerating);
+        this.isGenerating = isGenerating;
+    }
+
+    // Render conversation history as HTML string
+    renderConversationHistory(): string {
+        if (!this.conversationHistory || this.conversationHistory.length === 0) {
+            return '';
+        }
+
+        return this.conversationHistory.map((entry, index) => {
+            const userQuery = `
+                <div class="user-message">
+                    <div class="message-header">
+                        <span class="message-icon">👤</span>
+                        <span class="message-label">${'pokedex.userQuery'.t()}</span>
+                    </div>
+                    <div class="message-content">${this.escapeHtml(entry.query)}</div>
+                </div>
+            `;
+
+            let aiResponse = '';
+            if (entry.response && entry.response !== '[INTERRUPTED]') {
+                aiResponse = `
+                    <div class="ai-message">
+                        <div class="message-header">
+                            <span class="message-icon">🤖</span>
+                            <span class="message-label">${'pokedex.aiResponse'.t()}</span>
+                        </div>
+                        <div class="message-content">${entry.response}</div>
+                    </div>
+                `;
+            } else if (entry.response === '[INTERRUPTED]') {
+                aiResponse = `
+                    <div class="ai-message interrupted">
+                        <div class="message-header">
+                            <span class="message-icon">⚡</span>
+                            <span class="message-label">${'pokedex.interrupted'.t()}</span>
+                        </div>
+                        <div class="message-content"><em>${'pokedex.responseInterrupted'.t()}</em></div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="conversation-entry">
+                    ${userQuery}
+                    ${aiResponse}
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Helper method to escape HTML in user input
+    private escapeHtml(text: string): string {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 }
 

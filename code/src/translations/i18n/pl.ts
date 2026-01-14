@@ -43,6 +43,9 @@ export default {
     'pokedex.search_input': 'Pole wyszukiwania',
     'pokedex.enterPokemon': 'Wpisz nazwę Pokémona...',
     'pokedex.search': 'Szukaj',
+    'pokedex.interrupt': 'Stop',
+    'pokedex.conversationInterrupted': 'Rozmowa przerwana i wyczyszczona',
+    'pokedex.streamingInterrupted': 'Odpowiedź zatrzymana',
     'pokedex.analyzing': 'Analizuję',
     'pokedex.searchComplete': 'wyszukiwanie zakończone',
     'pokedex.togglePanel': 'Przełącz Panel Danych',
@@ -66,5 +69,13 @@ export default {
     'pokedex.streamingCheckboxTitle': 'Włącz/wyłącz strumieniowanie odpowiedzi',
     'pokedx.rateLimitWait': 'Osiągnięto limit żądań. Poczekaj kilka minut i spróbuj ponownie.',
     'pokedx.rateLimitTitle': 'Limit Zapytań Osiągnięty',
-    'pokedx.rateLimitHelp': 'Spróbuj ponownie za kilka minut lub dodaj kredyty do swojego konta OpenRouter.'
+    'pokedx.rateLimitHelp': 'Spróbuj ponownie za kilka minut lub dodaj kredyty do swojego konta OpenRouter.',
+    'pokedex.userQuery': 'Zapytanie użytkownika',
+    'pokedex.aiResponse': 'Odpowiedź AI',
+    'pokedex.interrupted': 'Przerwane',
+    'pokedex.stopStreaming': 'Zatrzymaj strumieniowanie',
+    'pokedex.clearConversation': 'Wyczyść rozmowę',
+    'pokedex.streamingStopped': 'Strumieniowanie zatrzymane',
+    'pokedex.conversationCleared': 'Rozmowa wyczyszczona - zaczynamy od nowa',
+    'pokedex.responseInterrupted': 'Odpowiedź została przerwana'
 };

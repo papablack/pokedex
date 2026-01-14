@@ -49,6 +49,9 @@ export default {
     'pokedex.search_input': 'Search input field',
     'pokedex.enterPokemon': 'Enter Pokémon name...',
     'pokedex.search': 'Search',
+    'pokedex.interrupt': 'Stop',
+    'pokedex.conversationInterrupted': 'Conversation interrupted and cleared',
+    'pokedex.streamingInterrupted': 'Response stopped',    
     'pokedex.analyzing': 'Analyzing',
     'pokedex.searchComplete': 'search complete',
     'pokedex.togglePanel': 'Toggle Data Panel',
@@ -72,5 +75,13 @@ export default {
     'pokedex.streamingCheckboxTitle': 'Enable/disable response streaming',
     'pokedx.rateLimitWait': 'Rate limit reached. Please wait a few minutes and try again.',
     'pokedx.rateLimitTitle': 'Rate Limit Reached',
-    'pokedx.rateLimitHelp': 'Try again in a few minutes or add credits to your OpenRouter account.'
+    'pokedex.rateLimitHelp': 'Try again in a few minutes or add credits to your OpenRouter account.',
+    'pokedex.userQuery': 'User Query',
+    'pokedex.aiResponse': 'AI Response',
+    'pokedex.interrupted': 'Interrupted',
+    'pokedex.stopStreaming': 'Stop Streaming',
+    'pokedex.clearConversation': 'Clear Conversation',
+    'pokedex.streamingStopped': 'Streaming stopped',
+    'pokedex.conversationCleared': 'Conversation cleared - starting fresh',
+    'pokedex.responseInterrupted': 'Response was interrupted'
 };

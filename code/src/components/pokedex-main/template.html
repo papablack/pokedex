@@ -11,7 +11,7 @@
         </pokedex-header>
         
         <!-- Main Screen -->
-        <pokedex-screen 
+        <pokedex-screen ${ref('screen')}
             :output="${x => x.output}"
             :isGenerating="${x => x.isGenerating}"
             :contentReady="${x => x.contentReady}">
@@ -21,8 +21,12 @@
         <pokedex-input 
             :query="${x => x.query}"
             :isGenerating="${x => x.isGenerating}"
-            @search="${(x, c) => x.handleSearch(c.event)}">
-        </pokedex-input>                    
+            :canInterrupt="${x => x.isStreaming}"
+            :hasConversation="${x => x.hasConversation}"
+            @search="${(x, c) => x.handleSearch(c.event)}"
+            @interrupt="${x => x.handleInterrupt()}"
+            @stop-streaming="${x => x.handleStopStreaming()}">
+        </pokedex-input>
     </div>
     
     <!-- Right Wing Panel - Pokemon Data Display -->

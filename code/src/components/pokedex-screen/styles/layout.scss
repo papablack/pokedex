@@ -868,3 +868,89 @@
     line-height: 1.4;
     text-shadow: 0 0 6px rgba(116, 185, 255, 0.5);
 }
+
+// Conversation History Styles
+.conversation-history {
+    .conversation-entry {
+        margin-bottom: 20px;
+        
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+    
+    .user-message, .ai-message {
+        margin-bottom: 10px;
+        
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+            
+            .message-icon {
+                font-size: 1.1rem;
+            }
+            
+            .message-label {
+                color: $dos-green;
+                font-weight: bold;
+                font-size: 1rem;
+                text-shadow: 0 0 6px rgba(0, 255, 0, 0.5);
+            }
+            
+            .streaming-indicator {
+                animation: pulse 1.5s infinite;
+                color: $dos-yellow;
+            }
+        }
+        
+        .message-content {
+            color: $dos-blue;
+            text-shadow: 0 0 6px rgba(116, 185, 255, 0.5);
+            line-height: 1.5;
+            padding-left: 25px;
+        }
+    }
+    
+    .user-message {
+        .message-header .message-label {
+            color: $dos-yellow;
+            text-shadow: 0 0 6px rgba(255, 215, 0, 0.5);
+        }
+        
+        .message-content {
+            color: $dos-white;
+            font-style: italic;
+        }
+    }
+    
+    .ai-message.interrupted {
+        .message-header .message-label {
+            color: $dos-red;
+            text-shadow: 0 0 6px rgba(255, 0, 0, 0.5);
+        }
+        
+        .message-content {
+            color: $dos-red;
+            opacity: 0.7;
+        }
+    }
+    
+    .ai-message.streaming {
+        .message-content {
+            border-right: 2px solid $dos-green;
+            animation: typing-cursor 1s infinite;
+        }
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes typing-cursor {
+    0%, 50% { border-color: $dos-green; }
+    51%, 100% { border-color: transparent; }
+}

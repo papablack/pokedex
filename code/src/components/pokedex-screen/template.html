@@ -13,8 +13,71 @@
 <div class="screen-container">
     <div class="main-screen">
         <div class="screen-content" 
-             :innerHTML="${x => (x.contentReady && x.output) ? x.output : x.defaultContent}"
-             style="visibility: ${x => x.contentReady || !x.isGenerating ? 'visible' : 'hidden'}; overflow-y: auto; max-height: 400px;">
+             style="visibility: ${x => x.contentReady || !x.isGenerating || x.conversationHistory.length > 0 ? 'visible' : 'hidden'}; overflow-y: auto; max-height: 400px;">
+            
+            <!-- Conversation History - Only show completed entries -->
+            <div class="conversation-history">
+                ${repeat(x => x.completedConversationHistory, html`
+                    <div class="conversation-entry">
+                        <div class="user-message">
+                            <div class="message-header">
+                                <span class="message-icon">👤</span>
+                                <span class="message-label">${'pokedex.userQuery'.t()}</span>
+                            </div>
+                            <div class="message-content">${x => x.query}</div>
+                        </div>
+                        ${when(x => x.response && x.response !== '[INTERRUPTED]', html`
+                            <div class="ai-message">
+                                <div class="message-header">
+                                    <span class="message-icon">🤖</span>
+                                    <span class="message-label">${'pokedex.aiResponse'.t()}</span>
+                                </div>
+                                <div class="message-content" :innerHTML="${x => x.response}"></div>
+                            </div>
+                        `)}
+                        ${when(x => x.response === '[INTERRUPTED]', html`
+                            <div class="ai-message interrupted">
+                                <div class="message-header">
+                                    <span class="message-icon">⚡</span>
+                                    <span class="message-label">${'pokedex.interrupted'.t()}</span>
+                                </div>
+                                <div class="message-content"><em>${'pokedex.responseInterrupted'.t()}</em></div>
+                            </div>
+                        `)}
+                    </div>
+                `)}
+            </div>
+            
+            <!-- Current User Message and Streaming Response (shown when actively streaming) -->
+            <div class="conversation-history">
+                ${x => x.isStreaming ? html`
+                    <div class="conversation-entry current-streaming">
+                        ${x.conversationHistory.length > 0 ? html`
+                            <div class="user-message">
+                                <div class="message-header">
+                                    <span class="message-icon">👤</span>
+                                    <span class="message-label">${'pokedex.userQuery'.t()}</span>
+                                </div>
+                                <div class="message-content">${x.conversationHistory[x.conversationHistory.length - 1].query}</div>
+                            </div>
+                        ` : ''}
+                        ${x.currentStreamingResponse ? html`
+                            <div class="ai-message streaming">
+                                <div class="message-header">
+                                    <span class="message-icon">🤖</span>
+                                    <span class="message-label">${'pokedex.aiResponse'.t()}</span>
+                                    <span class="streaming-indicator">✨</span>
+                                </div>
+                                <div class="message-content" :innerHTML="${x.currentStreamingResponse}"></div>
+                                <span class="typing-cursor"></span>
+                            </div>
+                        ` : ''}
+                    </div>
+                ` : ''}
+            </div>
+            
+            <!-- Fallback for old output system -->
+            <div style="display: ${x => (!x.conversationHistory.length && !x.isStreaming && x.output) ? 'block' : 'none'}" :innerHTML="${x => x.output}"></div>
             
         </div>
         

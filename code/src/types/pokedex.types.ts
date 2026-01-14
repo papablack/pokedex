@@ -1,3 +1,5 @@
+import { TransformedPokemonData } from './pokemon-data.types';
+
 export interface IPokedexSettings {
     apiKey: string;
     model: string;
@@ -25,9 +27,15 @@ export interface IQueryAnalysis {
     extractedPokemonName?: string;
 }
 
+export interface IConversationEntry {
+    query: string;
+    response: string;
+    pokemonData?: TransformedPokemonData;
+}
+
 export interface IPokedexResponse {
     analysis: IQueryAnalysis;
-    pokemonData?: any;
+    pokemonData?: TransformedPokemonData;
     aiResponse?: string;
     streamingResponse?: AsyncGenerator<string, void, unknown>;
 }

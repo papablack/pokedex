@@ -15,5 +15,21 @@
             :disabled="${x => x.isGenerating}">
             <i class="fa fa-search"></i>
         </button>
+        ${when(x => x.isGenerating || x.canInterrupt, html`
+            <button 
+                title="${'pokedex.stopStreaming'.t()}"
+                class="btn-stop" 
+                @click="${x => x.handleStop()}">
+                <i class="fa fa-stop"></i>
+            </button>
+        `)}
+        ${when(x => x.hasConversation && !x.isGenerating && !x.canInterrupt, html`
+            <button 
+                title="${'pokedex.clearConversation'.t()}"
+                class="btn-interrupt" 
+                @click="${x => x.handleInterrupt()}">
+                <i class="fa fa-trash"></i>
+            </button>
+        `)}
     </div>
 </div>

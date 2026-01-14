@@ -380,9 +380,12 @@ NIGDY nie używaj markdown! ZAWSZE używaj HTML tagów!
 
 ✅ UŻYWAJ WYŁĄCZNIE tych HTML elementów:
 
+WAŻNE: NIGDY nie używaj znaków zapytania (?) w nagłówkach <h3>, <h4>, <h5>!
+Nagłówki powinny być stwierdzeniami, nie pytaniami!
+
 Dla ogólnych pytań (gry, porady, itp.):
 <div class="ai-general-container">
-<h3 class="ai-general-title">Nagłówek</h3>
+<h3 class="ai-general-title">Nagłówek (BEZ znaku zapytania!)</h3>
 <p class="ai-general-text">Zwykły tekst akapitu. Możesz używać <span class="ai-general-highlight">podświetlonego tekstu</span> dla ważnych informacji.</p>
 <ul class="ai-general-list">
 <li class="ai-general-item">Element listy 1</li>

@@ -3,6 +3,8 @@ import { RWSViewComponent, RWSView, observable } from '@rws-framework/client';
 @RWSView('pokedex-input')
 export class PokedexInput extends RWSViewComponent {
     @observable isGenerating: boolean = false;
+    @observable canInterrupt: boolean = false;
+    @observable hasConversation: boolean = false;
     searchInput: HTMLInputElement;
 
     constructor() {
@@ -18,6 +20,16 @@ export class PokedexInput extends RWSViewComponent {
                 this.searchInput.value = '';
             }
         }
+    }
+
+    handleInterrupt() {
+        console.log('🔴 PokedexInput: Interrupt button clicked');
+        this.$emit('interrupt');
+    }
+
+    handleStop() {
+        console.log('🛑 PokedexInput: Stop button clicked');
+        this.$emit('stop-streaming');
     }
 
     handleKeyDown(event: KeyboardEvent) {

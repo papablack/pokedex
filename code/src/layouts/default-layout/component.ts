@@ -1,4 +1,4 @@
-import { RWSViewComponent, RWSView, observable, RWSInject, RWSEvents, attr, ApiService, ApiServiceInstance, when } from '@rws-framework/client';
+import { RWSViewComponent, RWSView, observable, RWSInject, RWSEvents, attr, ApiService, ApiServiceInstance } from '@rws-framework/client';
 
 import { RouterComponent, _ROUTING_EVENT_NAME, IRoutingEvent } from '@rws-framework/browser-router';
 RouterComponent;
@@ -140,14 +140,10 @@ class DefaultLayout extends RWSViewComponent {
     }    
 
     // Pokemon-specific static methods
-    static searchStarted(pokemonName: string) {
-        const message = 'pokedex.analyzing'.t() + ` ${pokemonName}...`;
-        DefaultLayout.addNotify(message, 'info', 2000);
+    static searchStarted(pokemonName: string) {       
     }
     
     static searchCompleted(pokemonName: string) {
-        const message = `✅ ${pokemonName} ${'pokedex.searchComplete'.t() || 'data loaded'}!`;
-        DefaultLayout.addNotify(message, 'success', 3000);
     }
     
     static configurationNeeded() {
